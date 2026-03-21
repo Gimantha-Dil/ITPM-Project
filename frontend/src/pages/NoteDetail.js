@@ -130,8 +130,8 @@ const NoteDetail = () => {
             <p className="text-muted">by {note.seller?.fullName} • {note.subject}</p>
           </div>
           <div className="flex gap-2">
-            {isVerified && <span className="badge badge-owned" style={{ fontSize: '14px', padding: '8px 16px' }}>✅ Owned</span>}
-            {isPending && <span className="badge badge-pending" style={{ fontSize: '14px', padding: '8px 16px' }}>⏳ Pending</span>}
+            {isVerified && <span className="badge badge-owned" style={{ fontSize: '14px', padding: '8px 16px' }}>Owned</span>}
+            {isPending && <span className="badge badge-pending" style={{ fontSize: '14px', padding: '8px 16px' }}>Pending</span>}
           </div>
         </div>
 
@@ -168,7 +168,7 @@ const NoteDetail = () => {
       {/* Bank Details (show to buyers) */}
       {!isOwner && note.price > 0 && !myPurchase && note.seller?.bankName && (
         <div className="bank-details-box">
-          <h3>🏦 Seller Bank Details - Transfer here to purchase</h3>
+          <h3>Seller Bank Details - Transfer here to purchase</h3>
           <div className="bank-detail-row">
             <span className="bank-detail-label">Bank</span>
             <span className="bank-detail-value">{note.seller.bankName}</span>
@@ -191,7 +191,7 @@ const NoteDetail = () => {
       {/* Purchase Section */}
       {!isOwner && note.price > 0 && !myPurchase && (
         <div className="payment-upload-section">
-          <h3 style={{ marginBottom: '12px' }}>💳 Purchase This Note</h3>
+          <h3 style={{ marginBottom: '12px' }}> Purchase This Note</h3>
           <p className="text-small text-muted mb-2">
             1. Transfer LKR {note.price} to the bank account above<br/>
             2. Upload your payment slip below<br/>
@@ -214,7 +214,7 @@ const NoteDetail = () => {
 
       {/* Feedback Section */}
       <div className="detail-section">
-        <h2>⭐ Feedback & Reviews</h2>
+        <h2>Feedback & Reviews</h2>
 
         {/* Add Feedback */}
         {(isVerified || note.price === 0) && !isOwner && (

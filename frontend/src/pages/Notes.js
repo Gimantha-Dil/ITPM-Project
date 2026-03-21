@@ -60,7 +60,7 @@ const Notes = () => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">📚 Notes Marketplace</h1>
+        <h1 className="page-title">Notes Marketplace</h1>
       </div>
 
       {/* Search & Filters */}
@@ -121,8 +121,8 @@ const Notes = () => {
                       ) : (
                         <span className="note-card-price">LKR {note.price}</span>
                       )}
-                      {status === 'owned' && <span className="badge badge-owned">✅ Owned</span>}
-                      {status === 'pending' && <span className="badge badge-pending">⏳ Pending</span>}
+                      {status === 'owned' && <span className="badge badge-owned"> Owned</span>}
+                      {status === 'pending' && <span className="badge badge-pending"> Pending</span>}
                     </div>
                     <div className="note-card-meta" style={{ marginTop: '6px' }}>
                       <span className="text-small text-muted"><FiStar style={{ color: '#f59e0b' }} /> {note.averageRating}</span>
