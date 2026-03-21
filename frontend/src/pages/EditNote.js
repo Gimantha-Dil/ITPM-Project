@@ -27,7 +27,7 @@ const EditNote = () => {
           tags: n.tags?.join(', ') || ''
         });
       } catch (err) {
-        toast.error('Note load කරන්න failed');
+        toast.error('Note loadin Failed');
         navigate('/my-notes');
       } finally {
         setFetching(false);
@@ -46,7 +46,7 @@ const EditNote = () => {
     setLoading(true);
     try {
       await api.put(`/notes/${id}`, form);
-      toast.success('Note update වුණා! ✅');
+      toast.success('Note updated');
       navigate('/my-notes');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Update failed');
@@ -60,7 +60,7 @@ const EditNote = () => {
   return (
     <div style={{ maxWidth: 700 }}>
       <div className="page-header">
-        <h1 className="page-title">✏️ Edit Note</h1>
+        <h1 className="page-title"> Edit Note</h1>
       </div>
 
       <div className="card">
@@ -118,7 +118,7 @@ const EditNote = () => {
 
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Saving...' : '✏️ Update Note'}
+              {loading ? 'Saving...' : ' Update Note'}
             </button>
             <button type="button" className="btn btn-secondary"
               onClick={() => navigate('/my-notes')}>

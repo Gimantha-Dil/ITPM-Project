@@ -39,7 +39,7 @@ const CreateNote = () => {
 
   return (
     <div style={{ maxWidth: '700px' }}>
-      <h1 className="page-title mb-4">📝 Upload New Note</h1>
+      <h1 className="page-title mb-4"> Upload New Note</h1>
 
       <div className="card">
         <form onSubmit={handleSubmit}>
