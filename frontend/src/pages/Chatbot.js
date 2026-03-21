@@ -9,7 +9,7 @@ const synth = window.speechSynthesis;
 const Chatbot = () => {
   const { api } = useAuth();
   const [messages, setMessages] = useState([
-    { type: 'bot', text: 'Hello!  ආයුබෝවන්!\nI\'m your SLIIT Learning Platform AI Helper.\nඕනෑම දෙයක් Sinhala හෝ English වලින් අහන්න!\n\n🎤 Mic button එක click කරලා voice එකෙන් අහන්න පුළුවන්!\n🔊 Bot replies auto speak වෙනවා!\n\nTry the quick buttons below or type your question! 🎯' }
+    { type: 'bot', text: 'Hello! \nI\'m your SLIIT Learning Platform AI Helper.\n\n Bot replies auto speak\n\nTry the quick buttons below or type your question! ' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,8 +73,8 @@ const Chatbot = () => {
   const cleanTextForSpeech = (text) => {
     return text
       .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{200D}]/gu, '')
-      .replace(/[🅰️🅱️🅲️🅳️]/g, '')
-      .replace(/[•→►▶📚💳🎓💬📊👤📝📋📌🗑️📁📄🖼️📏📎📨📍🏦🏛️🌍🆓⬇️⏱️⏳⚡⚠️🔖🧾🔗🔒🔓🔑🎉💡💰🤔❓🤖😊🔴🔔📩📊📈🎯✅❌]/g, '')
+      .replace(/[]/g, '')
+      .replace(/[•→►▶]/g, '')
       .replace(/[1-9]️⃣/g, '')
       .replace(/\n{2,}/g, '. ')
       .replace(/\n/g, '. ')
@@ -187,25 +187,25 @@ const Chatbot = () => {
   const handleQuickSend = (q) => { sendMessage(q); };
 
   const categories = [
-    { key: 'notes', emoji: '📚', label: 'Notes', questions: [
+    { key: 'notes', emoji: '', label: 'Notes', questions: [
       'How do I upload notes?', 'How to set price for my notes?', 'What file types can I upload?',
       'How to download a purchased note?', 'How to bookmark a note?'
     ]},
-    { key: 'payment', emoji: '💳', label: 'Payment', questions: [
+    { key: 'payment', emoji: '', label: 'Payment', questions: [
       'How does payment work?', 'How to upload payment slip?', 'How to verify payments?',
       'How long does verification take?', 'What banks are supported?'
     ]},
-    { key: 'kuppi', emoji: '🎓', label: 'Kuppi', questions: [
+    { key: 'kuppi', emoji: '', label: 'Kuppi', questions: [
       'How to create a kuppi session?', 'How to enroll in a session?', 'How to get MS Teams link?',
       'How to verify student payments?', 'How to generate Excel report?'
     ]},
-    { key: 'chat', emoji: '💬', label: 'Chat', questions: [
+    { key: 'chat', emoji: '', label: 'Chat', questions: [
       'How to chat with a seller?', 'How to send a message?', 'How to check unread messages?'
     ]},
-    { key: 'analytics', emoji: '📊', label: 'Analytics', questions: [
+    { key: 'analytics', emoji: '', label: 'Analytics', questions: [
       'How to view my earnings?', 'How to check download statistics?', 'How to see my ratings?'
     ]},
-    { key: 'account', emoji: '👤', label: 'Account', questions: [
+    { key: 'account', emoji: '', label: 'Account', questions: [
       'How to update my profile?', 'How to add bank details?', 'How to change password?', 'How to register?'
     ]}
   ];
@@ -215,7 +215,7 @@ const Chatbot = () => {
       {/* Header */}
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
         <div>
-          <h1 className="page-title">🤖 AI Helper</h1>
+          <h1 className="page-title"> AI Helper</h1>
           <span className="text-muted" style={{ fontSize: 13 }}> Voice + Text | Sinhala & English</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -293,7 +293,7 @@ const Chatbot = () => {
         ))}
         <button className="btn btn-sm btn-outline" onClick={() => handleQuickSend('help')}
           style={{ fontSize: 12, padding: '4px 10px', borderRadius: 20 }}>
-          ❓ Help
+           Help
         </button>
       </div>
 
