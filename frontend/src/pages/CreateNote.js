@@ -98,13 +98,13 @@ const CreateNote = () => {
                 onChange={e => setFile(e.target.files[0])} />
               {file ? (
                 <div>
-                  <p style={{ fontSize: '24px' }}>✅</p>
+                  <p style={{ fontSize: '24px' }}></p>
                   <p><strong>{file.name}</strong></p>
                   <p className="text-small text-muted">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               ) : (
                 <div>
-                  <p style={{ fontSize: '36px' }}>📁</p>
+                  <p style={{ fontSize: '36px' }}></p>
                   <p>Click to select file</p>
                   <p className="text-small text-muted">PDF, DOC, PPT, XLS, TXT, Images</p>
                 </div>

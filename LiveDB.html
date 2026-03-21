@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SLIIT DB Live Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f3ff; color: #1f2937; }
+    .navbar { background: linear-gradient(135deg, #7c3aed, #2563eb); color: #fff; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h1 { font-size: 20px; font-weight: 800; }
+    .status-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; animation: pulse 1.5s infinite; }
+    .dot.off { background: #f87171; animation: none; }
+    .container { padding: 24px; max-width: 1300px; margin: 0 auto; }
+    .stats { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat-card { background: #fff; border-radius: 14px; padding: 18px 24px; flex: 1; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .stat-card .icon { font-size: 24px; margin-bottom: 6px; }
+    .stat-card .value { font-size: 30px; font-weight: 800; }
+    .stat-card .label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .stat-notes    { border: 2px solid #ede9fe; }
+    .stat-sessions { border: 2px solid #dbeafe; }
+    .stat-users    { border: 2px solid #d1fae5; }
+    .stat-changes  { border: 2px solid #fef3c7; }
+    .stat-payments { border: 2px solid #fce7f3; }
+    .val-purple { color: #7c3aed; }
+    .val-blue   { color: #2563eb; }
+    .val-green  { color: #059669; }
+    .val-yellow { color: #d97706; }
+    .val-pink   { color: #db2777; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; font-size: 13px; transition: all 0.15s; background: #fff; color: #6b7280; }
+    .tab-btn.active { background: #7c3aed; color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .table-wrap { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .table-header { padding: 16px 20px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; }
+    .table-header h2 { font-size: 16px; font-weight: 700; }
+    .table-header-note { font-size: 13px; color: #6b7280; font-weight: 400; }
+    .table-header-actions { display: flex; gap: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: #f8faff; }
+    th { padding: 11px 14px; text-align: left; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; }
+    td { padding: 11px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-purple { background: #ede9fe; color: #7c3aed; }
+    .badge-green  { background: #d1fae5; color: #059669; }
+    .badge-blue   { background: #dbeafe; color: #2563eb; }
+    .badge-red    { background: #fee2e2; color: #dc2626; }
+    .badge-gray   { background: #f3f4f6; color: #6b7280; }
+    .badge-yellow { background: #fef3c7; color: #d97706; }
+    .price-paid   { color: #7c3aed; font-weight: 700; }
+    .btn { padding: 11px 28px; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; }
+    .btn-refresh { background: #7c3aed; color: #fff; }
+    .btn-clear   { background: #6b7280; color: #fff; }
+    .btn-sm      { padding: 8px 16px; font-size: 12px; }
+    .btn:hover   { opacity: 0.88; transform: translateY(-1px); }
+    .pay-summary { display: flex; gap: 12px; flex-wrap: wrap; padding: 14px 18px; border-bottom: 1px solid #f3f4f6; }
+    .pay-card { background: #f8faff; border-radius: 10px; padding: 12px 18px; flex: 1; min-width: 110px; text-align: center; }
+    .pay-card .pv { font-size: 22px; font-weight: 800; }
+    .pay-card .pl { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .pay-total    { border-left: 4px solid #7c3aed; }
+    .pay-verified { border-left: 4px solid #059669; }
+    .pay-pending  { border-left: 4px solid #d97706; }
+    .pay-amount   { border-left: 4px solid #db2777; }
+    .log-wrap { padding: 16px; }
+    .log-box { background: #0f172a; border-radius: 14px; padding: 16px; max-height: 480px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px; }
+    .log-empty { text-align: center; padding: 40px; color: #475569; }
+    .log-empty .emoji { font-size: 40px; margin-bottom: 10px; }
+    .log-text-main { color: #94a3b8; font-weight: 600; }
+    .log-text-sub  { color: #475569; font-size: 12px; margin-top: 6px; }
+    .log-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid; animation: fadeIn 0.3s ease; }
+    .log-item.CREATE { background: #052e16; border-color: #22c55e; }
+    .log-item.UPDATE { background: #1c1008; border-color: #f59e0b; }
+    .log-item.DELETE { background: #1f0505; border-color: #ef4444; }
+    .log-item .op { font-weight: 800; font-size: 12px; min-width: 60px; }
+    .log-item.CREATE .op { color: #4ade80; }
+    .log-item.UPDATE .op { color: #fbbf24; }
+    .log-item.DELETE .op { color: #f87171; }
+    .log-item .col  { color: #a78bfa; font-size: 11px; min-width: 70px; }
+    .log-item .info { color: #e2e8f0; flex: 1; }
+    .log-item .time { color: #475569; font-size: 11px; }
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 22px; border-radius: 12px; color: #fff; font-weight: 700; font-size: 14px; z-index: 9999; animation: slideUp 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; }
+    .toast.success { background: #059669; }
+    .toast.error   { background: #dc2626; }
+    .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
+    .empty-state .emoji { font-size: 40px; margin-bottom: 10px; }
+    @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes fadeIn  { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>🗄️ SLIIT Learning Platform — Live DB Viewer</h1>
+  <div class="status-badge">
+    <div class="dot off" id="statusDot"></div>
+    <span id="statusText">Connecting...</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat-card stat-notes">
+      <div class="icon">📚</div>
+      <div class="value val-purple" id="totalNotes">0</div>
+      <div class="label">Total Notes</div>
+    </div>
+    <div class="stat-card stat-sessions">
+      <div class="icon">🎓</div>
+      <div class="value val-blue" id="totalSessions">0</div>
+      <div class="label">Total Sessions</div>
+    </div>
+    <div class="stat-card stat-users">
+      <div class="icon">👤</div>
+      <div class="value val-green" id="totalUsers">0</div>
+      <div class="label">Total Users</div>
+    </div>
+    <div class="stat-card stat-changes">
+      <div class="icon">🔄</div>
+      <div class="value val-yellow" id="totalChanges">0</div>
+      <div class="label">Live Changes</div>
+    </div>
+    <div class="stat-card stat-payments">
+      <div class="icon">💳</div>
+      <div class="value val-pink" id="totalPayments">0</div>
+      <div class="label">My Payments</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('live', this)">🔴 Live Changes</button>
+    <button class="tab-btn" onclick="switchTab('notes', this)">📚 Notes</button>
+    <button class="tab-btn" onclick="switchTab('sessions', this)">🎓 Sessions</button>
+    <button class="tab-btn" onclick="switchTab('users', this)">👤 Users</button>
+    <button class="tab-btn" onclick="switchTab('payments', this)">💳 Payments</button>
+  </div>
+
+  <!-- LIVE -->
+  <div class="panel active" id="panel-live">
+    <div class="table-wrap">
+      <div class="table-header">
+        <h2>🔴 Real-Time Change Log <span class="table-header-note">(MongoDB ෙකේ ඕනෑම වෙනසක් මෙතන පෙනෙනවා)</span></h2>
+        <div class="table-header-actions">
+          <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+          <button class="btn btn-clear btn-sm" onclick="clearLog()">🗑️ Clear</button>
+        </div>
+      </div>
+      <div class="log-wrap">
+        <div class="log-box" id="logBox">
+          <div class="log-empty">
+            <div class="emoji">👀</div>
+            <p class="log-text-main">Watching MongoDB for changes...</p>
+            <p class="log-text-sub">Note/Session/User create, update, delete වෙනකොට මෙතන live ෙකේ දිස්වෙනවා</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="panel" id="panel-notes">
+    <div class="table-wrap">
+      <div class="table-header">
+        <h2>📚 Notes Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+      </div>
+      <div id="notesTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+    </div>
+  </div>
+
+  <!-- SESSIONS -->
+  <div class="panel" id="panel-sessions">
+    <div class="table-wrap">
+      <div class="table-header">
+        <h2>🎓 Kuppi Sessions Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+      </div>
+      <div id="sessionsTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="panel" id="panel-users">
+    <div class="table-wrap">
+      <div class="table-header">
+        <h2>👤 Users Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+      </div>
+      <div id="usersTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+    </div>
+  </div>
+
+  <!-- PAYMENTS -->
+  <div class="panel" id="panel-payments">
+    <div class="table-wrap">
+      <div class="table-header">
+        <h2>💳 Payment History</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadPayments()">⟳ Refresh</button>
+      </div>
+      <div class="pay-summary">
+        <div class="pay-card pay-total">
+          <div class="pv val-purple" id="payTotal">0</div>
+          <div class="pl">Total Payments</div>
+        </div>
+        <div class="pay-card pay-verified">
+          <div class="pv val-green" id="payVerified">0</div>
+          <div class="pl">Verified</div>
+        </div>
+        <div class="pay-card pay-pending">
+          <div class="pv val-yellow" id="payPending">0</div>
+          <div class="pl">Pending</div>
+        </div>
+        <div class="pay-card pay-amount">
+          <div class="pv val-pink" id="payAmount">LKR 0</div>
+          <div class="pl">Total Spent</div>
+        </div>
+      </div>
+      <div id="paymentsTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = 'http://localhost:5000/api';
+let token = localStorage.getItem('sliit_token') || '';
+let notes = [], sessions = [], users = [], payments = [];
+let changeCount = 0, es = null;
+
+if (!token) {
+  token = prompt('⚠️ Login token paste කරන්න:\n(Postman ෙකේ login කරලා token copy කරන්න)') || '';
+  if (token) localStorage.setItem('sliit_token', token);
+}
+
+const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `toast ${type}`; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'payments') loadPayments();
+}
+
+async function loadSnapshot() {
+  try {
+    const res = await fetch(`${API}/db-snapshot`, { headers });
+    const data = await res.json();
+    notes = data.notes || []; sessions = data.sessions || []; users = data.users || [];
+    renderAll(); toast('✅ MongoDB data loaded!');
+  } catch(e) { toast('❌ Backend connect කරන්න බෑ!', 'error'); }
+}
+
+async function loadPayments() {
+  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div>';
+  try {
+    const res = await fetch(`${API}/payments/history`, { headers });
+    payments = await res.json();
+    renderPayments(); toast('✅ Payments loaded!');
+  } catch(e) { toast('❌ Payments load failed!', 'error'); }
+}
+
+function renderAll() {
+  document.getElementById('totalNotes').textContent    = notes.length;
+  document.getElementById('totalSessions').textContent = sessions.length;
+  document.getElementById('totalUsers').textContent    = users.length;
+  renderNotes(); renderSessions(); renderUsers();
+}
+
+function renderNotes() {
+  const el = document.getElementById('notesTable');
+  if (!notes.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">📚</div><p>Notes නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Title</th><th>Category</th><th>Subject</th><th>Price</th><th>Seller</th><th>Views</th><th>Created</th></tr></thead>
+  <tbody>${notes.map((n,i) => `<tr>
+    <td>${i+1}</td><td><b>${n.title}</b></td>
+    <td><span class="badge badge-purple">${n.category}</span></td>
+    <td>${n.subject||'-'}</td>
+    <td>${n.price===0?'<span class="badge badge-green">Free</span>':'<span class="price-paid">LKR '+n.price+'</span>'}</td>
+    <td>${n.seller?.fullName||'-'}</td><td>${n.views||0}</td>
+    <td>${new Date(n.createdAt).toLocaleDateString()}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function renderSessions() {
+  const el = document.getElementById('sessionsTable');
+  if (!sessions.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">🎓</div><p>Sessions නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Title</th><th>Category</th><th>Type</th><th>Price</th><th>Host</th><th>Enrolled</th><th>Date</th></tr></thead>
+  <tbody>${sessions.map((s,i) => `<tr>
+    <td>${i+1}</td><td><b>${s.title}</b></td>
+    <td><span class="badge badge-blue">${s.category}</span></td>
+    <td><span class="badge badge-purple">Type ${s.sessionType}</span></td>
+    <td>${s.price===0?'<span class="badge badge-green">Free</span>':'<span class="price-paid">LKR '+s.price+'</span>'}</td>
+    <td>${s.host?.fullName||'-'}</td><td>${s.enrollments?.length||0}</td>
+    <td>${new Date(s.date).toLocaleDateString()}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function renderUsers() {
+  const el = document.getElementById('usersTable');
+  if (!users.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">👤</div><p>Users නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Joined</th></tr></thead>
+  <tbody>${users.map((u,i) => `<tr>
+    <td>${i+1}</td><td><b>${u.fullName}</b></td><td>${u.email}</td>
+    <td><span class="badge ${u.role==='admin'?'badge-red':'badge-green'}">${u.role}</span></td>
+    <td>${u.bankName?'<span class="badge badge-green">✅ Added</span>':'<span class="badge badge-gray">❌ None</span>'}</td>
+    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function renderPayments() {
+  document.getElementById('totalPayments').textContent = payments.length;
+  document.getElementById('payTotal').textContent      = payments.length;
+  const verified = payments.filter(p => p.verified).length;
+  const pending  = payments.filter(p => !p.verified).length;
+  const total    = payments.reduce((s,p) => s + (p.amount||0), 0);
+  document.getElementById('payVerified').textContent = verified;
+  document.getElementById('payPending').textContent  = pending;
+  document.getElementById('payAmount').textContent   = 'LKR ' + total.toLocaleString();
+  const el = document.getElementById('paymentsTable');
+  if (!payments.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">💳</div><p>Payments නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Type</th><th>Item</th><th>Seller/Host</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+  <tbody>${payments.map((p,i) => `<tr>
+    <td>${i+1}</td>
+    <td><span class="badge ${p.type==='note'?'badge-purple':'badge-blue'}">${p.type==='note'?'📚 Note':'🎓 Session'}</span></td>
+    <td><b>${p.itemTitle||'-'}</b></td><td>${p.seller||'-'}</td>
+    <td><span class="price-paid">LKR ${(p.amount||0).toLocaleString()}</span></td>
+    <td>${p.verified?'<span class="badge badge-green">✅ Verified</span>':'<span class="badge badge-yellow">⏳ Pending</span>'}</td>
+    <td>${p.date?new Date(p.date).toLocaleDateString():'-'}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function connectSSE() {
+  if (es) es.close();
+  es = new EventSource(`${API}/changes`);
+  es.onopen = () => { document.getElementById('statusDot').classList.remove('off'); document.getElementById('statusText').textContent = 'LIVE'; };
+  es.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'snapshot') {
+      notes = msg.data.notes||[]; sessions = msg.data.sessions||[]; users = msg.data.users||[];
+      renderAll();
+    } else if (msg.type === 'change') {
+      addLogItem(msg);
+      if (msg.collection === 'notes') {
+        if (msg.operation==='CREATE'&&msg.document) notes.unshift(msg.document);
+        else if (msg.operation==='UPDATE'&&msg.document) notes=notes.map(n=>String(n._id)===String(msg.documentId)?msg.document:n);
+        else if (msg.operation==='DELETE') notes=notes.filter(n=>String(n._id)!==String(msg.documentId));
+        renderNotes(); document.getElementById('totalNotes').textContent=notes.length;
+      }
+      if (msg.collection === 'sessions') {
+        if (msg.operation==='CREATE'&&msg.document) sessions.unshift(msg.document);
+        else if (msg.operation==='DELETE') sessions=sessions.filter(s=>String(s._id)!==String(msg.documentId));
+        renderSessions(); document.getElementById('totalSessions').textContent=sessions.length;
+      }
+      if (msg.collection === 'users') { renderUsers(); document.getElementById('totalUsers').textContent=users.length; }
+    }
+  };
+  es.onerror = () => {
+    document.getElementById('statusDot').classList.add('off');
+    document.getElementById('statusText').textContent = 'Reconnecting...';
+    es.close(); setTimeout(connectSSE, 3000);
+  };
+}
+
+function addLogItem(msg) {
+  changeCount++; document.getElementById('totalChanges').textContent = changeCount;
+  const icons = { CREATE: '➕', UPDATE: '✏️', DELETE: '🗑️' };
+  const icon = icons[msg.operation] || '🔄';
+  const docInfo = msg.document ? (msg.document.title||msg.document.fullName||String(msg.documentId)) : ('ID: '+String(msg.documentId));
+  const item = document.createElement('div');
+  item.className = `log-item ${msg.operation}`;
+  item.innerHTML = `<span class="op">${icon} ${msg.operation}</span><span class="col">${msg.collection.toUpperCase()}</span><span class="info">${docInfo}</span><span class="time">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
+  const box = document.getElementById('logBox');
+  const empty = box.querySelector('.log-empty');
+  if (empty) empty.remove();
+  box.insertBefore(item, box.firstChild);
+  while (box.children.length > 100) box.removeChild(box.lastChild);
+}
+
+function clearLog() {
+  document.getElementById('logBox').innerHTML = '<div class="log-empty"><div class="emoji">👀</div><p class="log-text-main">Watching MongoDB for changes...</p></div>';
+  changeCount = 0; document.getElementById('totalChanges').textContent = 0;
+}
+
+loadSnapshot();
+connectSSE();
+</script>
+</body>
+</html>
