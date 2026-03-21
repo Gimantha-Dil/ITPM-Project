@@ -71,8 +71,8 @@ const Profile = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm('⚠️ Account delete කරන්නද?\n\nමේ action undo කරන්න බෑ! සියලු data delete වෙනවා.')) return;
-    if (!window.confirm('ඔබට ඇත්තටම delete කරන්න ඕනේද? Second confirmation.')) return;
+    if (!window.confirm(' Account delete\n action undo ! All data delete')) return;
+    if (!window.confirm('Are you want delete data?Second confirmation.')) return;
 
     setDeleting(true);
     try {
@@ -123,7 +123,7 @@ const Profile = () => {
 
       {/* Bank Details */}
       <div className="profile-section">
-        <h2>💳 Bank Details</h2>
+        <h2> Bank Details</h2>
         {profile?.bankName ? (
           <div>
             <div className="bank-details-box" style={{ marginTop: 0 }}>
@@ -188,9 +188,9 @@ const Profile = () => {
 
       {/* ── Delete Account ── */}
       <div className="profile-section" style={{ borderTop: '2px solid #fee2e2', paddingTop: 20 }}>
-        <h2 style={{ color: '#dc2626' }}>⚠️ Danger Zone</h2>
+        <h2 style={{ color: '#dc2626' }}> Danger Zone</h2>
         <p className="text-muted" style={{ marginBottom: 16, fontSize: 14 }}>
-          Account delete කළාම සියලු data, notes, sessions සම්පූර්ණයෙන් remove වෙනවා. Undo කරන්න බෑ!
+          Account delete data, notes, sessions. Undo !
         </p>
         <button
           className="btn"
@@ -202,7 +202,7 @@ const Profile = () => {
             cursor: deleting ? 'not-allowed' : 'pointer', opacity: deleting ? 0.6 : 1
           }}
         >
-          {deleting ? 'Deleting...' : '🗑️ Delete My Account'}
+          {deleting ? 'Deleting...' : ' Delete My Account'}
         </button>
       </div>
 
