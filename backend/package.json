@@ -18,6 +18,8 @@
     "jsonwebtoken": "^9.0.3",
     "mogoose": "^0.0.1-security",
     "mongodb": "^7.1.0",
-    "mongoose": "^9.2.3"
+    "mongoose": "^9.3.1",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.3"
   }
 }
