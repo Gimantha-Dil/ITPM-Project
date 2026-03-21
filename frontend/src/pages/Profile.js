@@ -102,7 +102,7 @@ const Profile = () => {
 
       {/* Bank Details */}
       <div className="profile-section">
-        <h2>💳 Bank Details</h2>
+        <h2> Bank Details</h2>
         {profile?.bankName ? (
           <div>
             <div className="bank-details-box" style={{ marginTop: 0 }}>
