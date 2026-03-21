@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
 // Database connection & server start
 const PORT = process.env.PORT || 5000;
 
-console.log('⏳ Connecting to MongoDB...');
+console.log(' Connecting to MongoDB...');
 
 mongoose.connect(process.env.MONGODB_URI, {
   serverSelectionTimeoutMS: 15000,
@@ -54,14 +54,14 @@ mongoose.connect(process.env.MONGODB_URI, {
   family: 4  // Force IPv4 (fixes some network issues)
 })
   .then(() => {
-    console.log('✅ MongoDB connected successfully');
+    console.log(' MongoDB connected successfully');
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(` Server running on port ${PORT}`);
     });
   })
   .catch(err => {
-    console.error('❌ MongoDB connection error:', err);
-    console.log('\n💡 TROUBLESHOOTING:');
+    console.error(' MongoDB connection error:', err);
+    console.log('\n TROUBLESHOOTING:');
     console.log('1. Open backend/.env and replace YOUR_PASSWORD_HERE with your Atlas password');
     console.log('2. Make sure your IP is whitelisted in Atlas → Network Access → Add 0.0.0.0/0');
     console.log('3. Check your internet connection');
