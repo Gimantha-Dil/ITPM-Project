@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiCheck, FiEye, FiTrash2, FiDollarSign } from 'react-icons/fi';
+import { FiCheck, FiEye, FiTrash2, FiEdit2 } from 'react-icons/fi';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 const MyNotes = () => {
   const { api } = useAuth();
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState(null);
@@ -50,7 +52,8 @@ const MyNotes = () => {
     try {
       await api.delete(`/notes/${noteId}`);
       toast.success('Note deleted');
-      fetchMyNotes();
+      // ── Remove from state immediately ──
+      setNotes(prev => prev.filter(n => n._id !== noteId));
     } catch (err) {
       toast.error('Delete failed');
     }
@@ -61,13 +64,13 @@ const MyNotes = () => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title"> My Notes</h1>
+        <h1 className="page-title">📝 My Notes</h1>
         <span className="text-muted">{notes.length} notes</span>
       </div>
 
       {notes.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon"></div>
+          <div className="empty-icon">📝</div>
           <h3>No notes yet</h3>
           <p>Upload your first note to start selling!</p>
         </div>
@@ -90,10 +93,26 @@ const MyNotes = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="btn btn-secondary btn-sm" onClick={() => setSelectedNote(selectedNote === note._id ? null : note._id)}>
+                  {/* ── Edit Button ── */}
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => navigate(`/edit-note/${note._id}`)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                  >
+                    <FiEdit2 /> Edit
+                  </button>
+
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setSelectedNote(selectedNote === note._id ? null : note._id)}
+                  >
                     <FiEye /> {selectedNote === note._id ? 'Hide' : 'View'} Purchases
                   </button>
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteNote(note._id)}>
+
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteNote(note._id)}
+                  >
                     <FiTrash2 />
                   </button>
                 </div>
@@ -141,9 +160,9 @@ const MyNotes = () => {
                                 </td>
                                 <td>
                                   {purchase.verified ? (
-                                    <span className="badge badge-verified">Verified</span>
+                                    <span className="badge badge-verified">✅ Verified</span>
                                   ) : (
-                                    <span className="badge badge-pending">Pending</span>
+                                    <span className="badge badge-pending">⏳ Pending</span>
                                   )}
                                 </td>
                                 <td>
