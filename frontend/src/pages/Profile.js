@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import BankDetailsModal from '../components/BankDetailsModal';
 
 const Profile = () => {
-  const { user, api, updateUser } = useAuth();
+  const { user, api, updateUser, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ fullName: '', phoneNumber: '' });
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [showBankModal, setShowBankModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -68,6 +70,22 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('⚠️ Account delete කරන්නද?\n\nමේ action undo කරන්න බෑ! සියලු data delete වෙනවා.')) return;
+    if (!window.confirm('ඔබට ඇත්තටම delete කරන්න ඕනේද? Second confirmation.')) return;
+
+    setDeleting(true);
+    try {
+      await api.delete(`/auth/users/${profile._id}`);
+      toast.success('Account deleted successfully');
+      logout();
+      navigate('/login');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Delete failed');
+      setDeleting(false);
+    }
+  };
+
   const handleBankDetailsSaved = () => {
     fetchProfile();
   };
@@ -84,15 +102,18 @@ const Profile = () => {
         <form onSubmit={handleUpdateProfile}>
           <div className="form-group">
             <label>Full Name</label>
-            <input type="text" className="form-input" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+            <input type="text" className="form-input" value={form.fullName}
+              onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
           </div>
           <div className="form-group">
             <label>Email</label>
-            <input type="email" className="form-input" value={profile?.email || ''} disabled style={{ background: '#f3f4f6' }} />
+            <input type="email" className="form-input" value={profile?.email || ''}
+              disabled style={{ background: '#f3f4f6' }} />
           </div>
           <div className="form-group">
             <label>Phone Number</label>
-            <input type="text" className="form-input" value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
+            <input type="text" className="form-input" value={form.phoneNumber}
+              onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
           </div>
           <button type="submit" className="btn btn-primary" disabled={saving}>
             {saving ? 'Saving...' : 'Update Profile'}
@@ -102,7 +123,7 @@ const Profile = () => {
 
       {/* Bank Details */}
       <div className="profile-section">
-        <h2> Bank Details</h2>
+        <h2>💳 Bank Details</h2>
         {profile?.bankName ? (
           <div>
             <div className="bank-details-box" style={{ marginTop: 0 }}>
@@ -145,18 +166,44 @@ const Profile = () => {
         <form onSubmit={handleChangePassword}>
           <div className="form-group">
             <label>Current Password</label>
-            <input type="password" className="form-input" value={passwords.currentPassword} onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} required />
+            <input type="password" className="form-input"
+              value={passwords.currentPassword}
+              onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} required />
           </div>
           <div className="form-group">
             <label>New Password</label>
-            <input type="password" className="form-input" value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} required />
+            <input type="password" className="form-input"
+              value={passwords.newPassword}
+              onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} required />
           </div>
           <div className="form-group">
             <label>Confirm New Password</label>
-            <input type="password" className="form-input" value={passwords.confirmPassword} onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} required />
+            <input type="password" className="form-input"
+              value={passwords.confirmPassword}
+              onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} required />
           </div>
           <button type="submit" className="btn btn-primary">Change Password</button>
         </form>
+      </div>
+
+      {/* ── Delete Account ── */}
+      <div className="profile-section" style={{ borderTop: '2px solid #fee2e2', paddingTop: 20 }}>
+        <h2 style={{ color: '#dc2626' }}>⚠️ Danger Zone</h2>
+        <p className="text-muted" style={{ marginBottom: 16, fontSize: 14 }}>
+          Account delete කළාම සියලු data, notes, sessions සම්පූර්ණයෙන් remove වෙනවා. Undo කරන්න බෑ!
+        </p>
+        <button
+          className="btn"
+          onClick={handleDeleteAccount}
+          disabled={deleting}
+          style={{
+            background: '#dc2626', color: '#fff', border: 'none',
+            padding: '10px 24px', borderRadius: 10, fontWeight: 700,
+            cursor: deleting ? 'not-allowed' : 'pointer', opacity: deleting ? 0.6 : 1
+          }}
+        >
+          {deleting ? 'Deleting...' : '🗑️ Delete My Account'}
+        </button>
       </div>
 
       {showBankModal && (

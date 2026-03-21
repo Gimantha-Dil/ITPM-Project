@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiCheckCircle, FiClock, FiUsers, FiTrash2, FiEye } from 'react-icons/fi';
+import { FiCheckCircle, FiClock, FiUsers, FiTrash2, FiEye, FiEdit2 } from 'react-icons/fi';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 const MySessions = () => {
   const { api } = useAuth();
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedSession, setExpandedSession] = useState(null);
@@ -41,7 +43,9 @@ const MySessions = () => {
     try {
       await api.delete(`/kuppi/${sessionId}`);
       toast.success('Session cancelled');
-      fetchSessions();
+      // ── Remove from state immediately — page updates instantly ──
+      setSessions(prev => prev.filter(s => s._id !== sessionId));
+      if (expandedSession === sessionId) setExpandedSession(null);
     } catch (err) {
       toast.error('Failed to cancel session');
     }
@@ -74,20 +78,41 @@ const MySessions = () => {
                     Type {session.sessionType} • {session.category} • {new Date(session.date).toLocaleDateString()} at {session.startTime}
                   </div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <span className="badge badge-verified"><FiCheckCircle style={{ marginRight: 4 }} />{verifiedCount} verified</span>
+                    <span className="badge badge-verified">
+                      <FiCheckCircle style={{ marginRight: 4 }} />{verifiedCount} verified
+                    </span>
                     {pendingCount > 0 && (
-                      <span className="badge badge-pending"><FiClock style={{ marginRight: 4 }} />{pendingCount} pending</span>
+                      <span className="badge badge-pending">
+                        <FiClock style={{ marginRight: 4 }} />{pendingCount} pending
+                      </span>
                     )}
                     <span className="badge badge-category">
                       <FiUsers style={{ marginRight: 4 }} />{session.enrollments?.length || 0}/{session.maxParticipants}
                     </span>
                   </div>
                 </div>
+
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn btn-secondary btn-sm" onClick={() => setExpandedSession(expandedSession === session._id ? null : session._id)}>
+                  {/* ── Edit Button ── */}
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => navigate(`/edit-session/${session._id}`)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                  >
+                    <FiEdit2 /> Edit
+                  </button>
+
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setExpandedSession(expandedSession === session._id ? null : session._id)}
+                  >
                     <FiEye /> {expandedSession === session._id ? 'Hide' : 'View'} Enrollments
                   </button>
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(session._id)}>
+
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(session._id)}
+                  >
                     <FiTrash2 />
                   </button>
                 </div>
@@ -132,7 +157,10 @@ const MySessions = () => {
                               </td>
                               <td>
                                 {!enrollment.verified && (
-                                  <button className="btn btn-success btn-sm" onClick={() => handleVerify(session._id, enrollment._id)}>
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => handleVerify(session._id, enrollment._id)}
+                                  >
                                     Verify
                                   </button>
                                 )}
