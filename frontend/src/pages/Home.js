@@ -125,8 +125,8 @@ const CategoryBrowse = ({ category, api, onClose }) => {
         {/* Tab toggle */}
         <div style={{ display: 'flex', gap: 4, background: '#f3f4f6', borderRadius: 10, padding: 4, width: 'fit-content', marginBottom: 16 }}>
           {[
-            { key: 'notes',    label: `📚 Notes (${notes.length})` },
-            { key: 'sessions', label: `🎓 Sessions (${sessions.length})` }
+            { key: 'notes',    label: ` Notes (${notes.length})` },
+            { key: 'sessions', label: ` Sessions (${sessions.length})` }
           ].map(t => (
             <button key={t.key} onClick={() => { setTab(t.key); setSearch(''); }}
               style={{
@@ -189,7 +189,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
         ) : tab === 'notes' ? (
           filteredNotes.length === 0 ? (
             <div className="empty-state" style={{ padding: 32 }}>
-              <div className="empty-icon">📚</div>
+              
               <h3>No notes found</h3>
               <p>No {category} notes match your search.</p>
             </div>
@@ -200,7 +200,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
                   <div className="note-card-header" style={{
                     background: `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`,
                     fontSize: 36, minHeight: 90
-                  }}>📄</div>
+                  }}></div>
                   <div className="note-card-body">
                     <div className="note-card-title">{note.title}</div>
                     <p className="text-muted text-small" style={{ marginTop: 4 }}>
@@ -225,7 +225,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
         ) : (
           filteredSessions.length === 0 ? (
             <div className="empty-state" style={{ padding: 32 }}>
-              <div className="empty-icon">🎓</div>
+              
               <h3>No sessions found</h3>
               <p>No {category} sessions match your search.</p>
             </div>
@@ -236,7 +236,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
                   <div className="note-card-header" style={{
                     background: `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`,
                     fontSize: 36, minHeight: 90
-                  }}>🎓</div>
+                  }}></div>
                   <div className="note-card-body">
                     <div className="note-card-title">{session.title}</div>
                     <p className="text-muted text-small" style={{ marginTop: 4 }}>
@@ -334,13 +334,13 @@ const Home = () => {
   };
 
   const categories = [
-    { name: 'IT',          icon: '💻', color: '#7c3aed' },
-    { name: 'SE',          icon: '⚙️',  color: '#2563eb' },
-    { name: 'CS',          icon: '🖥️',  color: '#0891b2' },
-    { name: 'DS',          icon: '📊', color: '#059669' },
-    { name: 'Business',    icon: '💼', color: '#d97706' },
-    { name: 'Engineering', icon: '🔧', color: '#dc2626' },
-    { name: 'Other',       icon: '📂', color: '#6b7280' },
+    { name: 'IT',           color: '#7c3aed' },
+    { name: 'SE',            color: '#2563eb' },
+    { name: 'CS',            color: '#0891b2' },
+    { name: 'DS',           color: '#059669' },
+    { name: 'Business',     color: '#d97706' },
+    { name: 'Engineering',  color: '#dc2626' },
+    { name: 'Other',        color: '#6b7280' },
   ];
 
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
@@ -358,7 +358,7 @@ const Home = () => {
         <div style={{ position: 'absolute', bottom: -40, right: 80, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
 
         <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
-          Welcome, {user?.fullName?.split(' ')[0]}! 🎓
+          Welcome, {user?.fullName?.split(' ')[0]}! 
         </h1>
         <p style={{ opacity: 0.9, fontSize: 15, marginBottom: 20 }}>
           Discover top-rated notes &amp; kuppi sessions from SLIIT students

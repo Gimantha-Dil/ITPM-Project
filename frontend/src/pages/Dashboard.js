@@ -30,7 +30,7 @@ const Home = () => {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Welcome back, {user?.fullName?.split(' ')[0]}! 👋</h1>
+          <h1 className="page-title">Welcome back, {user?.fullName?.split(' ')[0]}! </h1>
           <p className="text-muted">Here's your learning dashboard overview</p>
         </div>
       </div>
@@ -38,42 +38,42 @@ const Home = () => {
       {/* Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon">📝</div>
+         
           <div className="stat-value">{sellerStats?.totalNotes || 0}</div>
           <div className="stat-label">Notes Listed</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">📚</div>
+          
           <div className="stat-value">{sellerStats?.totalSessions || 0}</div>
           <div className="stat-label">Sessions Created</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">💰</div>
+          
           <div className="stat-value">LKR {sellerStats?.totalRevenue?.toLocaleString() || 0}</div>
           <div className="stat-label">Total Revenue</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">🛒</div>
+          
           <div className="stat-value">{buyerStats?.totalPurchasedNotes || 0}</div>
           <div className="stat-label">Notes Purchased</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">🎓</div>
+          
           <div className="stat-value">{buyerStats?.totalEnrolledSessions || 0}</div>
           <div className="stat-label">Sessions Enrolled</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⏳</div>
+          
           <div className="stat-value">{sellerStats?.pendingPayments || 0}</div>
           <div className="stat-label">Pending Payments</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">⭐</div>
+          
           <div className="stat-value">{sellerStats?.averageRating || 0}</div>
           <div className="stat-label">Average Rating</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">👁️</div>
+          
           <div className="stat-value">{sellerStats?.totalViews || 0}</div>
           <div className="stat-label">Total Views</div>
         </div>
