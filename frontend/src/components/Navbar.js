@@ -40,7 +40,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        <span>🎓</span>
+        
         SLIIT Learning Platform
       </Link>
 

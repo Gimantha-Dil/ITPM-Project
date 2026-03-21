@@ -50,14 +50,14 @@ const Analytics = () => {
   const { stats } = data;
 
   const statCards = [
-    { icon: '📝', label: 'Total Notes', value: stats.totalNotes, color: '#7c3aed' },
-    { icon: '📅', label: 'Total Sessions', value: stats.totalSessions, color: '#2563eb' },
-    { icon: '💰', label: 'Total Revenue', value: `Rs. ${stats.totalRevenue}`, color: '#059669' },
-    { icon: '📊', label: 'Note Sales', value: stats.totalNoteSales, color: '#7c3aed' },
-    { icon: '👥', label: 'Session Enrollments', value: stats.totalSessionEnrollments, color: '#2563eb' },
-    { icon: '⏳', label: 'Pending Payments', value: stats.pendingPayments, color: '#d97706' },
-    { icon: '👁️', label: 'Total Views', value: stats.totalViews, color: '#6366f1' },
-    { icon: '⭐', label: 'Average Rating', value: `${stats.averageRating} / 5`, color: '#f59e0b' },
+    {  label: 'Total Notes', value: stats.totalNotes, color: '#7c3aed' },
+    {  label: 'Total Sessions', value: stats.totalSessions, color: '#2563eb' },
+    {  label: 'Total Revenue', value: `Rs. ${stats.totalRevenue}`, color: '#059669' },
+    {  label: 'Note Sales', value: stats.totalNoteSales, color: '#7c3aed' },
+    {  label: 'Session Enrollments', value: stats.totalSessionEnrollments, color: '#2563eb' },
+    {  label: 'Pending Payments', value: stats.pendingPayments, color: '#d97706' },
+    {  label: 'Total Views', value: stats.totalViews, color: '#6366f1' },
+    {  label: 'Average Rating', value: `${stats.averageRating} / 5`, color: '#f59e0b' },
   ];
 
   return (
