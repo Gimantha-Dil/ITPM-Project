@@ -26,7 +26,7 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <div className="logo-emoji">🎓</div>
+      <div className="logo-emoji"></div>
       <h1>Welcome Back</h1>
       <p className="subtitle">Login to SLIIT Learning Platform</p>
 
