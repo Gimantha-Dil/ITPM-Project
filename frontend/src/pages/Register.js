@@ -86,7 +86,7 @@ const Register = () => {
       </form>
 
       <p className="text-center mt-4" style={{ fontSize: '14px', color: '#6b7280' }}>
-        ℹ️ Bank details are NOT required now. Add them later when you want to sell.
+         Bank details are NOT required now. Add them later when you want to sell.
       </p>
       <p className="text-center mt-2" style={{ fontSize: '14px' }}>
         Already have an account? <Link to="/login" className="link">Login</Link>
