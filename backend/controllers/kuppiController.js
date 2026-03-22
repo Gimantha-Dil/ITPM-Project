@@ -236,7 +236,7 @@ exports.verifyEnrollment = async (req, res) => {
       await Notification.create({
         recipient: enrollment.student,
         type: 'payment_verified',
-        title: 'Enrollment Verified! ✅',
+        title: 'Enrollment Verified! ',
         message: `Your enrollment for "${session.title}" has been verified.`,
         relatedSession: session._id
       });

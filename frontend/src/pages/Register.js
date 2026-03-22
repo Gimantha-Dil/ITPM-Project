@@ -20,13 +20,13 @@ const Register = () => {
   const DOMAIN = '@my.sliit.lk';
   const emailRegex = /^(it|eng|bus)\d+@my\.sliit\.lk$/i;
  
-  // ── Full Name: letters and spaces only ──────────────────────────────────
+  //  Full Name: letters and spaces only
   const handleNameChange = (e) => {
     const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, '');
     setFormData(prev => ({ ...prev, fullName: cleaned }));
   };
  
-  // ── Email: auto-append @my.sliit.lk, block special chars ────────────────
+  //  Email: auto-append @my.sliit.lk, block special chars 
   const handleEmailChange = (e) => {
     let val = e.target.value;
  
@@ -56,7 +56,7 @@ const Register = () => {
     }, 0);
   };
  
-  // ── Prevent cursor/edits inside domain part ──────────────────────────────
+  //  Prevent cursor/edits inside domain part 
   const handleEmailKeyDown = (e) => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -79,7 +79,7 @@ const Register = () => {
     }
   };
  
-  // ── If user clicks inside domain, move cursor back to prefix end ─────────
+  //  If user clicks inside domain, move cursor back to prefix end
   const handleEmailClick = () => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -90,19 +90,19 @@ const Register = () => {
     }
   };
  
-  // ── Phone: numbers only, max 10 digits ──────────────────────────────────
+  //Phone: numbers only, max 10 digits 
   const handlePhoneChange = (e) => {
     const cleaned = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
     setFormData(prev => ({ ...prev, phoneNumber: cleaned }));
   };
  
-  // ── Generic handler for password fields ─────────────────────────────────
+  //  Generic handler for password fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
  
-  // ── Password strength ────────────────────────────────────────────────────
+  // Password strength 
   const getPasswordStrength = (pass) => {
     if (!pass) return null;
     if (pass.length < 6) return { label: 'Too short', color: '#E24B4A', width: '15%' };
@@ -116,7 +116,7 @@ const Register = () => {
     return { label: 'Strong', color: '#1D9E75', width: '100%' };
   };
  
-  // ── Full validation ──────────────────────────────────────────────────────
+  //  Full validation 
   const validate = () => {
     const newErrors = {};
  
@@ -154,7 +154,7 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
  
-  // ── Submit ───────────────────────────────────────────────────────────────
+  //  Submit 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;

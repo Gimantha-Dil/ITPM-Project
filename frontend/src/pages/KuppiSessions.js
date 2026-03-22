@@ -89,7 +89,7 @@ const KuppiSessions = () => {
 
       {sessions.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📅</div>
+          <div className="empty-icon"></div>
           <h3>No sessions found</h3>
           <p>Be the first to create a kuppi session!</p>
         </div>
@@ -100,7 +100,7 @@ const KuppiSessions = () => {
             return (
               <div key={session._id} className="note-card" onClick={() => navigate(`/kuppi-sessions/${session._id}`)}>
                 <div className="note-card-header" style={{ background: 'linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%)' }}>
-                  📚
+                  
                 </div>
                 <div className="note-card-body">
                   <div className="note-card-title">{session.title}</div>
