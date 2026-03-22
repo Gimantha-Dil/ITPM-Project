@@ -143,8 +143,16 @@ const CreateSession = () => {
   // ── Generic handler ───────────────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    // If session type changed to A (Free), reset price to 0.00
+    if (name === 'sessionType' && value === 'A') {
+      setForm(prev => ({ ...prev, sessionType: value, price: '0.00' }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   };
+
+  // ── Is free session (Type A) ──────────────────────────────────────────────
+  const isFreeSession = form.sessionType === 'A';
  
   // ── Validate all fields ───────────────────────────────────────────────────
   const validate = () => {
@@ -279,19 +287,22 @@ const CreateSession = () => {
               />
 </div>
 <div className="form-group">
-<label>Price (Rs.)</label>
+<label>Price (Rs.) {isFreeSession && <span style={{ color: '#7c3aed', fontSize: '12px', fontWeight: 500 }}>— Free Session</span>}</label>
 <input
                 type="text"
                 inputMode="decimal"
                 name="price"
                 className={`form-input ${errors.price ? 'input-error' : ''}`}
-                value={form.price}
+                value={isFreeSession ? '0.00' : form.price}
                 onChange={handlePriceChange}
                 onKeyDown={handlePriceKeyDown}
                 onBlur={handlePriceBlur}
                 onFocus={handlePriceFocus}
                 placeholder="0.00"
+                disabled={isFreeSession}
+                style={isFreeSession ? { backgroundColor: '#f3f0ff', color: '#9ca3af', cursor: 'not-allowed' } : {}}
               />
+              {isFreeSession && <p style={{ fontSize: '12px', color: '#7c3aed', marginTop: 4 }}>Type A sessions are always free</p>}
               {errors.price && <p className="error-text">{errors.price}</p>}
 </div>
 </div>
