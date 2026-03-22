@@ -95,7 +95,7 @@
 <body>
 
 <div class="navbar">
-  <h1>🗄️ SLIIT Learning Platform — Live DB Viewer</h1>
+  <h1> SLIIT Learning Platform — Live DB Viewer</h1>
   <div class="status-badge">
     <div class="dot off" id="statusDot"></div>
     <span id="statusText">Connecting...</span>
@@ -105,56 +105,56 @@
 <div class="container">
   <div class="stats">
     <div class="stat-card stat-notes">
-      <div class="icon">📚</div>
+      <div class="icon"></div>
       <div class="value val-purple" id="totalNotes">0</div>
       <div class="label">Total Notes</div>
     </div>
     <div class="stat-card stat-sessions">
-      <div class="icon">🎓</div>
+      <div class="icon"></div>
       <div class="value val-blue" id="totalSessions">0</div>
       <div class="label">Total Sessions</div>
     </div>
     <div class="stat-card stat-users">
-      <div class="icon">👤</div>
+      <div class="icon"></div>
       <div class="value val-green" id="totalUsers">0</div>
       <div class="label">Total Users</div>
     </div>
     <div class="stat-card stat-changes">
-      <div class="icon">🔄</div>
+      <div class="icon"></div>
       <div class="value val-yellow" id="totalChanges">0</div>
       <div class="label">Live Changes</div>
     </div>
     <div class="stat-card stat-payments">
-      <div class="icon">💳</div>
+      <div class="icon"></div>
       <div class="value val-pink" id="totalPayments">0</div>
       <div class="label">My Payments</div>
     </div>
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('live', this)">🔴 Live Changes</button>
-    <button class="tab-btn" onclick="switchTab('notes', this)">📚 Notes</button>
-    <button class="tab-btn" onclick="switchTab('sessions', this)">🎓 Sessions</button>
-    <button class="tab-btn" onclick="switchTab('users', this)">👤 Users</button>
-    <button class="tab-btn" onclick="switchTab('payments', this)">💳 Payments</button>
+    <button class="tab-btn active" onclick="switchTab('live', this)"> Live Changes</button>
+    <button class="tab-btn" onclick="switchTab('notes', this)"> Notes</button>
+    <button class="tab-btn" onclick="switchTab('sessions', this)"> Sessions</button>
+    <button class="tab-btn" onclick="switchTab('users', this)"> Users</button>
+    <button class="tab-btn" onclick="switchTab('payments', this)"> Payments</button>
   </div>
 
   <!-- LIVE -->
   <div class="panel active" id="panel-live">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>🔴 Real-Time Change Log <span class="table-header-note">(MongoDB ෙකේ ඕනෑම වෙනසක් මෙතන පෙනෙනවා)</span></h2>
+        <h2> Real-Time Change Log <span class="table-header-note">(MongoDB)</span></h2>
         <div class="table-header-actions">
           <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
-          <button class="btn btn-clear btn-sm" onclick="clearLog()">🗑️ Clear</button>
+          <button class="btn btn-clear btn-sm" onclick="clearLog()"> Clear</button>
         </div>
       </div>
       <div class="log-wrap">
         <div class="log-box" id="logBox">
           <div class="log-empty">
-            <div class="emoji">👀</div>
+            <div class="emoji"></div>
             <p class="log-text-main">Watching MongoDB for changes...</p>
-            <p class="log-text-sub">Note/Session/User create, update, delete වෙනකොට මෙතන live ෙකේ දිස්වෙනවා</p>
+            <p class="log-text-sub">Note/Session/User create, update, delete live database</p>
           </div>
         </div>
       </div>
@@ -165,10 +165,10 @@
   <div class="panel" id="panel-notes">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>📚 Notes Collection</h2>
+        <h2> Notes Collection</h2>
         <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
       </div>
-      <div id="notesTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+      <div id="notesTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -176,10 +176,10 @@
   <div class="panel" id="panel-sessions">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>🎓 Kuppi Sessions Collection</h2>
+        <h2> Kuppi Sessions Collection</h2>
         <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
       </div>
-      <div id="sessionsTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+      <div id="sessionsTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -187,10 +187,10 @@
   <div class="panel" id="panel-users">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>👤 Users Collection</h2>
+        <h2> Users Collection</h2>
         <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
       </div>
-      <div id="usersTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+      <div id="usersTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -198,7 +198,7 @@
   <div class="panel" id="panel-payments">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>💳 Payment History</h2>
+        <h2>Payment History</h2>
         <button class="btn btn-refresh btn-sm" onclick="loadPayments()">⟳ Refresh</button>
       </div>
       <div class="pay-summary">
@@ -219,7 +219,7 @@
           <div class="pl">Total Spent</div>
         </div>
       </div>
-      <div id="paymentsTable"><div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div></div>
+      <div id="paymentsTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
     </div>
   </div>
 </div>
@@ -233,7 +233,7 @@ let notes = [], sessions = [], users = [], payments = [];
 let changeCount = 0, es = null;
 
 if (!token) {
-  token = prompt('⚠️ Login token paste කරන්න:\n(Postman ෙකේ login කරලා token copy කරන්න)') || '';
+  token = prompt(' Login token paste\n(Postman login token copy )') || '';
   if (token) localStorage.setItem('sliit_token', token);
 }
 
@@ -258,17 +258,17 @@ async function loadSnapshot() {
     const res = await fetch(`${API}/db-snapshot`, { headers });
     const data = await res.json();
     notes = data.notes || []; sessions = data.sessions || []; users = data.users || [];
-    renderAll(); toast('✅ MongoDB data loaded!');
-  } catch(e) { toast('❌ Backend connect කරන්න බෑ!', 'error'); }
+    renderAll(); toast('MongoDB data loaded!');
+  } catch(e) { toast(' Backend not connected!', 'error'); }
 }
 
 async function loadPayments() {
-  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div><p>Loading...</p></div>';
+  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Loading...</p></div>';
   try {
     const res = await fetch(`${API}/payments/history`, { headers });
     payments = await res.json();
-    renderPayments(); toast('✅ Payments loaded!');
-  } catch(e) { toast('❌ Payments load failed!', 'error'); }
+    renderPayments(); toast(' Payments loaded!');
+  } catch(e) { toast(' Payments load failed!', 'error'); }
 }
 
 function renderAll() {
@@ -280,7 +280,7 @@ function renderAll() {
 
 function renderNotes() {
   const el = document.getElementById('notesTable');
-  if (!notes.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">📚</div><p>Notes නෑ</p></div>'; return; }
+  if (!notes.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Notes නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Title</th><th>Category</th><th>Subject</th><th>Price</th><th>Seller</th><th>Views</th><th>Created</th></tr></thead>
   <tbody>${notes.map((n,i) => `<tr>
     <td>${i+1}</td><td><b>${n.title}</b></td>
@@ -308,12 +308,12 @@ function renderSessions() {
 
 function renderUsers() {
   const el = document.getElementById('usersTable');
-  if (!users.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">👤</div><p>Users නෑ</p></div>'; return; }
+  if (!users.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Users නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Joined</th></tr></thead>
   <tbody>${users.map((u,i) => `<tr>
     <td>${i+1}</td><td><b>${u.fullName}</b></td><td>${u.email}</td>
     <td><span class="badge ${u.role==='admin'?'badge-red':'badge-green'}">${u.role}</span></td>
-    <td>${u.bankName?'<span class="badge badge-green">✅ Added</span>':'<span class="badge badge-gray">❌ None</span>'}</td>
+    <td>${u.bankName?'<span class="badge badge-green"> Added</span>':'<span class="badge badge-gray"> None</span>'}</td>
     <td>${new Date(u.createdAt).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
@@ -328,14 +328,14 @@ function renderPayments() {
   document.getElementById('payPending').textContent  = pending;
   document.getElementById('payAmount').textContent   = 'LKR ' + total.toLocaleString();
   const el = document.getElementById('paymentsTable');
-  if (!payments.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">💳</div><p>Payments නෑ</p></div>'; return; }
+  if (!payments.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Payments නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Type</th><th>Item</th><th>Seller/Host</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
   <tbody>${payments.map((p,i) => `<tr>
     <td>${i+1}</td>
-    <td><span class="badge ${p.type==='note'?'badge-purple':'badge-blue'}">${p.type==='note'?'📚 Note':'🎓 Session'}</span></td>
+    <td><span class="badge ${p.type==='note'?'badge-purple':'badge-blue'}">${p.type==='note'?' Note':' Session'}</span></td>
     <td><b>${p.itemTitle||'-'}</b></td><td>${p.seller||'-'}</td>
     <td><span class="price-paid">LKR ${(p.amount||0).toLocaleString()}</span></td>
-    <td>${p.verified?'<span class="badge badge-green">✅ Verified</span>':'<span class="badge badge-yellow">⏳ Pending</span>'}</td>
+    <td>${p.verified?'<span class="badge badge-green"> Verified</span>':'<span class="badge badge-yellow"> Pending</span>'}</td>
     <td>${p.date?new Date(p.date).toLocaleDateString():'-'}</td>
   </tr>`).join('')}</tbody></table>`;
 }
@@ -374,8 +374,8 @@ function connectSSE() {
 
 function addLogItem(msg) {
   changeCount++; document.getElementById('totalChanges').textContent = changeCount;
-  const icons = { CREATE: '➕', UPDATE: '✏️', DELETE: '🗑️' };
-  const icon = icons[msg.operation] || '🔄';
+  const icons = { CREATE: '', UPDATE: '', DELETE: '' };
+  const icon = icons[msg.operation] || '';
   const docInfo = msg.document ? (msg.document.title||msg.document.fullName||String(msg.documentId)) : ('ID: '+String(msg.documentId));
   const item = document.createElement('div');
   item.className = `log-item ${msg.operation}`;
@@ -388,7 +388,7 @@ function addLogItem(msg) {
 }
 
 function clearLog() {
-  document.getElementById('logBox').innerHTML = '<div class="log-empty"><div class="emoji">👀</div><p class="log-text-main">Watching MongoDB for changes...</p></div>';
+  document.getElementById('logBox').innerHTML = '<div class="log-empty"><div class="emoji"></div><p class="log-text-main">Watching MongoDB for changes...</p></div>';
   changeCount = 0; document.getElementById('totalChanges').textContent = 0;
 }
 
