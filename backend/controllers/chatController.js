@@ -135,9 +135,6 @@ exports.getChatMessages = async (req, res) => {
   }
 };
 
-// ============================================================
-// AI Chatbot - Comprehensive with Sinhala + English support
-// ============================================================
 
 // Helper function - check if message matches any keyword
 function match(msg, keywords) {
@@ -153,34 +150,34 @@ exports.chatbot = async (req, res) => {
 
     // ---- GREETINGS ----
     if (match(msg, ['hello', 'hi', 'hey', 'howdy', 'good morning', 'good evening', 'ayubowan', 'හෙලෝ', 'ආයුබෝවන්', 'කොහොමද', 'kohomada'])) {
-      reply = `Hello! 👋 Welcome to SLIIT Learning Platform!
-ආයුබෝවන්! 🎓 SLIIT Learning Platform එකට සාදරයෙන් පිළිගනිමු!
+      reply = `Hello!  Welcome to SLIIT Learning Platform!
+ආයුබෝවන්!  SLIIT Learning Platform එකට සාදරයෙන් පිළිගනිමු!
 
 I can help you with:
-📚 Notes - upload, buy, download, bookmark
-💳 Payments - bank details, payment slips, verification
-🎓 Kuppi Sessions - create, enroll, MS Teams
-💬 Chat - message sellers/buyers
-📊 Analytics - earnings, downloads, ratings
-👤 Account - profile, bank details, password
+ Notes - upload, buy, download, bookmark
+ Payments - bank details, payment slips, verification
+ Kuppi Sessions - create, enroll, MS Teams
+ Chat - message sellers/buyers
+ Analytics - earnings, downloads, ratings
+ Account - profile, bank details, password
 
-ඕනෑම දෙයක් English හෝ Sinhala වලින් අහන්න! 🎯`;
+ඕනෑම දෙයක් English හෝ Sinhala වලින් අහන්න! `;
     }
 
-    // ======== 📚 NOTES ========
+    //  NOTES
 
     // Upload notes
     else if (match(msg, ['upload note', 'how to upload', 'how do i upload', 'sell note', 'create note', 'notes upload', 'notes දාන්නේ', 'notes දාන', 'upload කරන්නේ', 'අප්ලෝඩ්', 'notes sell', 'විකුණන'])) {
-      reply = `📝 How to Upload/Sell Notes:
+      reply = ` How to Upload/Sell Notes:
 Notes upload කරන්නේ මෙහෙමයි:
 
-1️⃣ First, add bank details in Profile → Bank Details
+1 First, add bank details in Profile → Bank Details
    පළමුව Profile එකේ Bank Details add කරන්න
 
-2️⃣ Go to Sidebar → SELLER → Create Note
+2 Go to Sidebar → SELLER → Create Note
    Sidebar එකේ SELLER section → Create Note click කරන්න
 
-3️⃣ Fill in the form:
+3 Fill in the form:
    • Title - Note එකේ නම
    • Description - විස්තරයක්
    • Category - IT / SE / CS / DS / Business / Engineering / Other
@@ -188,25 +185,25 @@ Notes upload කරන්නේ මෙහෙමයි:
    • Price - මිල (Free නම් 0 දාන්න)
    • Tags - keywords
 
-4️⃣ Upload your file (Max 10MB)
+4 Upload your file (Max 10MB)
    File එක upload කරන්න
 
-5️⃣ Click "Upload Note" ✅
+5 Click "Upload Note" 
    දැන් marketplace එකේ පේනවා!
 
-💡 Tip: Good title + description = more sales!`;
+ Tip: Good title + description = more sales!`;
     }
 
     // Set price
     else if (match(msg, ['set price', 'price set', 'මිල', 'price කරන', 'pricing', 'how much charge', 'charge', 'free note'])) {
-      reply = `💰 Setting Price for Notes:
+      reply = ` Setting Price for Notes:
 Notes වලට මිල දාන්නේ මෙහෙමයි:
 
 • Create Note form එකේ "Price (LKR)" field එකේ මිල දාන්න
 • FREE note එකක් නම් → 0 දාන්න
 • Paid note එකක් නම් → ඕනෑම amount එකක් (e.g., 100, 250, 500)
 
-💡 Tips:
+ Tips:
 - Check what others charge for similar notes
 - Free notes get more views but no income
 - Quality notes can be priced higher
@@ -215,155 +212,155 @@ Notes වලට මිල දාන්නේ මෙහෙමයි:
 
     // File types
     else if (match(msg, ['file type', 'what file', 'file format', 'format', 'allowed file', 'මොන file', 'කොයි type', 'what types can i upload'])) {
-      reply = `📁 Allowed File Types:
+      reply = ` Allowed File Types:
 Upload කරන්න පුළුවන් file types:
 
-📄 Documents:
+ Documents:
   • PDF (.pdf)
   • Word (.doc, .docx)
   • PowerPoint (.ppt, .pptx)
   • Excel (.xls, .xlsx)
   • Text (.txt)
 
-🖼️ Images:
+ Images:
   • JPEG (.jpg, .jpeg)
   • PNG (.png)
   • GIF (.gif)
 
-📏 Max file size: 10MB
+ Max file size: 10MB
 
-💡 Tip: PDF is the most popular format for notes!`;
+ Tip: PDF is the most popular format for notes!`;
     }
 
     // Download notes
     else if (match(msg, ['download note', 'how to download', 'download a purchased', 'download කරන', 'බාගන්න', 'ලබාගන්න', 'get note', 'access note'])) {
-      reply = `⬇️ How to Download Notes:
+      reply = ` How to Download Notes:
 Notes download කරන්නේ මෙහෙමයි:
 
-🆓 Free Notes:
+ Free Notes:
   → Note page එකේ "Download" button click කරන්න
   → ඕනෑම කෙනෙකුට download කරන්න පුළුවන්
 
-💰 Paid Notes:
+ Paid Notes:
   1. Note page එකට ගිහිං seller ගේ bank details බලන්න
   2. Bank transfer එකක් කරන්න
   3. Payment slip upload කරන්න
   4. Seller verify කරනකම් wait කරන්න
-  5. Verify උනාම "My Purchases" → Download ✅
+  5. Verify උනාම "My Purchases" → Download 
 
-📍 My Purchases page එකේ ඔයාගේ purchased notes ටිකම තියනවා`;
+ My Purchases page එකේ ඔයාගේ purchased notes ටිකම තියනවා`;
     }
 
     // Bookmark
     else if (match(msg, ['bookmark', 'save note', 'bookmark කරන', 'සේව්', 'save කරන', 'favorite', 'bookmarks බලන'])) {
-      reply = `🔖 How to Bookmark Notes:
+      reply = ` How to Bookmark Notes:
 Notes bookmark කරන්නේ මෙහෙමයි:
 
-📌 Add Bookmark:
-  → Note page එකේ "Bookmark" button click කරන්න
-  → ඒක save වෙනවා
+ Add Bookmark:
+   Note page එකේ "Bookmark" button click කරන්න
+   ඒක save වෙනවා
 
-📋 View Bookmarks:
-  → Sidebar → My Items → Bookmarks
-  → ඔයාගේ save කරපු notes ටිකම මෙතන තියනවා
+ View Bookmarks:
+   Sidebar → My Items → Bookmarks
+   ඔයාගේ save කරපු notes ටිකම මෙතන තියනවා
 
-🗑️ Remove Bookmark:
-  → Bookmarks page එකේ "Remove Bookmark" click කරන්න
+ Remove Bookmark:
+   Bookmarks page එකේ "Remove Bookmark" click කරන්න
 
-💡 Tip: Bookmark interesting notes to find them quickly later!`;
+ Tip: Bookmark interesting notes to find them quickly later!`;
     }
 
-    // ======== 💳 PAYMENTS ========
+    //  PAYMENTS 
 
     // How payment works
     else if (match(msg, ['how payment', 'how does payment', 'payment work', 'payment system', 'payment ක්‍රමය', 'ගෙවීම', 'pay කරන්නේ', 'payment කරන්නේ'])) {
-      reply = `💳 How Payment Works:
+      reply = ` How Payment Works:
 Payment system එක මෙහෙම වැඩ කරන්නේ:
 
-1️⃣ Buyer note/session එක බලනවා
-2️⃣ Seller ගේ bank details පේනවා page එකේ
-3️⃣ Buyer bank transfer එකක් කරනවා seller ගේ account එකට
-4️⃣ Buyer payment slip එක upload කරනවා platform එකේ
-5️⃣ Seller ට notification එකක් යනවා
-6️⃣ Seller payment slip බලලා verify කරනවා
-7️⃣ Buyer ට email + PDF receipt එකක් යනවා automatically
-8️⃣ දැන් buyer ට note download / session join කරන්න පුළුවන්! ✅
+1 Buyer note/session එක බලනවා
+2 Seller ගේ bank details පේනවා page එකේ
+3 Buyer bank transfer එකක් කරනවා seller ගේ account එකට
+4 Buyer payment slip එක upload කරනවා platform එකේ
+5 Seller ට notification එකක් යනවා
+6 Seller payment slip බලලා verify කරනවා
+7 Buyer ට email + PDF receipt එකක් යනවා automatically
+8 දැන් buyer ට note download / session join කරන්න පුළුවන්! 
 
-🏦 Direct bank transfer system - no middleman!`;
+ Direct bank transfer system - no middleman!`;
     }
 
     // Upload payment slip
     else if (match(msg, ['payment slip', 'slip upload', 'upload slip', 'slip එක', 'ස්ලිප්', 'slip දාන'])) {
-      reply = `🧾 How to Upload Payment Slip:
+      reply = ` How to Upload Payment Slip:
 Payment slip upload කරන්නේ මෙහෙමයි:
 
-1️⃣ Note/Session page එකට යන්න
-2️⃣ Seller ගේ bank details බලන්න
-3️⃣ Bank transfer කරන්න (online banking / branch)
-4️⃣ Transfer receipt / screenshot ගන්න
-5️⃣ "Upload Payment Slip" section එකේ file select කරන්න
-6️⃣ "Submit Purchase" click කරන්න
+1 Note/Session page එකට යන්න
+2 Seller ගේ bank details බලන්න
+3 Bank transfer කරන්න (online banking / branch)
+4 Transfer receipt / screenshot ගන්න
+5 "Upload Payment Slip" section එකේ file select කරන්න
+6 "Submit Purchase" click කරන්න
 
-📎 Allowed formats: JPG, PNG, GIF, WEBP, PDF
-📏 Max size: 5MB
+ Allowed formats: JPG, PNG, GIF, WEBP, PDF
+ Max size: 5MB
 
-💡 Tip: Clear, readable slip = faster verification!`;
+ Tip: Clear, readable slip = faster verification!`;
     }
 
     // Auto verification / verification time
     else if (match(msg, ['auto verif', 'how long', 'verification take', 'pending', 'pending කොච්චර', 'කොච්චර වෙලාවක්'])) {
-      reply = `⏱️ Verification Time & Auto Verification:
+      reply = ` Verification Time & Auto Verification:
 
-⏳ How long does verification take?
+ How long does verification take?
   • Seller/Host manually verify කරනවා
   • Usually few hours to 1 day
   • Depends on seller's availability
 
-🆓 Auto Verification:
+ Auto Verification:
   • FREE sessions (Type A) auto-verify වෙනවා instantly!
   • Slip upload කරන්න ඕනෑ නෑ free sessions වලට
-  • Enroll click කරාම verified! ✅
+  • Enroll click කරාම verified! 
 
-💰 Paid items:
+ Paid items:
   • Payment slip upload → wait for manual verification
   • Seller gets notification → checks slip → clicks Verify
 
-📊 Status meanings:
-  • ⏳ Pending = waiting for seller/host to verify
-  • ✅ Verified = download/join ready!
+ Status meanings:
+  •  Pending = waiting for seller/host to verify
+  •  Verified = download/join ready!
 
-💡 Tip: If taking too long, message the seller via chat!`;
+ Tip: If taking too long, message the seller via chat!`;
     }
 
     // Verify payments (general)
     else if (match(msg, ['how to verify', 'verify payment', 'verify කරන', 'verification', 'වෙරිෆයි', 'confirm payment'])) {
-      reply = `✅ Payment Verification:
+      reply = ` Payment Verification:
 Payment verify කරන්නේ මෙහෙමයි:
 
-👨‍💼 For Sellers (verify note payments):
+ For Sellers (verify note payments):
   1. Notification එකක් එනවා buyer purchase කරාම
   2. Sidebar → My Notes → "View Purchases"
   3. Payment slip check කරන්න ("View Slip")
-  4. "Verify" button click කරන්න ✅
+  4. "Verify" button click කරන්න 
   5. Buyer ට email + PDF receipt automatically යනවා
 
-👨‍🏫 For Hosts (verify session enrollments):
+ For Hosts (verify session enrollments):
   1. Sidebar → My Sessions → "View Enrollments"
   2. Student ගේ payment slip check කරන්න
-  3. "Verify" button click කරන්න ✅
+  3. "Verify" button click කරන්න 
 
-⚡ Bulk Verify:
+ Bulk Verify:
   • "Verify All Pending" button එකෙන් එකපාරටම verify කරන්න පුළුවන්!
 
-🆓 Free sessions auto-verify වෙනවා - slip ඕනෑ නෑ!`;
+ Free sessions auto-verify වෙනවා - slip ඕනෑ නෑ!`;
     }
 
     // Banks supported
     else if (match(msg, ['bank support', 'which bank', 'what bank', 'බැංකු', 'bank list', 'supported bank', 'banks are'])) {
-      reply = `🏦 Supported Banks (30+):
+      reply = ` Supported Banks (30+):
 Support කරන බැංකු:
 
-🏛️ Major Banks:
+ Major Banks:
   • Bank of Ceylon (BOC)
   • People's Bank
   • Commercial Bank of Ceylon
@@ -372,14 +369,14 @@ Support කරන බැංකු:
   • Seylan Bank
   • Nations Trust Bank (NTB)
 
-🏦 Other Banks:
+ Other Banks:
   • DFCC Bank
   • NDB (National Development Bank)
   • PABC (Pan Asia Banking Corporation)
   • Union Bank, Amana Bank, Cargills Bank
   • NSB (National Savings Bank)
 
-🌍 International Banks:
+ International Banks:
   • HSBC Sri Lanka
   • Standard Chartered Bank
   • Citibank Sri Lanka
@@ -390,133 +387,133 @@ Support කරන බැංකු:
 
     // Bank details (add/setup)
     else if (match(msg, ['bank detail', 'bank add', 'add bank', 'bank දාන', 'bank setup', 'bank එක', 'how to add bank'])) {
-      reply = `🏦 How to Add Bank Details:
+      reply = ` How to Add Bank Details:
 Bank details add කරන්නේ මෙහෙමයි:
 
-1️⃣ Profile page → Bank Details section
-2️⃣ "Add Bank Details" button click කරන්න
-3️⃣ Fill in:
-   • 🏦 Bank Name - dropdown එකෙන් select කරන්න (30+ banks)
-   • 🔢 Account Number - ඔයාගේ account number
-   • 📍 Branch - branch name
-   • 👤 Account Holder Name
+1 Profile page → Bank Details section
+2 "Add Bank Details" button click කරන්න
+3 Fill in:
+   •  Bank Name - dropdown එකෙන් select කරන්න (30+ banks)
+   •  Account Number - ඔයාගේ account number
+   •  Branch - branch name
+   •  Account Holder Name
 
-4️⃣ "Save Bank Details" click කරන්න ✅
+4 "Save Bank Details" click කරන්න 
 
-⚠️ Bank details add කළාම:
-  • Sidebar එකේ SELLER section unlock වෙනවා 🔓→🔑
+ Bank details add කළාම:
+  • Sidebar එකේ SELLER section unlock වෙනවා 
   • Notes sell කරන්න පුළුවන්
   • Sessions host කරන්න පුළුවන්
   • Buyers ට ඔයාගේ bank details පේනවා payment කරන්න
 
-💡 Registration වලදී bank details ඕනෑ නෑ - later add කරන්න!`;
+ Registration වලදී bank details ඕනෑ නෑ - later add කරන්න!`;
     }
 
-    // ======== 🎓 KUPPI SESSIONS ========
+    //  KUPPI SESSIONS 
 
     // Create session
     else if (match(msg, ['create session', 'create kuppi', 'host session', 'session හදන', 'session create', 'kuppi හදන', 'kuppi create', 'create a kuppi'])) {
-      reply = `📚 How to Create a Kuppi Session:
+      reply = ` How to Create a Kuppi Session:
 Kuppi session හදන්නේ මෙහෙමයි:
 
-1️⃣ Bank details add කරන්න (Profile → Bank Details)
-2️⃣ Sidebar → SELLER → Create Session
-3️⃣ Fill the form:
+1 Bank details add කරන්න (Profile → Bank Details)
+2 Sidebar → SELLER → Create Session
+3 Fill the form:
    • Title - Session name
    • Description - කරන දේ විස්තරය
    • Session Type:
-     🅰️ Type A = Free session
-     🅱️ Type B = Paid individual
-     🅲️ Type C = Paid group
-     🅳️ Type D = Premium
+      Type A = Free session
+      Type B = Paid individual
+      Type C = Paid group
+      Type D = Premium
    • Category & Subject
    • Price (Type A නම් 0)
    • MS Teams Link
    • Date, Time, Duration
    • Max Participants
 
-4️⃣ "Create Session" click කරන්න ✅
+4 "Create Session" click කරන්න 
 
-💡 Tip: MS Teams link එක add කරන්න - verified students ට පේනවා!`;
+ Tip: MS Teams link එක add කරන්න - verified students ට පේනවා!`;
     }
 
     // Enroll in session
     else if (match(msg, ['enroll', 'join session', 'session join', 'session එකට', 'enroll කරන', 'register session', 'attend session', 'enroll in a'])) {
-      reply = `🎓 How to Enroll in a Kuppi Session:
+      reply = ` How to Enroll in a Kuppi Session:
 Session එකකට join වෙන්නේ මෙහෙමයි:
 
-🆓 Free Sessions (Type A):
+ Free Sessions (Type A):
   1. Kuppi Sessions page → session click කරන්න
   2. "Enroll (Free)" button click කරන්න
-  3. Automatically verified! ✅
+  3. Automatically verified! 
   4. MS Teams link එක පේනවා
 
-💰 Paid Sessions (Type B/C/D):
+ Paid Sessions (Type B/C/D):
   1. Session page එකේ host ගේ bank details බලන්න
   2. Bank transfer කරන්න
   3. Payment slip upload කරන්න
   4. "Submit Enrollment" click කරන්න
   5. Host verify කරනකම් wait කරන්න
-  6. Verify උනාම MS Teams link එක unlock වෙනවා ✅
+  6. Verify උනාම MS Teams link එක unlock වෙනවා 
 
-📍 Check enrollment status: Session page එකේ පේනවා
-  • ⏳ Pending = waiting for host
-  • ✅ Verified = can join!`;
+ Check enrollment status: Session page එකේ පේනවා
+  •  Pending = waiting for host
+  •  Verified = can join!`;
     }
 
     // MS Teams link
     else if (match(msg, ['teams link', 'ms teams', 'team link', 'teams එක', 'zoom', 'meeting link', 'online class', 'get ms teams'])) {
-      reply = `🔗 MS Teams Link:
+      reply = ` MS Teams Link:
 MS Teams link ගැන:
 
-👨‍🏫 For Hosts (Session creators):
+ For Hosts (Session creators):
   • Create Session form එකේ "MS Teams Link" field එකේ paste කරන්න
   • MS Teams → New Meeting → Copy link
 
-👨‍🎓 For Students:
+ For Students:
   • Free sessions → Enroll කරාම link එක පේනවා
   • Paid sessions → Payment verify උනාම link එක unlock වෙනවා
   • Session page එකේ green box එකේ "Open MS Teams Link" click කරන්න
 
-⚠️ Important:
+ Important:
   • Link එක host + verified students ට විතරයි පේන්නේ
   • Pending students ට link එක hide වෙලා තියනවා`;
     }
 
     // Verify student payments (host)
     else if (match(msg, ['verify student', 'student payment', 'verify enrollment', 'student verify'])) {
-      reply = `✅ How to Verify Student Payments (For Hosts):
+      reply = ` How to Verify Student Payments (For Hosts):
 Student payments verify කරන්නේ මෙහෙමයි:
 
-1️⃣ Notification එකක් එනවා student enroll කරාම
-2️⃣ Sidebar → SELLER → My Sessions
-3️⃣ Session එක expand කරන්න ("View Enrollments")
-4️⃣ Student ගේ payment slip check කරන්න ("View Slip")
-5️⃣ "Verify" button click කරන්න ✅
+1 Notification එකක් එනවා student enroll කරාම
+2 Sidebar → SELLER → My Sessions
+3 Session එක expand කරන්න ("View Enrollments")
+4 Student ගේ payment slip check කරන්න ("View Slip")
+5 "Verify" button click කරන්න 
 
-🎉 After verify:
+ After verify:
   • Student ට email + PDF receipt යනවා
   • Student ට MS Teams link unlock වෙනවා
   • Student ට notification එකක් යනවා
 
-💡 Tip: "Verify All" button එකෙන් bulk verify කරන්න පුළුවන්!`;
+ Tip: "Verify All" button එකෙන් bulk verify කරන්න පුළුවන්!`;
     }
 
     // Excel report / export
     else if (match(msg, ['excel', 'report', 'export', 'generate report', 'generate excel', 'sales report', 'export කරන', 'රිපෝට්'])) {
-      reply = `📊 How to Generate Excel Report:
+      reply = ` How to Generate Excel Report:
 Sales report generate කරන්නේ මෙහෙමයි:
 
-1️⃣ Sidebar → SELLER → Analytics
-2️⃣ Click "Export Excel Report" button ⬇️
-3️⃣ .xlsx file එකක් download වෙනවා
+1 Sidebar → SELLER → Analytics
+2 Click "Export Excel Report" button 
+3 .xlsx file එකක් download වෙනවා
 
-📋 Report එකේ තියනවා:
-  • 📝 Notes Sales sheet - each note, purchases, revenue
-  • 📚 Session Sales sheet - each session, enrollments, revenue
-  • 📊 Summary sheet - total revenue, stats
+ Report එකේ තියනවා:
+  •  Notes Sales sheet - each note, purchases, revenue
+  •  Session Sales sheet - each session, enrollments, revenue
+  •  Summary sheet - total revenue, stats
 
-💡 Report එකෙන් ඔයාගේ:
+ Report එකෙන් ඔයාගේ:
   - Total revenue
   - Verified vs pending payments
   - Rating averages
@@ -524,214 +521,214 @@ Sales report generate කරන්නේ මෙහෙමයි:
   බලන්න පුළුවන්!`;
     }
 
-    // ======== 💬 CHAT ========
+    //  CHAT 
 
     // Chat with seller
     else if (match(msg, ['chat seller', 'chat with', 'message seller', 'contact seller', 'seller ට message', 'seller එක්ක', 'ask seller'])) {
-      reply = `💬 How to Chat with a Seller:
+      reply = ` How to Chat with a Seller:
 Seller කෙනෙක්ට message කරන්නේ මෙහෙමයි:
 
-1️⃣ Note page එකට යන්න
-2️⃣ "Ask Seller" button click කරන්න
-3️⃣ Chat window open වෙනවා
-4️⃣ Message type කරලා send කරන්න
+1 Note page එකට යන්න
+2 "Ask Seller" button click කරන්න
+3 Chat window open වෙනවා
+4 Message type කරලා send කරන්න
 
-📍 Or go to Sidebar → Tools → Messages
+ Or go to Sidebar → Tools → Messages
   → ඔයාගේ conversations ටිකම මෙතන තියනවා
 
-💡 Chat note/session එකට linked වෙලා තියනවා - seller ට context එක පේනවා!`;
+ Chat note/session එකට linked වෙලා තියනවා - seller ට context එක පේනවා!`;
     }
 
     // Send message
     else if (match(msg, ['send message', 'send a message', 'message කරන', 'message send', 'type message', 'reply'])) {
-      reply = `📨 How to Send Messages:
+      reply = ` How to Send Messages:
 Message send කරන්නේ මෙහෙමයි:
 
-1️⃣ Sidebar → Tools → Messages
-2️⃣ Chat list එකෙන් conversation select කරන්න
-3️⃣ Bottom එකේ text box එකේ message type කරන්න
-4️⃣ Send button (➤) click කරන්න
+1 Sidebar → Tools → Messages
+2 Chat list එකෙන් conversation select කරන්න
+3 Bottom එකේ text box එකේ message type කරන්න
+4 Send button (➤) click කරන්න
 
-📩 Other person ට notification එකක් යනවා!
+ Other person ට notification එකක් යනවා!
 
-💡 New chat start කරන්න:
-  → Note page → "Ask Seller" button use කරන්න`;
+ New chat start කරන්න:
+  Note page → "Ask Seller" button use කරන්න`;
     }
 
     // Unread messages
     else if (match(msg, ['unread', 'new message', 'message check', 'check unread', 'message බලන', 'notification message'])) {
-      reply = `🔔 How to Check Unread Messages:
+      reply = ` How to Check Unread Messages:
 Unread messages check කරන්නේ මෙහෙමයි:
 
-1️⃣ Top navbar එකේ 💬 message icon click කරන්න
-2️⃣ Or Sidebar → Tools → Messages
+1 Top navbar එකේ message icon click කරන්න
+2 Or Sidebar → Tools → Messages
 
-🔔 Notifications:
+ Notifications:
   • New message එකක් ආවොත් notification එකක් එනවා
-  • Top navbar එකේ 🔔 bell icon එකේ count එක පේනවා
+  • Top navbar එකේ bell icon එකේ count එක පේනවා
   • Click කරාම notification page එකට යනවා
 
-💡 Messages page එකේ conversations list එකේ last message preview එක පේනවා!`;
+ Messages page එකේ conversations list එකේ last message preview එක පේනවා!`;
     }
 
-    // ======== 📊 ANALYTICS ========
+    //  ANALYTICS 
 
     // View earnings
     else if (match(msg, ['earning', 'revenue', 'income', 'money', 'ආදායම', 'earnings බලන', 'how much earned', 'total revenue', 'view my earning'])) {
-      reply = `💰 How to View Your Earnings:
+      reply = ` How to View Your Earnings:
 Earnings check කරන්නේ මෙහෙමයි:
 
-1️⃣ Sidebar → SELLER → Analytics
-2️⃣ ඔයාට පේනවා:
-   • 💰 Total Revenue (notes + sessions)
-   • 📝 Notes Revenue
-   • 📚 Sessions Revenue
-   • ⏳ Pending Payments
+1 Sidebar → SELLER → Analytics
+2 ඔයාට පේනවා:
+   •  Total Revenue (notes + sessions)
+   •  Notes Revenue
+   •  Sessions Revenue
+   •  Pending Payments
 
-📊 Dashboard (Home page) එකේත් quick stats තියනවා:
+ Dashboard (Home page) එකේත් quick stats තියනවා:
    • Total revenue
    • Notes listed
    • Sessions created
 
-💡 "Export Excel Report" click කරාම detailed breakdown එකක් download කරන්න පුළුවන්!`;
+ "Export Excel Report" click කරාම detailed breakdown එකක් download කරන්න පුළුවන්!`;
     }
 
     // Download statistics
     else if (match(msg, ['download stat', 'download count', 'views', 'statistics', 'stats', 'බාගත', 'how many download', 'check download'])) {
-      reply = `📈 Download & View Statistics:
+      reply = ` Download & View Statistics:
 Statistics check කරන්නේ මෙහෙමයි:
 
-1️⃣ Sidebar → SELLER → Analytics page:
-   • 👁️ Total Views - ඔයාගේ notes බැලූ ගාන
-   • ⬇️ Total Downloads - download කළ ගාන
-   • 📊 Total Note Sales - verified purchases
-   • 👥 Session Enrollments
+1️ Sidebar → SELLER → Analytics page:
+   •  Total Views - ඔයාගේ notes බැලූ ගාන
+   •  Total Downloads - download කළ ගාන
+   •  Total Note Sales - verified purchases
+   •  Session Enrollments
 
-📍 Home Dashboard එකේත් overview එකක් තියනවා
+ Home Dashboard එකේත් overview එකක් තියනවා
 
-💡 More views = better title & description!`;
+ More views = better title & description!`;
     }
 
     // Ratings
     else if (match(msg, ['rating', 'review', 'feedback', 'star', 'stars', 'rate', 'ශ්‍රේණිගත', 'ratings බලන', 'my rating', 'see my rating'])) {
-      reply = `⭐ Ratings & Feedback:
+      reply = ` Ratings & Feedback:
 Ratings system ගැන:
 
-📝 Leave Feedback:
+ Leave Feedback:
   • Note purchase verify උනාම / Free note download කරාම
   • Session enroll verify උනාම
-  • Item page → Feedback section → Rate 1-5 ⭐ + comment
+  • Item page → Feedback section → Rate 1-5  + comment
 
-📊 View Your Ratings:
+ View Your Ratings:
   • Analytics page → Average Rating card එක
   • Each note/session page එකේ feedback section එකේ
 
-🔔 Seller ට notification එකක් යනවා new feedback ආවොත්!
+Seller ට notification එකක් යනවා new feedback ආවොත්!
 
-💡 Good ratings = more buyers trust you!`;
+Good ratings = more buyers trust you!`;
     }
 
-    // ======== 👤 ACCOUNT ========
+    //  ACCOUNT 
 
     // Update profile
     else if (match(msg, ['update profile', 'update my profile', 'edit profile', 'change name', 'profile update', 'profile change', 'profile එක'])) {
-      reply = `👤 How to Update Profile:
+      reply = ` How to Update Profile:
 Profile update කරන්නේ මෙහෙමයි:
 
-1️⃣ Top right → Click your name → Profile
+1 Top right → Click your name → Profile
    Or navbar dropdown → Profile
 
-2️⃣ Personal Information section:
+2 Personal Information section:
    • Full Name - change කරන්න පුළුවන්
    • Email - change කරන්න බෑ (SLIIT email)
    • Phone Number - update කරන්න පුළුවන්
 
-3️⃣ "Update Profile" click කරන්න ✅`;
+3 "Update Profile" click කරන්න `;
     }
 
     // Change password
     else if (match(msg, ['change password', 'password change', 'password update', 'new password', 'reset password', 'මුරපදය', 'password වෙනස්'])) {
-      reply = `🔒 How to Change Password:
+      reply = ` How to Change Password:
 Password change කරන්නේ මෙහෙමයි:
 
-1️⃣ Profile page එකට යන්න
-2️⃣ "Change Password" section scroll කරන්න
-3️⃣ Fill in:
+1 Profile page එකට යන්න
+2 "Change Password" section scroll කරන්න
+3 Fill in:
    • Current Password - දැන් තියන password
    • New Password - අලුත් password (min 6 characters)
    • Confirm New Password - නැවත type කරන්න
 
-4️⃣ "Change Password" click කරන්න ✅
+4 "Change Password" click කරන්න 
 
-⚠️ Password must be at least 6 characters!
-💡 Strong password use කරන්න - mix letters, numbers, symbols!`;
+ Password must be at least 6 characters!
+ Strong password use කරන්න - mix letters, numbers, symbols!`;
     }
 
     // Register
     else if (match(msg, ['register', 'sign up', 'create account', 'new account', 'registration', 'ලියාපදිංචි', 'account හදන', 'how to register'])) {
-      reply = `📋 How to Register:
+      reply = ` How to Register:
 Account හදන්නේ මෙහෙමයි:
 
-1️⃣ Login page → "Register" link click කරන්න
-2️⃣ Fill in:
+1 Login page → "Register" link click කරන්න
+2 Fill in:
    • Full Name - ඔයාගේ නම
-   • SLIIT Email - must end with @my.sliit.lk ⚠️
+   • SLIIT Email - must end with @my.sliit.lk 
    • Phone Number - mobile number
    • Password - min 6 characters
    • Confirm Password
 
-3️⃣ "Register" click කරන්න ✅
+3 "Register" click කරන්න 
 
-⚠️ Important:
+Important:
   • ONLY @my.sliit.lk emails allowed
   • Bank details ඕනෑ නෑ registration වලදී
   • Later add කරන්න පුළුවන් selling start කරන්න ඕනෑ වුනාම
 
-💡 Registration free! ඕනෑම SLIIT student කෙනෙකුට join වෙන්න පුළුවන්!`;
+ Registration free! ඕනෑම SLIIT student කෙනෙකුට join වෙන්න පුළුවන්!`;
     }
 
-    // ======== GENERAL HELP ========
+    //  GENERAL HELP
 
     else if (match(msg, ['help', 'support', 'what can you do', 'උදව්', 'help me', 'how to use', 'guide', 'tutorial'])) {
-      reply = `🤖 AI Helper - මට උදව් කරන්න පුළුවන් දේවල්:
+      reply = ` AI Helper - මට උදව් කරන්න පුළුවන් දේවල්:
 
-📚 Notes ගැන:
+ Notes ගැන:
   • "How do I upload notes?" - notes upload කරන හැටි
   • "How to set price?" - මිල දාන හැටි
   • "What file types can I upload?" - allowed files
   • "How to download?" - download කරන හැටි
   • "How to bookmark?" - bookmark කරන හැටි
 
-💳 Payment ගැන:
+  Payment ගැන:
   • "How does payment work?" - payment system
   • "How to upload payment slip?" - slip upload කරන හැටි
   • "How to verify payments?" - verification process
   • "How long does verification take?" - time & auto verify
   • "What banks are supported?" - supported banks
 
-🎓 Kuppi Sessions ගැන:
+ Kuppi Sessions ගැන:
   • "How to create a kuppi session?" - session හදන හැටි
   • "How to enroll in a session?" - join වෙන හැටි
   • "How to get MS Teams link?" - link ගැන
   • "How to verify student payments?" - student verify කරන හැටි
   • "How to generate Excel report?" - report generate කරන හැටි
 
-💬 Chat: "How to chat with a seller?" / "How to send a message?"
-📊 Analytics: "How to view my earnings?" / "Check download statistics"
-👤 Account: "How to add bank details?" / "Change password?" / "How to register?"
+ Chat: "How to chat with a seller?" / "How to send a message?"
+ Analytics: "How to view my earnings?" / "Check download statistics"
+ Account: "How to add bank details?" / "Change password?" / "How to register?"
 
-ඕනෑම දෙයක් Sinhala හෝ English වලින් අහන්න! 🎯`;
+ඕනෑම දෙයක් Sinhala හෝ English වලින් අහන්න! `;
     }
 
-    // ======== SINHALA CATCH-ALL PATTERNS ========
+    // SINHALA CATCH-ALL PATTERNS 
 
     else if (match(msg, ['notes ගැන', 'notes කියන්නේ', 'notes මොනවද'])) {
-      reply = `📚 Notes Marketplace ගැන:
+      reply = ` Notes Marketplace ගැන:
 
 SLIIT students ලට notes share කරන්න / sell කරන්න පුළුවන් platform එකක්!
 
-🆓 Free notes - ඕනෑම කෙනෙකුට download කරන්න පුළුවන්
-💰 Paid notes - bank transfer කරලා buy කරන්න පුළුවන්
+ Free notes - ඕනෑම කෙනෙකුට download කරන්න පුළුවන්
+ Paid notes - bank transfer කරලා buy කරන්න පුළුවන්
 
 Notes Marketplace → browse කරන්න
 Category, subject wise filter කරන්න පුළුවන්
@@ -741,43 +738,43 @@ Search bar එකෙන් search කරන්න පුළුවන්
     }
 
     else if (match(msg, ['kuppi කියන්නේ', 'kuppi මොනවද', 'session ගැන', 'kuppi ගැන'])) {
-      reply = `🎓 Kuppi Sessions ගැන:
+      reply = ` Kuppi Sessions ගැන:
 
 Students ලා organize කරන online study sessions!
 
 Session Types:
-🅰️ Type A = Free - ඕනෑම කෙනෙකුට join වෙන්න පුළුවන්
-🅱️ Type B = Paid Individual - individual tutoring
-🅲️ Type C = Paid Group - group study session
-🅳️ Type D = Premium - premium content
+ Type A = Free - ඕනෑම කෙනෙකුට join වෙන්න පුළුවන්
+ Type B = Paid Individual - individual tutoring
+ Type C = Paid Group - group study session
+ Type D = Premium - premium content
 
 MS Teams link එකෙන් online join වෙන්න පුළුවන්!
 "How to create session?" / "How to enroll?" කියලා details අහන්න!`;
     }
 
     else if (match(msg, ['thanks', 'thank you', 'ස්තුති', 'thanks a lot', 'nice', 'great', 'good', 'ok', 'okay'])) {
-      reply = `😊 You're welcome! ස්තුතියි!
+      reply = ` You're welcome! ස්තුතියි!
 
-ඕනෑම වෙලාවක අහන්න - I'm always here to help! 🤖
+ඕනෑම වෙලාවක අහන්න - I'm always here to help! 
 Feel free to ask anything else about the platform!`;
     }
 
-    // ======== DEFAULT ========
+    //DEFAULT 
 
     else {
-      reply = `🤔 I'm not sure about that. ඒක ගැන මට හරියටම තේරුනේ නෑ.
+      reply = ` I'm not sure about that. ඒක ගැන මට හරියටම තේරුනේ නෑ.
 
 Try asking about these topics / මේ ගැන අහලා බලන්න:
 
-📚 Notes: "How to upload notes?" / "How to download?"
-💳 Payment: "How does payment work?" / "What banks supported?"
-🎓 Sessions: "How to create kuppi session?" / "How to enroll?"
-💬 Chat: "How to message seller?"
-📊 Analytics: "How to view earnings?"
-👤 Account: "How to add bank details?" / "Change password?"
+ Notes: "How to upload notes?" / "How to download?"
+ Payment: "How does payment work?" / "What banks supported?"
+ Sessions: "How to create kuppi session?" / "How to enroll?"
+ Chat: "How to message seller?"
+ Analytics: "How to view earnings?"
+ Account: "How to add bank details?" / "Change password?"
 
 Or type "help" for full guide!
-"help" type කරන්න full guide එකට! 🎯`;
+"help" type කරන්න full guide එකට! `;
     }
 
     res.json({ reply });
