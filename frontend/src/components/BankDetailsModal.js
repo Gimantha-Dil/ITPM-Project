@@ -38,6 +38,34 @@ const BankDetailsModal = ({ onClose, onSaved, onSuccess, currentDetails }) => {
     }
   }, [user, currentDetails]);
 
+  // ── Account Number: numbers only ─────────────────────────────────────────
+  const handleAccountNumberChange = (e) => {
+    const cleaned = e.target.value.replace(/[^0-9]/g, '');
+    setFormData(prev => ({ ...prev, bankAccountNumber: cleaned }));
+  };
+
+  const blockNonNumeric = (e) => {
+    if (
+      !/[0-9]/.test(e.key) &&
+      !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  // ── Branch: letters, numbers and spaces only — no special chars ──────────
+  const handleBranchChange = (e) => {
+    const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    setFormData(prev => ({ ...prev, bankBranch: cleaned }));
+  };
+
+  // ── Account Holder Name: letters and spaces only ──────────────────────────
+  const handleHolderNameChange = (e) => {
+    const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    setFormData(prev => ({ ...prev, accountHolderName: cleaned }));
+  };
+
+  // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.bankName || !formData.bankAccountNumber || !formData.bankBranch || !formData.accountHolderName) {
@@ -69,12 +97,14 @@ const BankDetailsModal = ({ onClose, onSaved, onSuccess, currentDetails }) => {
         </p>
 
         <form onSubmit={handleSubmit}>
+
+          {/* Bank Name */}
           <div className="form-group">
             <label>Bank Name *</label>
             <select
               className="form-select"
               value={formData.bankName}
-              onChange={e => setFormData({...formData, bankName: e.target.value})}
+              onChange={e => setFormData({ ...formData, bankName: e.target.value })}
               required
             >
               <option value="">Select Bank</option>
@@ -84,37 +114,42 @@ const BankDetailsModal = ({ onClose, onSaved, onSuccess, currentDetails }) => {
             </select>
           </div>
 
+          {/* Account Number — numbers only */}
           <div className="form-group">
             <label>Account Number *</label>
             <input
               type="text"
+              inputMode="numeric"
               className="form-input"
               value={formData.bankAccountNumber}
-              onChange={e => setFormData({...formData, bankAccountNumber: e.target.value})}
+              onChange={handleAccountNumberChange}
+              onKeyDown={blockNonNumeric}
               placeholder="Enter account number"
               required
             />
           </div>
 
+          {/* Branch — letters, numbers, spaces only */}
           <div className="form-group">
-            <label>Branch *</label>
+            <label>Branch Name *</label>
             <input
               type="text"
               className="form-input"
               value={formData.bankBranch}
-              onChange={e => setFormData({...formData, bankBranch: e.target.value})}
+              onChange={handleBranchChange}
               placeholder="Enter branch name"
               required
             />
           </div>
 
+          {/* Account Holder Name — letters and spaces only */}
           <div className="form-group">
             <label>Account Holder Name *</label>
             <input
               type="text"
               className="form-input"
               value={formData.accountHolderName}
-              onChange={e => setFormData({...formData, accountHolderName: e.target.value})}
+              onChange={handleHolderNameChange}
               placeholder="Enter account holder name"
               required
             />
