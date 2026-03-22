@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  // Bank details - NOT required at registration, required for selling
   bankName: {
     type: String,
     default: ''
@@ -66,11 +65,10 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Hash password before save
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+// Hash password before save — no next(), use Promise style
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Compare password
@@ -83,11 +81,12 @@ userSchema.methods.hasBankDetails = function() {
   return !!(this.bankName && this.bankAccountNumber && this.bankBranch && this.accountHolderName);
 };
 
-// Remove password from JSON
-userSchema.methods.toJSON = function() {
-  const user = this.toObject();
-  delete user.password;
-  return user;
-};
+// Remove password from JSON output
+userSchema.set('toJSON', {
+  transform: function(doc, ret) {
+    delete ret.password;
+    return ret;
+  }
+});
 
 module.exports = mongoose.model('User', userSchema);
