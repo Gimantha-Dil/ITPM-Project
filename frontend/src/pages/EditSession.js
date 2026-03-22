@@ -162,7 +162,7 @@ const EditSession = () => {
 
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Saving...' : '✏️ Update Session'}
+              {loading ? 'Saving...' : ' Update Session'}
             </button>
             <button type="button" className="btn btn-secondary"
               onClick={() => navigate('/my-sessions')}>
