@@ -90,8 +90,25 @@ const CreateNote = () => {
             </div>
             <div className="form-group">
               <label>Subject *</label>
-              <input type="text" className="form-input" value={formData.subject}
-                onChange={e => setFormData({...formData, subject: e.target.value})} required placeholder="e.g. DSA" />
+              <input
+                type="text"
+                className="form-input"
+                value={formData.subject}
+                onChange={(e) => {
+                   const value = e.target.value;
+
+                // allow only letters, numbers and spaces (NO special characters)
+                  if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                    setFormData({ ...formData, subject: value });
+                 }
+               }}
+                 onKeyPress={(e) => {
+                   if (!/[A-Za-z0-9\s]/.test(e.key)) {
+                         e.preventDefault();
+                   }
+               }}
+                required
+               placeholder="e.g. DSA"/>
             </div>
           </div>
 
