@@ -45,7 +45,7 @@ const Bookmarks = () => {
 
       {bookmarks.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🔖</div>
+          <div className="empty-icon"></div>
           <h3>No bookmarks yet</h3>
           <p>Bookmark notes from the marketplace to find them quickly later!</p>
         </div>
@@ -54,7 +54,7 @@ const Bookmarks = () => {
           {bookmarks.map(note => (
             <div key={note._id} className="note-card">
               <div className="note-card-header" onClick={() => navigate(`/notes/${note._id}`)}>
-                📄
+                
               </div>
               <div className="note-card-body">
                 <div className="note-card-title" onClick={() => navigate(`/notes/${note._id}`)} style={{ cursor: 'pointer' }}>
