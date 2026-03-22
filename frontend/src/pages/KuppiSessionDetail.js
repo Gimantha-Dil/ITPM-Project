@@ -99,7 +99,7 @@ const KuppiSessionDetail = () => {
             <div style={{ fontSize: 28, fontWeight: 700, color: '#7c3aed' }}>
               {session.price === 0 ? 'Free' : `Rs. ${session.price}`}
             </div>
-            <div className="text-small text-muted">Rating: {avgRating} ⭐</div>
+            <div className="text-small text-muted">Rating: {avgRating} </div>
           </div>
         </div>
       </div>
@@ -177,7 +177,7 @@ const KuppiSessionDetail = () => {
           border: `2px solid ${myEnrollment.verified ? '#10b981' : '#f59e0b'}`
         }}>
           <h2 style={{ color: myEnrollment.verified ? '#059669' : '#d97706' }}>
-            {myEnrollment.verified ? '✅ Enrolled & Verified' : '⏳ Enrollment Pending Verification'}
+            {myEnrollment.verified ? ' Enrolled & Verified' : ' Enrollment Pending Verification'}
           </h2>
           <p>{myEnrollment.verified ? 'You have access to this session.' : 'The host will verify your payment soon.'}</p>
         </div>
