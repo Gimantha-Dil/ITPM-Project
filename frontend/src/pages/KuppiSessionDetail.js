@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { FiCalendar, FiClock, FiUsers, FiExternalLink, FiStar } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiUsers, FiExternalLink, } from 'react-icons/fi';
 
 const KuppiSessionDetail = () => {
   const { id } = useParams();
   const { api, user } = useAuth();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentSlip, setPaymentSlip] = useState(null);
