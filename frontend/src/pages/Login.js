@@ -15,7 +15,7 @@ const Login = () => {
   const DOMAIN = '@my.sliit.lk';
   const emailRegex = /^(it|eng|bus)\d+@my\.sliit\.lk$/i;
  
-  // ── Email: auto-append @my.sliit.lk, block special chars ────────────────
+  //  Email: auto-append @my.sliit.lk, block special chars
   const handleEmailChange = (e) => {
     let val = e.target.value;
  
@@ -45,7 +45,7 @@ const Login = () => {
     }, 0);
   };
  
-  // ── Prevent cursor/edits inside domain part ──────────────────────────────
+  // ── Prevent cursor/edits inside domain part
   const handleEmailKeyDown = (e) => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -68,7 +68,7 @@ const Login = () => {
     }
   };
  
-  // ── If user clicks inside domain, move cursor back ───────────────────────
+  //  If user clicks inside domain, move cursor back
   const handleEmailClick = () => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -79,7 +79,7 @@ const Login = () => {
     }
   };
  
-  // ── Validation ───────────────────────────────────────────────────────────
+  //  Validation
   const validate = () => {
     const newErrors = {};
  
@@ -99,7 +99,7 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
  
-  // ── Submit ───────────────────────────────────────────────────────────────
+  // ── Submit 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
