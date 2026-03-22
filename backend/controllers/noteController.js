@@ -372,7 +372,7 @@ exports.downloadNote = async (req, res) => {
 // Get my notes (seller)
 exports.getMyNotes = async (req, res) => {
   try {
-    const notes = await Note.find({ seller: req.userId })
+    const notes = await Note.find({ seller: req.userId, isActive: true })
       .populate('purchases.buyer', 'fullName email')
       .sort({ createdAt: -1 });
 
