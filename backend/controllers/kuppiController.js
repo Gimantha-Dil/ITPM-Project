@@ -69,11 +69,14 @@ exports.getSessions = async (req, res) => {
     else if (sortBy === 'newest') sortOption = { createdAt: -1 };
 
     const total = await KuppiSession.countDocuments(query);
-    const sessions = await KuppiSession.find(query)
+    const sessionsRaw = await KuppiSession.find(query)
       .populate('host', 'fullName email bankName bankAccountNumber bankBranch accountHolderName')
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
+
+    // Filter out sessions where host account was deleted
+    const sessions = sessionsRaw.filter(s => s.host !== null);
 
     res.json({
       sessions,
@@ -233,7 +236,7 @@ exports.verifyEnrollment = async (req, res) => {
       await Notification.create({
         recipient: enrollment.student,
         type: 'payment_verified',
-        title: 'Enrollment Verified! ',
+        title: 'Enrollment Verified! ✅',
         message: `Your enrollment for "${session.title}" has been verified.`,
         relatedSession: session._id
       });
@@ -249,7 +252,7 @@ exports.verifyEnrollment = async (req, res) => {
 // Get my sessions (host)
 exports.getMySessions = async (req, res) => {
   try {
-    const sessions = await KuppiSession.find({ host: req.userId })
+    const sessions = await KuppiSession.find({ host: req.userId, isActive: true })
       .populate('enrollments.student', 'fullName email')
       .sort({ createdAt: -1 });
 
