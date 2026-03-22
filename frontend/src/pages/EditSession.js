@@ -53,7 +53,7 @@ const EditSession = () => {
     setLoading(true);
     try {
       await api.put(`/kuppi/${id}`, form);
-      toast.success('Session update වුණා! ✅');
+      toast.success('Session update successfully!');
       navigate('/my-sessions');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Update failed');
@@ -67,7 +67,7 @@ const EditSession = () => {
   return (
     <div style={{ maxWidth: 700 }}>
       <div className="page-header">
-        <h1 className="page-title">✏️ Edit Session</h1>
+        <h1 className="page-title"> Edit Session</h1>
       </div>
 
       <div className="card">
