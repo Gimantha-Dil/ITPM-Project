@@ -45,8 +45,26 @@ const CreateNote = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Title *</label>
-            <input type="text" className="form-input" value={formData.title}
-              onChange={e => setFormData({...formData, title: e.target.value})} required placeholder="e.g. Data Structures Complete Notes" />
+            <input
+              type="text"
+              className="form-input"
+              value={formData.title}
+              onChange={(e) => {
+                 const value = e.target.value;
+
+                 // allow only letters and spaces
+                 if (/^[A-Za-z\s]*$/.test(value)) {
+                     setFormData({ ...formData, title: value });
+                 }
+             }}
+                 onKeyPress={(e) => {
+                    // block typing invalid keys
+                   if (!/[A-Za-z\s]/.test(e.key)) {
+                      e.preventDefault();
+                   }
+             }}
+             required
+             placeholder="e.g. Data Structures Complete Notes"/>
           </div>
 
           <div className="form-group">
