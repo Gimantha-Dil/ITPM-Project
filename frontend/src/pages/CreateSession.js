@@ -9,7 +9,7 @@ const CreateSession = () => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     title: '', description: '', sessionType: 'A', category: 'IT',
-    subject: '', price: 0, msTeamsLink: '', date: '', startTime: '',
+    subject: '', price: '0.00', msTeamsLink: '', date: '', startTime: '',
     duration: 60, maxParticipants: 50
   });
   const [errors, setErrors] = useState({});
@@ -38,30 +38,53 @@ const CreateSession = () => {
     setForm(prev => ({ ...prev, subject: cleaned }));
   };
  
-  // ── Price: block non-numeric key presses ─────────────────────────────────
+  // ── Price: numbers and one dot only ──────────────────────────────────────
   const handlePriceKeyDown = (e) => {
     if (
-      !/[0-9]/.test(e.key) &&
+      !/[0-9.]/.test(e.key) &&
       !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
     ) {
+      e.preventDefault();
+    }
+    // Block second dot
+    if (e.key === '.' && String(form.price).includes('.')) {
       e.preventDefault();
     }
   };
  
   const handlePriceChange = (e) => {
-    const cleaned = e.target.value.replace(/[^0-9]/g, '');
-    const val = cleaned === '' ? 0 : Math.max(0, parseInt(cleaned));
-    setForm(prev => ({ ...prev, price: val }));
+    let cleaned = e.target.value.replace(/[^0-9.]/g, '');
+    // Only one dot allowed
+    const parts = cleaned.split('.');
+    if (parts.length > 2) {
+      cleaned = parts[0] + '.' + parts[1];
+    }
+    // Max 2 decimal places while typing
+    if (parts.length === 2 && parts[1].length > 2) {
+      cleaned = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    setForm(prev => ({ ...prev, price: cleaned }));
   };
  
-  // ── MS Teams Link: only https://teams.microsoft.com/ URLs ────────────────
+  // Auto-format to 567.00 when field loses focus
+  const handlePriceBlur = () => {
+    const val = parseFloat(form.price) || 0;
+    setForm(prev => ({ ...prev, price: val.toFixed(2) }));
+  };
+ 
+  // Select all text when price field focused (easy to retype)
+  const handlePriceFocus = (e) => {
+    e.target.select();
+  };
+ 
+  // ── MS Teams Link ─────────────────────────────────────────────────────────
   const handleLinkChange = (e) => {
     setForm(prev => ({ ...prev, msTeamsLink: e.target.value }));
   };
  
   const validateLink = (url) => {
-    if (!url) return true; // optional field
-    return url.startsWith('https://teams.microsoft.com/') || url.startsWith('https://');
+    if (!url) return true;
+    return url.startsWith('https://') || url.startsWith('http://');
   };
  
   // ── Duration: numbers only, 1–480 mins ───────────────────────────────────
@@ -112,7 +135,7 @@ const CreateSession = () => {
     setForm(prev => ({ ...prev, maxParticipants: val }));
   };
  
-  // ── Date: block past dates via min attribute ──────────────────────────────
+  // ── Date: reset time when date changes ───────────────────────────────────
   const handleDateChange = (e) => {
     setForm(prev => ({ ...prev, date: e.target.value, startTime: '' }));
   };
@@ -147,7 +170,7 @@ const CreateSession = () => {
       newErrors.msTeamsLink = 'Enter a valid URL (https://...)';
     }
  
-    if (form.price < 0) {
+    if (parseFloat(form.price) < 0) {
       newErrors.price = 'Price cannot be negative';
     }
  
@@ -169,7 +192,10 @@ const CreateSession = () => {
     if (!validate()) return;
     setLoading(true);
     try {
-      await api.post('/kuppi', form);
+      await api.post('/kuppi', {
+        ...form,
+        price: parseFloat(form.price) || 0,
+      });
       toast.success('Session created successfully!');
       navigate('/my-sessions');
     } catch (err) {
@@ -180,18 +206,18 @@ const CreateSession = () => {
   };
  
   return (
-    <div style={{ maxWidth: 700 }}>
-      <div className="page-header">
-        <h1 className="page-title">Create Kuppi Session</h1>
-      </div>
+<div style={{ maxWidth: 700 }}>
+<div className="page-header">
+<h1 className="page-title">Create Kuppi Session</h1>
+</div>
  
       <div className="card">
-        <form onSubmit={handleSubmit} noValidate>
+<form onSubmit={handleSubmit} noValidate>
  
           {/* Session Title */}
-          <div className="form-group">
-            <label>Session Title *</label>
-            <input
+<div className="form-group">
+<label>Session Title *</label>
+<input
               type="text"
               name="title"
               className={`form-input ${errors.title ? 'input-error' : ''}`}
@@ -200,50 +226,50 @@ const CreateSession = () => {
               placeholder="e.g., Data Structures Revision"
             />
             {errors.title && <p className="error-text">{errors.title}</p>}
-          </div>
+</div>
  
           {/* Description */}
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
+<div className="form-group">
+<label>Description</label>
+<textarea
               name="description"
               className="form-textarea"
               value={form.description}
               onChange={handleChange}
               placeholder="Describe what will be covered..."
             />
-          </div>
+</div>
  
           {/* Session Type & Category */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div className="form-group">
-              <label>Session Type *</label>
-              <select name="sessionType" className="form-select" value={form.sessionType} onChange={handleChange}>
-                <option value="A">Type A - Free</option>
-                <option value="B">Type B - Paid Individual</option>
-                <option value="C">Type C - Paid Group</option>
-                <option value="D">Type D - Premium</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Category *</label>
-              <select name="category" className="form-select" value={form.category} onChange={handleChange}>
-                <option value="IT">IT</option>
-                <option value="SE">SE</option>
-                <option value="CS">CS</option>
-                <option value="DS">DS</option>
-                <option value="Business">Business</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+<div className="form-group">
+<label>Session Type *</label>
+<select name="sessionType" className="form-select" value={form.sessionType} onChange={handleChange}>
+<option value="A">Type A - Free</option>
+<option value="B">Type B - Paid Individual</option>
+<option value="C">Type C - Paid Group</option>
+<option value="D">Type D - Premium</option>
+</select>
+</div>
+<div className="form-group">
+<label>Category *</label>
+<select name="category" className="form-select" value={form.category} onChange={handleChange}>
+<option value="IT">IT</option>
+<option value="SE">SE</option>
+<option value="CS">CS</option>
+<option value="DS">DS</option>
+<option value="Business">Business</option>
+<option value="Engineering">Engineering</option>
+<option value="Other">Other</option>
+</select>
+</div>
+</div>
  
           {/* Subject & Price */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div className="form-group">
-              <label>Subject</label>
-              <input
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+<div className="form-group">
+<label>Subject</label>
+<input
                 type="text"
                 name="subject"
                 className="form-input"
@@ -251,27 +277,29 @@ const CreateSession = () => {
                 onChange={handleSubjectChange}
                 placeholder="e.g., DSA"
               />
-            </div>
-            <div className="form-group">
-              <label>Price (Rs.)</label>
-              <input
+</div>
+<div className="form-group">
+<label>Price (Rs.)</label>
+<input
                 type="text"
-                inputMode="numeric"
+                inputMode="decimal"
                 name="price"
                 className={`form-input ${errors.price ? 'input-error' : ''}`}
                 value={form.price}
                 onChange={handlePriceChange}
                 onKeyDown={handlePriceKeyDown}
-                min="0"
+                onBlur={handlePriceBlur}
+                onFocus={handlePriceFocus}
+                placeholder="0.00"
               />
               {errors.price && <p className="error-text">{errors.price}</p>}
-            </div>
-          </div>
+</div>
+</div>
  
           {/* MS Teams Link */}
-          <div className="form-group">
-            <label>MS Teams Link</label>
-            <input
+<div className="form-group">
+<label>MS Teams Link</label>
+<input
               type="text"
               name="msTeamsLink"
               className={`form-input ${errors.msTeamsLink ? 'input-error' : ''}`}
@@ -280,13 +308,13 @@ const CreateSession = () => {
               placeholder="https://teams.microsoft.com/..."
             />
             {errors.msTeamsLink && <p className="error-text">{errors.msTeamsLink}</p>}
-          </div>
+</div>
  
           {/* Date, Start Time, Duration */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-            <div className="form-group">
-              <label>Date *</label>
-              <input
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+<div className="form-group">
+<label>Date *</label>
+<input
                 type="date"
                 name="date"
                 className={`form-input ${errors.date ? 'input-error' : ''}`}
@@ -295,10 +323,10 @@ const CreateSession = () => {
                 min={todayStr}
               />
               {errors.date && <p className="error-text">{errors.date}</p>}
-            </div>
-            <div className="form-group">
-              <label>Start Time *</label>
-              <input
+</div>
+<div className="form-group">
+<label>Start Time *</label>
+<input
                 type="time"
                 name="startTime"
                 className={`form-input ${errors.startTime ? 'input-error' : ''}`}
@@ -307,10 +335,10 @@ const CreateSession = () => {
                 min={isToday ? getNowTime() : undefined}
               />
               {errors.startTime && <p className="error-text">{errors.startTime}</p>}
-            </div>
-            <div className="form-group">
-              <label>Duration (mins)</label>
-              <input
+</div>
+<div className="form-group">
+<label>Duration (mins)</label>
+<input
                 type="text"
                 inputMode="numeric"
                 name="duration"
@@ -321,13 +349,13 @@ const CreateSession = () => {
                 onBlur={handleDurationBlur}
               />
               {errors.duration && <p className="error-text">{errors.duration}</p>}
-            </div>
-          </div>
+</div>
+</div>
  
           {/* Max Participants */}
-          <div className="form-group">
-            <label>Max Participants</label>
-            <input
+<div className="form-group">
+<label>Max Participants</label>
+<input
               type="text"
               inputMode="numeric"
               name="maxParticipants"
@@ -338,14 +366,14 @@ const CreateSession = () => {
               onBlur={handleMaxBlur}
             />
             {errors.maxParticipants && <p className="error-text">{errors.maxParticipants}</p>}
-          </div>
+</div>
  
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
             {loading ? 'Creating...' : 'Create Session'}
-          </button>
-        </form>
-      </div>
-    </div>
+</button>
+</form>
+</div>
+</div>
   );
 };
  
