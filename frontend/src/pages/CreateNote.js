@@ -114,12 +114,42 @@ const CreateNote = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
-              <label>Price (LKR) *</label>
-              <input type="number" className="form-input" value={formData.price}
-                onChange={e => setFormData({...formData, price: e.target.value})} required min="0" placeholder="0 for free" />
+              <label>Price (Rs) *</label>
+             <input
+  type="text"
+  className="form-input"
+  value={formData.price}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    // allow numbers + decimal (max 2 places)
+    if (/^\d*\.?\d{0,2}$/.test(value)) {
+      setFormData({ ...formData, price: value });
+    }
+  }}
+  onKeyPress={(e) => {
+    // allow only digits and dot
+    if (!/[0-9.]/.test(e.key)) {
+      e.preventDefault();
+    }
+
+    // prevent multiple dots
+    if (e.key === "." && formData.price.includes(".")) {
+      e.preventDefault();
+    }
+  }}
+  onBlur={() => {
+    if (formData.price) {
+      const formatted = parseFloat(formData.price).toFixed(2);
+      setFormData({ ...formData, price: formatted });
+    }
+  }}
+  required
+  placeholder="0.00"
+/>
             </div>
             <div className="form-group">
-              <label>Tags (comma separated)</label>
+              <label>Tags </label>
               <input type="text" className="form-input" value={formData.tags}
                 onChange={e => setFormData({...formData, tags: e.target.value})} placeholder="e.g. exam, semester2" />
             </div>
