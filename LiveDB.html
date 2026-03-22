@@ -12,10 +12,9 @@
     .status-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
     .dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; animation: pulse 1.5s infinite; }
     .dot.off { background: #f87171; animation: none; }
-    .container { padding: 24px; max-width: 1300px; margin: 0 auto; }
+    .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
     .stats { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
     .stat-card { background: #fff; border-radius: 14px; padding: 18px 24px; flex: 1; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-    .stat-card .icon { font-size: 24px; margin-bottom: 6px; }
     .stat-card .value { font-size: 30px; font-weight: 800; }
     .stat-card .label { font-size: 12px; color: #6b7280; margin-top: 2px; }
     .stat-notes    { border: 2px solid #ede9fe; }
@@ -33,14 +32,14 @@
     .tab-btn.active { background: #7c3aed; color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
     .panel { display: none; }
     .panel.active { display: block; }
-    .table-wrap { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .table-wrap { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow-x: auto; }
     .table-header { padding: 16px 20px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; }
     .table-header h2 { font-size: 16px; font-weight: 700; }
     .table-header-note { font-size: 13px; color: #6b7280; font-weight: 400; }
     .table-header-actions { display: flex; gap: 8px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead tr { background: #f8faff; }
-    th { padding: 11px 14px; text-align: left; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; }
+    th { padding: 11px 14px; text-align: left; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
     td { padding: 11px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fafafa; }
@@ -68,7 +67,6 @@
     .log-wrap { padding: 16px; }
     .log-box { background: #0f172a; border-radius: 14px; padding: 16px; max-height: 480px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px; }
     .log-empty { text-align: center; padding: 40px; color: #475569; }
-    .log-empty .emoji { font-size: 40px; margin-bottom: 10px; }
     .log-text-main { color: #94a3b8; font-weight: 600; }
     .log-text-sub  { color: #475569; font-size: 12px; margin-top: 6px; }
     .log-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid; animation: fadeIn 0.3s ease; }
@@ -86,7 +84,6 @@
     .toast.success { background: #059669; }
     .toast.error   { background: #dc2626; }
     .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
-    .empty-state .emoji { font-size: 40px; margin-bottom: 10px; }
     @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
     @keyframes fadeIn  { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
     @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
@@ -105,27 +102,22 @@
 <div class="container">
   <div class="stats">
     <div class="stat-card stat-notes">
-      <div class="icon"></div>
       <div class="value val-purple" id="totalNotes">0</div>
       <div class="label">Total Notes</div>
     </div>
     <div class="stat-card stat-sessions">
-      <div class="icon"></div>
       <div class="value val-blue" id="totalSessions">0</div>
       <div class="label">Total Sessions</div>
     </div>
     <div class="stat-card stat-users">
-      <div class="icon"></div>
       <div class="value val-green" id="totalUsers">0</div>
       <div class="label">Total Users</div>
     </div>
     <div class="stat-card stat-changes">
-      <div class="icon"></div>
       <div class="value val-yellow" id="totalChanges">0</div>
       <div class="label">Live Changes</div>
     </div>
     <div class="stat-card stat-payments">
-      <div class="icon"></div>
       <div class="value val-pink" id="totalPayments">0</div>
       <div class="label">My Payments</div>
     </div>
@@ -143,7 +135,7 @@
   <div class="panel active" id="panel-live">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>Real-Time Change Log <span class="table-header-note">(MongoDB ෙකේ ඕනෑම වෙනසක් මෙතන පෙනෙනවා)</span></h2>
+        <h2>Real-Time Change Log <span class="table-header-note">(MongoDB changes)</span></h2>
         <div class="table-header-actions">
           <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">Refresh</button>
           <button class="btn btn-clear btn-sm" onclick="clearLog()">Clear</button>
@@ -152,9 +144,8 @@
       <div class="log-wrap">
         <div class="log-box" id="logBox">
           <div class="log-empty">
-            
             <p class="log-text-main">Watching MongoDB for changes...</p>
-            <p class="log-text-sub">Note/Session/User create, update, delete වෙනකොට මෙතන live ෙකේ දිස්වෙනවා</p>
+            <p class="log-text-sub">Note/Session/User create, update, delete</p>
           </div>
         </div>
       </div>
@@ -194,11 +185,11 @@
     </div>
   </div>
 
-  <!-- PAYMENTS -->
+  <!-- PAYMENTS — Bank Details Tab -->
   <div class="panel" id="panel-payments">
     <div class="table-wrap">
       <div class="table-header">
-        <h2>Payment History</h2>
+        <h2>Bank Details</h2>
         <button class="btn btn-refresh btn-sm" onclick="renderUsersInPayments()">Refresh</button>
       </div>
       <div class="pay-summary">
@@ -215,8 +206,8 @@
           <div class="pl">With Phone</div>
         </div>
         <div class="pay-card pay-amount">
-          <div class="pv val-pink" id="payAmount">LKR 0</div>
-          <div class="pl">All Users</div>
+          <div class="pv val-pink" id="payAmount">0</div>
+          <div class="pl">No Bank</div>
         </div>
       </div>
       <div id="paymentsTable"><div class="empty-state"><p>Loading...</p></div></div>
@@ -229,11 +220,11 @@
 <script>
 const API = 'http://localhost:5000/api';
 let token = localStorage.getItem('sliit_token') || '';
-let notes = [], sessions = [], users = [], payments = [];
+let notes = [], sessions = [], users = [];
 let changeCount = 0, es = null;
 
 if (!token) {
-  token = prompt('⚠️ Login token paste කරන්න:\n(Postman ෙකේ login කරලා token copy කරන්න)') || '';
+  token = prompt('Login token paste කරන්න (Postman login -> token copy)') || '';
   if (token) localStorage.setItem('sliit_token', token);
 }
 
@@ -262,15 +253,6 @@ async function loadSnapshot() {
   } catch(e) { toast('Backend connect failed!', 'error'); }
 }
 
-async function loadPayments() {
-  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><p>Loading...</p></div>';
-  try {
-    const res = await fetch(`${API}/payments/history`, { headers });
-    payments = await res.json();
-    renderPayments(); toast('Payments loaded!');
-  } catch(e) { toast('Payments load failed!', 'error'); }
-}
-
 function renderAll() {
   document.getElementById('totalNotes').textContent    = notes.length;
   document.getElementById('totalSessions').textContent = sessions.length;
@@ -287,7 +269,8 @@ function renderNotes() {
     <td><span class="badge badge-purple">${n.category}</span></td>
     <td>${n.subject||'-'}</td>
     <td>${n.price===0?'<span class="badge badge-green">Free</span>':'<span class="price-paid">LKR '+n.price+'</span>'}</td>
-    <td>${n.seller?.fullName||'-'}</td><td>${n.views||0}</td>
+    <td>${n.seller?.fullName||'-'}</td>
+    <td>${n.views||0}</td>
     <td>${new Date(n.createdAt).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
@@ -301,7 +284,8 @@ function renderSessions() {
     <td><span class="badge badge-blue">${s.category}</span></td>
     <td><span class="badge badge-purple">Type ${s.sessionType}</span></td>
     <td>${s.price===0?'<span class="badge badge-green">Free</span>':'<span class="price-paid">LKR '+s.price+'</span>'}</td>
-    <td>${s.host?.fullName||'-'}</td><td>${s.enrollments?.length||0}</td>
+    <td>${s.host?.fullName||'-'}</td>
+    <td>${s.enrollments?.length||0}</td>
     <td>${new Date(s.date).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
@@ -309,34 +293,29 @@ function renderSessions() {
 function renderUsers() {
   const el = document.getElementById('usersTable');
   if (!users.length) { el.innerHTML = '<div class="empty-state"><p>Users නෑ</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bank</th><th>Account No</th><th>Branch</th><th>Account Holder</th><th>Joined</th></tr></thead>
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bank Details</th><th>Joined</th></tr></thead>
   <tbody>${users.map((u,i) => `<tr>
     <td>${i+1}</td>
     <td><b>${u.fullName}</b></td>
     <td>${u.email}</td>
     <td>${u.phoneNumber||'-'}</td>
     <td><span class="badge ${u.role==='admin'?'badge-red':'badge-green'}">${u.role}</span></td>
-    <td>${u.bankName||'<span class="badge badge-gray">None</span>'}</td>
-    <td>${u.bankAccountNumber||'-'}</td>
-    <td>${u.bankBranch||'-'}</td>
-    <td>${u.accountHolderName||'-'}</td>
+    <td>${u.bankName?'<span class="badge badge-green">Added</span>':'<span class="badge badge-gray">None</span>'}</td>
     <td>${new Date(u.createdAt).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
 
-function renderPayments() {}
-
 function renderUsersInPayments() {
   const el = document.getElementById('paymentsTable');
-  // Update summary cards with user stats
   const total = users.length;
   const withBank = users.filter(u => u.bankName).length;
   const withPhone = users.filter(u => u.phoneNumber).length;
+  const noBank = users.filter(u => !u.bankName).length;
   document.getElementById('totalPayments').textContent = total;
   document.getElementById('payTotal').textContent = total;
   document.getElementById('payVerified').textContent = withBank;
   document.getElementById('payPending').textContent = withPhone;
-  document.getElementById('payAmount').textContent = total + ' Users';
+  document.getElementById('payAmount').textContent = noBank;
 
   if (!users.length) { el.innerHTML = '<div class="empty-state"><p>Users නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bank</th><th>Account No</th><th>Branch</th><th>Account Holder</th><th>Joined</th></tr></thead>
@@ -388,12 +367,12 @@ function connectSSE() {
 
 function addLogItem(msg) {
   changeCount++; document.getElementById('totalChanges').textContent = changeCount;
-  const icons = { CREATE: '+', UPDATE: 'EDIT', DELETE: 'DEL' };
-  const icon = icons[msg.operation] || '~';
+  const icons = { CREATE: 'CREATE', UPDATE: 'UPDATE', DELETE: 'DELETE' };
+  const icon = icons[msg.operation] || msg.operation;
   const docInfo = msg.document ? (msg.document.title||msg.document.fullName||String(msg.documentId)) : ('ID: '+String(msg.documentId));
   const item = document.createElement('div');
   item.className = `log-item ${msg.operation}`;
-  item.innerHTML = `<span class="op">${icon} ${msg.operation}</span><span class="col">${msg.collection.toUpperCase()}</span><span class="info">${docInfo}</span><span class="time">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
+  item.innerHTML = `<span class="op">${icon}</span><span class="col">${msg.collection.toUpperCase()}</span><span class="info">${docInfo}</span><span class="time">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
   const box = document.getElementById('logBox');
   const empty = box.querySelector('.log-empty');
   if (empty) empty.remove();
