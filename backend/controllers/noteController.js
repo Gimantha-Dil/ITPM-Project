@@ -80,11 +80,14 @@ exports.getNotes = async (req, res) => {
     else if (sortBy === 'rating') sortOption = { 'feedback.rating': -1 };
 
     const total = await Note.countDocuments(query);
-    const notes = await Note.find(query)
+    const notesRaw = await Note.find(query)
       .populate('seller', 'fullName email bankName bankAccountNumber bankBranch accountHolderName')
       .sort(sortOption)
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
+
+    // Filter out notes where seller account was deleted
+    const notes = notesRaw.filter(n => n.seller !== null);
 
     res.json({
       notes,
