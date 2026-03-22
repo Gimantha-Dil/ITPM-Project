@@ -95,7 +95,7 @@
 <body>
 
 <div class="navbar">
-  <h1> SLIIT Learning Platform — Live DB Viewer</h1>
+  <h1>SLIIT Learning Platform — Live DB Viewer</h1>
   <div class="status-badge">
     <div class="dot off" id="statusDot"></div>
     <span id="statusText">Connecting...</span>
@@ -132,29 +132,29 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('live', this)"> Live Changes</button>
-    <button class="tab-btn" onclick="switchTab('notes', this)"> Notes</button>
-    <button class="tab-btn" onclick="switchTab('sessions', this)"> Sessions</button>
-    <button class="tab-btn" onclick="switchTab('users', this)"> Users</button>
-    <button class="tab-btn" onclick="switchTab('payments', this)"> Payments</button>
+    <button class="tab-btn active" onclick="switchTab('live', this)">Live Changes</button>
+    <button class="tab-btn" onclick="switchTab('notes', this)">Notes</button>
+    <button class="tab-btn" onclick="switchTab('sessions', this)">Sessions</button>
+    <button class="tab-btn" onclick="switchTab('users', this)">Users</button>
+    <button class="tab-btn" onclick="switchTab('payments', this)">Payments</button>
   </div>
 
   <!-- LIVE -->
   <div class="panel active" id="panel-live">
     <div class="table-wrap">
       <div class="table-header">
-        <h2> Real-Time Change Log <span class="table-header-note">(MongoDB)</span></h2>
+        <h2>Real-Time Change Log <span class="table-header-note">(MongoDB ෙකේ ඕනෑම වෙනසක් මෙතන පෙනෙනවා)</span></h2>
         <div class="table-header-actions">
-          <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
-          <button class="btn btn-clear btn-sm" onclick="clearLog()"> Clear</button>
+          <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">Refresh</button>
+          <button class="btn btn-clear btn-sm" onclick="clearLog()">Clear</button>
         </div>
       </div>
       <div class="log-wrap">
         <div class="log-box" id="logBox">
           <div class="log-empty">
-            <div class="emoji"></div>
+            
             <p class="log-text-main">Watching MongoDB for changes...</p>
-            <p class="log-text-sub">Note/Session/User create, update, delete live database</p>
+            <p class="log-text-sub">Note/Session/User create, update, delete වෙනකොට මෙතන live ෙකේ දිස්වෙනවා</p>
           </div>
         </div>
       </div>
@@ -165,10 +165,10 @@
   <div class="panel" id="panel-notes">
     <div class="table-wrap">
       <div class="table-header">
-        <h2> Notes Collection</h2>
-        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+        <h2>Notes Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">Refresh</button>
       </div>
-      <div id="notesTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
+      <div id="notesTable"><div class="empty-state"><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -176,10 +176,10 @@
   <div class="panel" id="panel-sessions">
     <div class="table-wrap">
       <div class="table-header">
-        <h2> Kuppi Sessions Collection</h2>
-        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+        <h2>Kuppi Sessions Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">Refresh</button>
       </div>
-      <div id="sessionsTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
+      <div id="sessionsTable"><div class="empty-state"><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -187,10 +187,10 @@
   <div class="panel" id="panel-users">
     <div class="table-wrap">
       <div class="table-header">
-        <h2> Users Collection</h2>
-        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">⟳ Refresh</button>
+        <h2>Users Collection</h2>
+        <button class="btn btn-refresh btn-sm" onclick="loadSnapshot()">Refresh</button>
       </div>
-      <div id="usersTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
+      <div id="usersTable"><div class="empty-state"><p>Loading...</p></div></div>
     </div>
   </div>
 
@@ -199,27 +199,27 @@
     <div class="table-wrap">
       <div class="table-header">
         <h2>Payment History</h2>
-        <button class="btn btn-refresh btn-sm" onclick="loadPayments()">⟳ Refresh</button>
+        <button class="btn btn-refresh btn-sm" onclick="renderUsersInPayments()">Refresh</button>
       </div>
       <div class="pay-summary">
         <div class="pay-card pay-total">
           <div class="pv val-purple" id="payTotal">0</div>
-          <div class="pl">Total Payments</div>
+          <div class="pl">Total Users</div>
         </div>
         <div class="pay-card pay-verified">
           <div class="pv val-green" id="payVerified">0</div>
-          <div class="pl">Verified</div>
+          <div class="pl">With Bank</div>
         </div>
         <div class="pay-card pay-pending">
           <div class="pv val-yellow" id="payPending">0</div>
-          <div class="pl">Pending</div>
+          <div class="pl">With Phone</div>
         </div>
         <div class="pay-card pay-amount">
           <div class="pv val-pink" id="payAmount">LKR 0</div>
-          <div class="pl">Total Spent</div>
+          <div class="pl">All Users</div>
         </div>
       </div>
-      <div id="paymentsTable"><div class="empty-state"><div class="emoji"></div><p>Loading...</p></div></div>
+      <div id="paymentsTable"><div class="empty-state"><p>Loading...</p></div></div>
     </div>
   </div>
 </div>
@@ -233,7 +233,7 @@ let notes = [], sessions = [], users = [], payments = [];
 let changeCount = 0, es = null;
 
 if (!token) {
-  token = prompt(' Login token paste\n(Postman login token copy )') || '';
+  token = prompt('⚠️ Login token paste කරන්න:\n(Postman ෙකේ login කරලා token copy කරන්න)') || '';
   if (token) localStorage.setItem('sliit_token', token);
 }
 
@@ -250,7 +250,7 @@ function switchTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + tab).classList.add('active');
   btn.classList.add('active');
-  if (tab === 'payments') loadPayments();
+  if (tab === 'payments') renderUsersInPayments();
 }
 
 async function loadSnapshot() {
@@ -259,16 +259,16 @@ async function loadSnapshot() {
     const data = await res.json();
     notes = data.notes || []; sessions = data.sessions || []; users = data.users || [];
     renderAll(); toast('MongoDB data loaded!');
-  } catch(e) { toast(' Backend not connected!', 'error'); }
+  } catch(e) { toast('Backend connect failed!', 'error'); }
 }
 
 async function loadPayments() {
-  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Loading...</p></div>';
+  document.getElementById('paymentsTable').innerHTML = '<div class="empty-state"><p>Loading...</p></div>';
   try {
     const res = await fetch(`${API}/payments/history`, { headers });
     payments = await res.json();
-    renderPayments(); toast(' Payments loaded!');
-  } catch(e) { toast(' Payments load failed!', 'error'); }
+    renderPayments(); toast('Payments loaded!');
+  } catch(e) { toast('Payments load failed!', 'error'); }
 }
 
 function renderAll() {
@@ -280,7 +280,7 @@ function renderAll() {
 
 function renderNotes() {
   const el = document.getElementById('notesTable');
-  if (!notes.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Notes නෑ</p></div>'; return; }
+  if (!notes.length) { el.innerHTML = '<div class="empty-state"><p>Notes නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Title</th><th>Category</th><th>Subject</th><th>Price</th><th>Seller</th><th>Views</th><th>Created</th></tr></thead>
   <tbody>${notes.map((n,i) => `<tr>
     <td>${i+1}</td><td><b>${n.title}</b></td>
@@ -294,7 +294,7 @@ function renderNotes() {
 
 function renderSessions() {
   const el = document.getElementById('sessionsTable');
-  if (!sessions.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">🎓</div><p>Sessions නෑ</p></div>'; return; }
+  if (!sessions.length) { el.innerHTML = '<div class="empty-state"><p>Sessions නෑ</p></div>'; return; }
   el.innerHTML = `<table><thead><tr><th>#</th><th>Title</th><th>Category</th><th>Type</th><th>Price</th><th>Host</th><th>Enrolled</th><th>Date</th></tr></thead>
   <tbody>${sessions.map((s,i) => `<tr>
     <td>${i+1}</td><td><b>${s.title}</b></td>
@@ -308,35 +308,49 @@ function renderSessions() {
 
 function renderUsers() {
   const el = document.getElementById('usersTable');
-  if (!users.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Users නෑ</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Joined</th></tr></thead>
+  if (!users.length) { el.innerHTML = '<div class="empty-state"><p>Users නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bank</th><th>Account No</th><th>Branch</th><th>Account Holder</th><th>Joined</th></tr></thead>
   <tbody>${users.map((u,i) => `<tr>
-    <td>${i+1}</td><td><b>${u.fullName}</b></td><td>${u.email}</td>
+    <td>${i+1}</td>
+    <td><b>${u.fullName}</b></td>
+    <td>${u.email}</td>
+    <td>${u.phoneNumber||'-'}</td>
     <td><span class="badge ${u.role==='admin'?'badge-red':'badge-green'}">${u.role}</span></td>
-    <td>${u.bankName?'<span class="badge badge-green"> Added</span>':'<span class="badge badge-gray"> None</span>'}</td>
+    <td>${u.bankName||'<span class="badge badge-gray">None</span>'}</td>
+    <td>${u.bankAccountNumber||'-'}</td>
+    <td>${u.bankBranch||'-'}</td>
+    <td>${u.accountHolderName||'-'}</td>
     <td>${new Date(u.createdAt).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
 
-function renderPayments() {
-  document.getElementById('totalPayments').textContent = payments.length;
-  document.getElementById('payTotal').textContent      = payments.length;
-  const verified = payments.filter(p => p.verified).length;
-  const pending  = payments.filter(p => !p.verified).length;
-  const total    = payments.reduce((s,p) => s + (p.amount||0), 0);
-  document.getElementById('payVerified').textContent = verified;
-  document.getElementById('payPending').textContent  = pending;
-  document.getElementById('payAmount').textContent   = 'LKR ' + total.toLocaleString();
+function renderPayments() {}
+
+function renderUsersInPayments() {
   const el = document.getElementById('paymentsTable');
-  if (!payments.length) { el.innerHTML = '<div class="empty-state"><div class="emoji"></div><p>Payments නෑ</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>#</th><th>Type</th><th>Item</th><th>Seller/Host</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-  <tbody>${payments.map((p,i) => `<tr>
+  // Update summary cards with user stats
+  const total = users.length;
+  const withBank = users.filter(u => u.bankName).length;
+  const withPhone = users.filter(u => u.phoneNumber).length;
+  document.getElementById('totalPayments').textContent = total;
+  document.getElementById('payTotal').textContent = total;
+  document.getElementById('payVerified').textContent = withBank;
+  document.getElementById('payPending').textContent = withPhone;
+  document.getElementById('payAmount').textContent = total + ' Users';
+
+  if (!users.length) { el.innerHTML = '<div class="empty-state"><p>Users නෑ</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bank</th><th>Account No</th><th>Branch</th><th>Account Holder</th><th>Joined</th></tr></thead>
+  <tbody>${users.map((u,i) => `<tr>
     <td>${i+1}</td>
-    <td><span class="badge ${p.type==='note'?'badge-purple':'badge-blue'}">${p.type==='note'?' Note':' Session'}</span></td>
-    <td><b>${p.itemTitle||'-'}</b></td><td>${p.seller||'-'}</td>
-    <td><span class="price-paid">LKR ${(p.amount||0).toLocaleString()}</span></td>
-    <td>${p.verified?'<span class="badge badge-green"> Verified</span>':'<span class="badge badge-yellow"> Pending</span>'}</td>
-    <td>${p.date?new Date(p.date).toLocaleDateString():'-'}</td>
+    <td><b>${u.fullName}</b></td>
+    <td>${u.email}</td>
+    <td>${u.phoneNumber||'-'}</td>
+    <td><span class="badge ${u.role==='admin'?'badge-red':'badge-green'}">${u.role}</span></td>
+    <td>${u.bankName||'<span class="badge badge-gray">None</span>'}</td>
+    <td>${u.bankAccountNumber||'-'}</td>
+    <td>${u.bankBranch||'-'}</td>
+    <td>${u.accountHolderName||'-'}</td>
+    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
   </tr>`).join('')}</tbody></table>`;
 }
 
@@ -374,8 +388,8 @@ function connectSSE() {
 
 function addLogItem(msg) {
   changeCount++; document.getElementById('totalChanges').textContent = changeCount;
-  const icons = { CREATE: '', UPDATE: '', DELETE: '' };
-  const icon = icons[msg.operation] || '';
+  const icons = { CREATE: '+', UPDATE: 'EDIT', DELETE: 'DEL' };
+  const icon = icons[msg.operation] || '~';
   const docInfo = msg.document ? (msg.document.title||msg.document.fullName||String(msg.documentId)) : ('ID: '+String(msg.documentId));
   const item = document.createElement('div');
   item.className = `log-item ${msg.operation}`;
@@ -388,7 +402,7 @@ function addLogItem(msg) {
 }
 
 function clearLog() {
-  document.getElementById('logBox').innerHTML = '<div class="log-empty"><div class="emoji"></div><p class="log-text-main">Watching MongoDB for changes...</p></div>';
+  document.getElementById('logBox').innerHTML = '<div class="log-empty"><p class="log-text-main">Watching MongoDB for changes...</p></div>';
   changeCount = 0; document.getElementById('totalChanges').textContent = 0;
 }
 

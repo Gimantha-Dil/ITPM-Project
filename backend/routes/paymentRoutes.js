@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { auth } = require('../middleware/auth');
 const Note = require('../models/Note');
 const KuppiSession = require('../models/KuppiSession');
 
-// Get payment history — accepts token OR returns all if no token (for Live Viewer)
+// Get payment history — no auth required for Live Viewer admin use
 router.get('/history', async (req, res) => {
   try {
     let userId = null;
@@ -27,15 +26,18 @@ router.get('/history', async (req, res) => {
       // Notes purchases for this user
       const notes = await Note.find({ 'purchases.buyer': userId })
         .populate('seller', 'fullName')
-        .select('title price purchases');
+        .populate('purchases.buyer', 'fullName email')
+        .select('title price purchases seller');
 
       notePurchases = notes.map(note => {
-        const purchase = note.purchases.find(p => p.buyer.toString() === userId.toString());
+        const purchase = note.purchases.find(p => p.buyer?._id?.toString() === userId.toString());
         return {
           type: 'note',
           itemTitle: note.title,
           amount: note.price,
           seller: note.seller?.fullName,
+          buyerName: purchase?.buyer?.fullName,
+          buyerEmail: purchase?.buyer?.email,
           date: purchase?.purchaseDate,
           verified: purchase?.verified,
           receiptUrl: purchase?.receiptUrl
@@ -45,25 +47,29 @@ router.get('/history', async (req, res) => {
       // Session enrollments for this user
       const sessions = await KuppiSession.find({ 'enrollments.student': userId })
         .populate('host', 'fullName')
-        .select('title price enrollments');
+        .populate('enrollments.student', 'fullName email')
+        .select('title price enrollments host');
 
       sessionPayments = sessions.map(session => {
-        const enrollment = session.enrollments.find(e => e.student.toString() === userId.toString());
+        const enrollment = session.enrollments.find(e => e.student?._id?.toString() === userId.toString());
         return {
           type: 'session',
           itemTitle: session.title,
           amount: session.price,
           seller: session.host?.fullName,
+          buyerName: enrollment?.student?.fullName,
+          buyerEmail: enrollment?.student?.email,
           date: enrollment?.enrolledAt,
           verified: enrollment?.verified,
           receiptUrl: enrollment?.receiptUrl
         };
       });
     } else {
-      // No valid token — return all payments for Live Viewer admin use
+      // No valid token — return ALL payments for Live Viewer admin use
       const allNotes = await Note.find({ 'purchases.0': { $exists: true } })
         .populate('seller', 'fullName')
-        .select('title price purchases');
+        .populate('purchases.buyer', 'fullName email')
+        .select('title price purchases seller');
 
       allNotes.forEach(note => {
         note.purchases.forEach(purchase => {
@@ -72,6 +78,8 @@ router.get('/history', async (req, res) => {
             itemTitle: note.title,
             amount: note.price,
             seller: note.seller?.fullName,
+            buyerName: purchase?.buyer?.fullName || 'Unknown',
+            buyerEmail: purchase?.buyer?.email || '-',
             date: purchase?.purchaseDate,
             verified: purchase?.verified
           });
@@ -80,7 +88,8 @@ router.get('/history', async (req, res) => {
 
       const allSessions = await KuppiSession.find({ 'enrollments.0': { $exists: true } })
         .populate('host', 'fullName')
-        .select('title price enrollments');
+        .populate('enrollments.student', 'fullName email')
+        .select('title price enrollments host');
 
       allSessions.forEach(session => {
         session.enrollments.forEach(enrollment => {
@@ -89,6 +98,8 @@ router.get('/history', async (req, res) => {
             itemTitle: session.title,
             amount: session.price,
             seller: session.host?.fullName,
+            buyerName: enrollment?.student?.fullName || 'Unknown',
+            buyerEmail: enrollment?.student?.email || '-',
             date: enrollment?.enrolledAt,
             verified: enrollment?.verified
           });
