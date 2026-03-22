@@ -61,7 +61,7 @@ const MySessions = () => {
 
       {sessions.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📅</div>
+          <div className="empty-icon"></div>
           <h3>No sessions created yet</h3>
         </div>
       ) : (
@@ -150,7 +150,7 @@ const MySessions = () => {
                               </td>
                               <td>
                                 {enrollment.verified ? (
-                                  <span className="badge badge-verified">Verified ✅</span>
+                                  <span className="badge badge-verified">Verified </span>
                                 ) : (
                                   <span className="badge badge-pending">Pending</span>
                                 )}

@@ -34,7 +34,7 @@ const EditSession = () => {
           maxParticipants: s.maxParticipants || 50
         });
       } catch (err) {
-        toast.error('Session load කරන්න failed');
+        toast.error('failed to load session');
         navigate('/my-sessions');
       } finally {
         setFetching(false);
