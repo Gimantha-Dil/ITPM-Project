@@ -21,6 +21,9 @@ const CSS = `
 .tpm-ampm-btn{padding:6px 14px;border-radius:10px;border:1.5px solid #dadce0;
   font-size:14px;font-weight:600;cursor:pointer;background:#fff;color:#3c4043;transition:all 0.15s;}
 .tpm-ampm-btn.active{background:#e8f0fe;color:#1a73e8;border-color:#1a73e8;}
+.tpm-ampm-btn.disabled{opacity:0.35;cursor:not-allowed;pointer-events:none;}
+
+.tpm-past-warn{font-size:11px;color:#d93025;padding:0 20px 6px;font-weight:500;}
 
 .tpm-clock-wrap{position:relative;padding:8px 20px 16px;display:flex;justify-content:center;}
 .tpm-clock-svg{width:100%;max-width:280px;cursor:pointer;}
@@ -33,6 +36,7 @@ const CSS = `
 .tpm-footer-ok{padding:10px 24px;border:none;background:#1a73e8;
   color:#fff;font-size:15px;font-weight:700;cursor:pointer;border-radius:10px;}
 .tpm-footer-ok:hover{background:#1557b0;}
+.tpm-footer-ok.disabled{background:#b0c4f5;cursor:not-allowed;}
 `;
 
 function injectStyles() {
@@ -55,6 +59,19 @@ function parseInitial(value) {
   return { hour: h12, minute: m, ampm: ap };
 }
 
+// ── Convert 12h → total minutes from midnight ─────────────────────────────────
+function toTotalMins(hour, minute, ap) {
+  let h = hour % 12;
+  if (ap === 'PM') h += 12;
+  return h * 60 + minute;
+}
+
+// ── Current time total minutes ────────────────────────────────────────────────
+function nowTotalMins() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
 // ── Clock Face SVG ─────────────────────────────────────────────────────────────
 function ClockFace({ mode, hour, minute, onChange }) {
   const svgRef = useRef(null);
@@ -64,13 +81,11 @@ function ClockFace({ mode, hour, minute, onChange }) {
     ? [12,1,2,3,4,5,6,7,8,9,10,11]
     : [0,5,10,15,20,25,30,35,40,45,50,55];
 
-  const R = 120; // clock radius
   const CX = 140; const CY = 140;
-  const numR = 100; // numbers ring radius
+  const numR = 100;
 
-  const selectedVal = mode === 'hour' ? hour : minute;
   const selectedIndex = mode === 'hour'
-    ? numbers.indexOf(hour === 12 ? 12 : hour)
+    ? numbers.indexOf(hour === 0 ? 12 : hour)
     : numbers.indexOf(Math.round(minute / 5) * 5);
 
   const getAngle = (val) => {
@@ -130,33 +145,23 @@ function ClockFace({ mode, hour, minute, onChange }) {
       onMouseDown={(e) => { isDragging.current = true; handleInteract(e.clientX, e.clientY); }}
       onTouchStart={(e) => { isDragging.current = true; handleInteract(e.touches[0].clientX, e.touches[0].clientY); }}
     >
-      {/* Clock bg */}
-      <circle cx={CX} cy={CY} r={R} fill="#f1f3f4" />
-
-      {/* Hand */}
+      <circle cx={CX} cy={CY} r="120" fill="#f1f3f4" />
       <line x1={CX} y1={CY} x2={handX} y2={handY}
         stroke="#1a73e8" strokeWidth="2.5" strokeLinecap="round" />
       <circle cx={CX} cy={CY} r="5" fill="#1a73e8" />
       <circle cx={handX} cy={handY} r="20" fill="#1a73e8" opacity="0.15" />
       <circle cx={handX} cy={handY} r="18" fill="#1a73e8" />
-
-      {/* Numbers */}
       {numbers.map((num, i) => {
         const angle = (i / 12) * 2 * Math.PI - Math.PI / 2;
         const x = CX + Math.cos(angle) * numR;
         const y = CY + Math.sin(angle) * numR;
-        const isSelected = selectedIndex === i;
+        const isSel = selectedIndex === i;
         return (
-          <text
-            key={num}
-            x={x} y={y}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={isSelected ? "17" : "15"}
-            fontWeight={isSelected ? "700" : "500"}
-            fill={isSelected ? "#fff" : "#3c4043"}
-            style={{ userSelect: 'none', pointerEvents: 'none' }}
-          >
+          <text key={num} x={x} y={y}
+            textAnchor="middle" dominantBaseline="central"
+            fontSize={isSel ? "17" : "15"} fontWeight={isSel ? "700" : "500"}
+            fill={isSel ? "#fff" : "#3c4043"}
+            style={{ userSelect: 'none', pointerEvents: 'none' }}>
             {mode === 'minute' ? String(num).padStart(2, '0') : num}
           </text>
         );
@@ -166,23 +171,43 @@ function ClockFace({ mode, hour, minute, onChange }) {
 }
 
 // ── Main Modal ────────────────────────────────────────────────────────────────
-export default function TimePickerModal({ value, onConfirm, onCancel }) {
+export default function TimePickerModal({ value, onConfirm, onCancel, isToday = false }) {
   injectStyles();
   const init = parseInitial(value);
   const [hour, setHour] = useState(init.hour);
   const [minute, setMinute] = useState(init.minute);
   const [ampm, setAmpm] = useState(init.ampm);
-  const [mode, setMode] = useState('hour'); // 'hour' | 'minute'
+  const [mode, setMode] = useState('hour');
 
-  const handleHourChange = (val) => {
-    setHour(val === 0 ? 12 : val);
-  };
+  // ── Live past-time checks (only when isToday) ────────────────────────────
+  const nowMins = nowTotalMins();
 
-  const handleMinuteChange = (val) => {
-    setMinute(val);
+  const isAmPast  = isToday && toTotalMins(hour, minute, 'AM') <= nowMins;
+  const isPmPast  = isToday && toTotalMins(hour, minute, 'PM') <= nowMins;
+  const isCurrentPast = isToday && toTotalMins(hour, minute, ampm) <= nowMins;
+
+  // Auto-switch ampm if currently selected period is past
+  useEffect(() => {
+    if (!isToday) return;
+    if (toTotalMins(hour, minute, ampm) <= nowMins) {
+      // Try switching to the other period
+      const other = ampm === 'AM' ? 'PM' : 'AM';
+      if (toTotalMins(hour, minute, other) > nowMins) {
+        setAmpm(other);
+      }
+    }
+  }, [hour, minute]);
+
+  const handleHourChange = (val) => setHour(val === 0 ? 12 : val);
+  const handleMinuteChange = (val) => setMinute(val);
+
+  const handleAmpmClick = (ap) => {
+    if (isToday && toTotalMins(hour, minute, ap) <= nowMins) return; // block past
+    setAmpm(ap);
   };
 
   const handleDone = () => {
+    if (isCurrentPast) return; // block OK if past
     const h = String(hour).padStart(2, '0');
     const m = String(minute).padStart(2, '0');
     onConfirm(`${h}:${m} ${ampm}`);
@@ -194,34 +219,37 @@ export default function TimePickerModal({ value, onConfirm, onCancel }) {
 
         <div className="tpm-top">Select time</div>
 
-        {/* Time display */}
         <div className="tpm-display">
-          <div
-            className={`tpm-seg ${mode === 'hour' ? 'active' : 'inactive'}`}
-            onClick={() => setMode('hour')}
-          >
+          <div className={`tpm-seg ${mode === 'hour' ? 'active' : 'inactive'}`}
+            onClick={() => setMode('hour')}>
             {String(hour).padStart(2, '0')}
           </div>
           <div className="tpm-colon">:</div>
-          <div
-            className={`tpm-seg ${mode === 'minute' ? 'active' : 'inactive'}`}
-            onClick={() => setMode('minute')}
-          >
+          <div className={`tpm-seg ${mode === 'minute' ? 'active' : 'inactive'}`}
+            onClick={() => setMode('minute')}>
             {String(minute).padStart(2, '0')}
           </div>
           <div className="tpm-ampm">
             <button
-              className={`tpm-ampm-btn ${ampm === 'AM' ? 'active' : ''}`}
-              onClick={() => setAmpm('AM')}
+              className={`tpm-ampm-btn ${ampm === 'AM' ? 'active' : ''} ${isToday && isAmPast ? 'disabled' : ''}`}
+              onClick={() => handleAmpmClick('AM')}
+              title={isToday && isAmPast ? 'This time has passed' : ''}
             >AM</button>
             <button
-              className={`tpm-ampm-btn ${ampm === 'PM' ? 'active' : ''}`}
-              onClick={() => setAmpm('PM')}
+              className={`tpm-ampm-btn ${ampm === 'PM' ? 'active' : ''} ${isToday && isPmPast ? 'disabled' : ''}`}
+              onClick={() => handleAmpmClick('PM')}
+              title={isToday && isPmPast ? 'This time has passed' : ''}
             >PM</button>
           </div>
         </div>
 
-        {/* Clock face */}
+        {/* Past time warning */}
+        {isToday && isCurrentPast && (
+          <div className="tpm-past-warn">
+            This time has already passed — please select a future time
+          </div>
+        )}
+
         <div className="tpm-clock-wrap">
           <ClockFace
             mode={mode}
@@ -234,10 +262,13 @@ export default function TimePickerModal({ value, onConfirm, onCancel }) {
           />
         </div>
 
-        {/* Footer */}
         <div className="tpm-footer">
           <button className="tpm-footer-cancel" onClick={onCancel}>Cancel</button>
-          <button className="tpm-footer-ok" onClick={handleDone}>OK</button>
+          <button
+            className={`tpm-footer-ok ${isToday && isCurrentPast ? 'disabled' : ''}`}
+            onClick={handleDone}
+            disabled={isToday && isCurrentPast}
+          >OK</button>
         </div>
 
       </div>

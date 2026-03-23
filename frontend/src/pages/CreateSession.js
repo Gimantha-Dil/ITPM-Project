@@ -17,15 +17,25 @@ const CreateSession = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  // ── Local date string (fixes UTC offset issue for Sri Lanka UTC+5:30) ─────
+  const getLocalDateStr = () => {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  const todayStr = getLocalDateStr();
   const isToday = form.date === todayStr;
 
+  // ── Current local time HH:MM ──────────────────────────────────────────────
   const getNowTime = () => {
     const now = new Date();
     return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   };
 
-  // Convert "HH:MM AM/PM" → "HH:MM" 24h for validation
+  // ── Convert "HH:MM AM/PM" → "HH:MM" 24h ──────────────────────────────────
   const to24h = (val) => {
     if (!val) return '';
     if (!val.includes(' ')) return val;
@@ -47,10 +57,8 @@ const CreateSession = () => {
   };
 
   const handlePriceKeyDown = (e) => {
-    if (
-      !/[0-9.]/.test(e.key) &&
-      !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
-    ) e.preventDefault();
+    if (!/[0-9.]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key))
+      e.preventDefault();
     if (e.key === '.' && String(form.price).includes('.')) e.preventDefault();
   };
 
@@ -118,19 +126,41 @@ const CreateSession = () => {
 
   const isFreeSession = form.sessionType === 'A';
 
+  // ── Validate ──────────────────────────────────────────────────────────────
   const validate = () => {
     const newErrors = {};
-    if (!form.title.trim()) newErrors.title = 'Session title is required';
-    if (!form.date) newErrors.date = 'Date is required';
-    else if (form.date < todayStr) newErrors.date = 'Cannot select a past date';
-    if (!form.startTime) newErrors.startTime = 'Start time is required';
-    else if (isToday && to24h(form.startTime) < getNowTime())
-      newErrors.startTime = 'Cannot select a past time for today';
+
+    if (!form.title.trim())
+      newErrors.title = 'Session title is required';
+
+    if (!form.date)
+      newErrors.date = 'Date is required';
+    else if (form.date < todayStr)
+      newErrors.date = 'Cannot select a past date';
+
+    if (!form.startTime) {
+      newErrors.startTime = 'Start time is required';
+    } else if (isToday) {
+      // Compare 24h strings — both are "HH:MM" so string compare works correctly
+      const selected24h = to24h(form.startTime);
+      const now24h = getNowTime();
+      if (selected24h <= now24h) {
+        newErrors.startTime = `Time must be after ${now24h.slice(0,2)}:${now24h.slice(3)} (current time)`;
+      }
+    }
+
     if (form.msTeamsLink && !validateLink(form.msTeamsLink))
       newErrors.msTeamsLink = 'Enter a valid URL (https://...)';
-    if (parseFloat(form.price) < 0) newErrors.price = 'Price cannot be negative';
-    if (!form.duration || form.duration < 1) newErrors.duration = 'Duration must be at least 1 minute';
-    if (!form.maxParticipants || form.maxParticipants < 1) newErrors.maxParticipants = 'Must have at least 1 participant';
+
+    if (parseFloat(form.price) < 0)
+      newErrors.price = 'Price cannot be negative';
+
+    if (!form.duration || form.duration < 1)
+      newErrors.duration = 'Duration must be at least 1 minute';
+
+    if (!form.maxParticipants || form.maxParticipants < 1)
+      newErrors.maxParticipants = 'Must have at least 1 participant';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -241,7 +271,6 @@ const CreateSession = () => {
               {errors.date && <p className="error-text">{errors.date}</p>}
             </div>
 
-            {/* ── iOS Time Picker trigger ── */}
             <div className="form-group">
               <label>Start Time *</label>
               <div
@@ -286,7 +315,7 @@ const CreateSession = () => {
       </div>
 
       {showTimePicker && (
-        <TimePickerModal
+        <TimePickerModal isToday={isToday}
           value={form.startTime}
           onConfirm={(val) => { setForm(prev => ({ ...prev, startTime: val })); setShowTimePicker(false); }}
           onCancel={() => setShowTimePicker(false)}
