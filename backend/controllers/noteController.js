@@ -29,7 +29,6 @@ exports.createNote = async (req, res) => {
       return res.status(400).json({ message: 'File is required' });
     }
 
-    // Save file to MongoDB
     const savedFile = await saveFileToDb(req.file, req.userId, 'note');
 
     const note = new Note({
@@ -86,7 +85,6 @@ exports.getNotes = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
-    // Filter out notes where seller account was deleted
     const notes = notesRaw.filter(n => n.seller !== null);
 
     res.json({
@@ -112,7 +110,6 @@ exports.getNoteById = async (req, res) => {
       return res.status(404).json({ message: 'Note not found' });
     }
 
-    // Increment views
     note.views += 1;
     await note.save();
 
@@ -145,7 +142,6 @@ exports.purchaseNote = async (req, res) => {
       return res.status(400).json({ message: 'You cannot purchase your own note' });
     }
 
-    // Save payment slip to MongoDB
     const savedSlip = await saveFileToDb(req.file, req.userId, 'payment-slip');
 
     note.purchases.push({
@@ -156,7 +152,6 @@ exports.purchaseNote = async (req, res) => {
 
     await note.save();
 
-    // Notify seller
     await Notification.create({
       recipient: note.seller._id,
       type: 'payment_received',
@@ -207,7 +202,6 @@ exports.verifyPayment = async (req, res) => {
 
     const buyer = await User.findById(purchase.buyer);
     try {
-      // Generate PDF receipt as buffer and save to DB
       const { buffer, filename } = await generateReceiptBuffer({
         buyerName: buyer.fullName,
         buyerEmail: buyer.email,
@@ -232,7 +226,6 @@ exports.verifyPayment = async (req, res) => {
 
       purchase.receiptUrl = `/api/files/${receiptFile._id}`;
 
-      // Send email with buffer attachment
       await sendPaymentVerifiedEmail(
         buyer.email,
         buyer.fullName,
@@ -346,7 +339,6 @@ exports.downloadNote = async (req, res) => {
       note.downloads += 1;
       await note.save();
 
-      // Extract file ID from URL: /api/files/<id>
       const fileId = note.fileUrl.split('/').pop();
       const file = await File.findById(fileId);
 
@@ -369,7 +361,7 @@ exports.downloadNote = async (req, res) => {
   }
 };
 
-// Get my notes (seller)
+// Get my notes (seller) — FIX: isActive:true filter added
 exports.getMyNotes = async (req, res) => {
   try {
     const notes = await Note.find({ seller: req.userId, isActive: true })
@@ -504,7 +496,7 @@ exports.getBookmarks = async (req, res) => {
   }
 };
 
-// Update note
+// Update note — FIX: findByIdAndUpdate used to avoid Mongoose full validation on save()
 exports.updateNote = async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -513,15 +505,28 @@ exports.updateNote = async (req, res) => {
     }
 
     const { title, description, category, subject, price, tags } = req.body;
-    if (title) note.title = title;
-    if (description) note.description = description;
-    if (category) note.category = category;
-    if (subject) note.subject = subject;
-    if (price !== undefined) note.price = parseFloat(price);
-    if (tags) note.tags = tags.split(',').map(t => t.trim());
 
-    await note.save();
-    res.json({ message: 'Note updated', note });
+    const updateFields = {};
+    if (title)               updateFields.title       = title;
+    if (description)         updateFields.description = description;
+    if (category)            updateFields.category    = category;
+    if (subject)             updateFields.subject     = subject;
+    if (price !== undefined) updateFields.price       = parseFloat(price);
+
+    // tags can arrive as array (new EditNote) or comma string (legacy)
+    if (tags !== undefined) {
+      updateFields.tags = Array.isArray(tags)
+        ? tags.map(t => t.trim()).filter(Boolean)
+        : tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
+
+    const updated = await Note.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
+
+    res.json({ message: 'Note updated', note: updated });
   } catch (error) {
     res.status(500).json({ message: 'Update failed', error: error.message });
   }

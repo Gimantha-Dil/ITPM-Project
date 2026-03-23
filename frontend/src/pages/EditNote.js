@@ -37,25 +37,21 @@ const EditNote = () => {
     fetchNote();
   }, [id]);
 
-  // ── Title: letters, numbers, spaces, basic punctuation only ──────────────
   const handleTitleChange = (e) => {
     const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s.,\-()']/g, '');
     setForm(prev => ({ ...prev, title: cleaned }));
   };
 
-  // ── Subject: letters, numbers, spaces only ───────────────────────────────
   const handleSubjectChange = (e) => {
     const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
     setForm(prev => ({ ...prev, subject: cleaned }));
   };
 
-  // ── Tags: letters, numbers, spaces, commas only ───────────────────────────
   const handleTagsChange = (e) => {
     const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s,]/g, '');
     setForm(prev => ({ ...prev, tags: cleaned }));
   };
 
-  // ── Price: numbers and one dot only ──────────────────────────────────────
   const handlePriceKeyDown = (e) => {
     if (
       !/[0-9.]/.test(e.key) &&
@@ -85,13 +81,11 @@ const EditNote = () => {
 
   const handlePriceFocus = (e) => e.target.select();
 
-  // ── Generic handler ───────────────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // ── Validate ──────────────────────────────────────────────────────────────
   const validate = () => {
     const newErrors = {};
 
@@ -132,7 +126,6 @@ const EditNote = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
