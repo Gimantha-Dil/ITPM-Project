@@ -40,7 +40,8 @@ const NoteDetail = () => {
 
   const isOwner = !!(userId && sellerId && String(userId) === String(sellerId));
   const isVerified = myPurchase?.verified;
-  const isPending = myPurchase && !myPurchase.verified;
+  const isRejected = myPurchase?.rejected && !myPurchase?.verified;
+  const isPending = myPurchase && !myPurchase.verified && !myPurchase.rejected;
   const canDownload = isOwner || isVerified || note?.price === 0;
 
   const handlePurchase = async () => {
@@ -59,6 +60,26 @@ const NoteDetail = () => {
       fetchNote();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Purchase failed');
+    }
+    setPurchasing(false);
+  };
+
+  const handleReupload = async () => {
+    if (!paymentSlip) {
+      toast.error('Please upload payment slip');
+      return;
+    }
+    setPurchasing(true);
+    try {
+      const formData = new FormData();
+      formData.append('paymentSlip', paymentSlip);
+      await api.post(`/notes/${id}/reupload-slip`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('Payment slip re-submitted! Waiting for seller verification.');
+      fetchNote();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Re-upload failed');
     }
     setPurchasing(false);
   };
@@ -185,6 +206,29 @@ const NoteDetail = () => {
             <span className="bank-detail-label">Account Holder</span>
             <span className="bank-detail-value">{note.seller.accountHolderName}</span>
           </div>
+        </div>
+      )}
+
+      {/* Rejected — Re-upload Section */}
+      {!isOwner && isRejected && (
+        <div className="payment-upload-section" style={{ borderColor: '#ef4444', background: '#fff5f5' }}>
+          <h3 style={{ marginBottom: '12px', color: '#dc2626' }}>❌ Payment Slip Rejected</h3>
+          <p className="text-small text-muted mb-2">
+            Your previous payment slip was rejected by the seller.<br/>
+            Please re-upload a valid payment slip to complete your purchase.
+          </p>
+          <div className="form-group">
+            <label>Re-upload Payment Slip</label>
+            <input
+              type="file"
+              className="form-input"
+              accept="image/*"
+              onChange={e => setPaymentSlip(e.target.files[0])}
+            />
+          </div>
+          <button className="btn btn-primary" onClick={handleReupload} disabled={purchasing || !paymentSlip}>
+            <FiUpload /> {purchasing ? 'Submitting...' : 'Re-submit Payment Slip'}
+          </button>
         </div>
       )}
 

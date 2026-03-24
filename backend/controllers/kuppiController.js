@@ -249,6 +249,79 @@ exports.verifyEnrollment = async (req, res) => {
   }
 };
 
+// Reject enrollment slip (host action)
+exports.rejectEnrollment = async (req, res) => {
+  try {
+    const { sessionId, enrollmentId } = req.params;
+
+    const session = await KuppiSession.findById(sessionId).populate('host', 'fullName email');
+    if (!session || session.host._id.toString() !== req.userId.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const enrollment = session.enrollments.id(enrollmentId);
+    if (!enrollment) return res.status(404).json({ message: 'Enrollment not found' });
+
+    enrollment.verified = false;
+    enrollment.rejected = true;
+    enrollment.rejectedAt = new Date();
+    enrollment.verifiedAt = undefined;
+    enrollment.receiptUrl = undefined;
+
+    await session.save();
+
+    await Notification.create({
+      recipient: enrollment.student,
+      type: 'payment_unverified',
+      title: 'Payment Slip Rejected ❌',
+      message: `Your payment slip for "${session.title}" was rejected. Please re-upload a valid slip.`,
+      relatedSession: session._id,
+      link: `/kuppi-sessions/${session._id}`
+    });
+
+    res.json({ message: 'Enrollment rejected. Student notified.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Reject failed', error: error.message });
+  }
+};
+
+// Re-upload enrollment slip (student action)
+exports.reuploadEnrollmentSlip = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'Payment slip is required' });
+
+    const session = await KuppiSession.findById(req.params.id).populate('host', 'fullName email');
+    if (!session) return res.status(404).json({ message: 'Session not found' });
+
+    const enrollment = session.enrollments.find(
+      e => e.student.toString() === req.userId.toString()
+    );
+
+    if (!enrollment) return res.status(404).json({ message: 'No enrollment found' });
+    if (enrollment.verified) return res.status(400).json({ message: 'Already verified' });
+
+    const savedSlip = await saveFileToDb(req.file, req.userId, 'payment-slip');
+    enrollment.paymentSlip = `/api/files/${savedSlip._id}`;
+    enrollment.rejected = false;
+    enrollment.rejectedAt = undefined;
+
+    await session.save();
+
+    await Notification.create({
+      recipient: session.host._id,
+      type: 'payment_received',
+      title: 'Payment Slip Re-submitted',
+      message: `${req.user.fullName} has re-uploaded a payment slip for "${session.title}". Please verify.`,
+      relatedSession: session._id,
+      link: '/my-sessions'
+    });
+
+    res.json({ message: 'Payment slip re-submitted successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Re-upload failed', error: error.message });
+  }
+};
+
 // Get my sessions (host)
 exports.getMySessions = async (req, res) => {
   try {

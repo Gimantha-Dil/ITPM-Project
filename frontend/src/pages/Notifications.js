@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { FiCheck, FiCheckCircle, FiTrash2, FiBell } from 'react-icons/fi';
+import { FiCheckCircle, FiTrash2 } from 'react-icons/fi';
 
 const Notifications = () => {
   const { api } = useAuth();
@@ -10,9 +10,7 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
+  useEffect(() => { fetchNotifications(); }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -51,18 +49,26 @@ const Notifications = () => {
 
   const handleClick = (notification) => {
     handleMarkRead(notification._id);
-    if (notification.link) navigate(notification.link);
+    if (notification.relatedSession) {
+      navigate(`/kuppi-sessions/${notification.relatedSession}`);
+    } else if (notification.relatedNote) {
+      navigate(`/notes/${notification.relatedNote}`);
+    } else if (notification.link) {
+      navigate(notification.link);
+    }
   };
 
-  const getIcon = (type) => {
-    const icons = {
-      payment_received: '',
-      payment_verified: '',
-      new_feedback: '',
-      enrollment: '',
-      new_message: ''
+  const getIconConfig = (type) => {
+    const configs = {
+      payment_received:   { bg: '#fef9c3', border: '#fbbf24', color: '#b45309' },
+      payment_verified:   { bg: '#dcfce7', border: '#16a34a', color: '#15803d' },
+      payment_unverified: { bg: '#fee2e2', border: '#dc2626', color: '#dc2626' },
+      new_feedback:       { bg: '#fef3c7', border: '#f59e0b', color: '#b45309' },
+      enrollment:         { bg: '#e0faff', border: '#0ab5d6', color: '#0ab5d6' },
+      new_message:        { bg: '#e0faff', border: '#63e5ff', color: '#0ab5d6' },
+      system:             { bg: '#f3f4f6', border: '#9ca3af', color: '#6b7280' },
     };
-    return icons[type] || '';
+    return configs[type] || { bg: '#f3f4f6', border: '#9ca3af', color: '#6b7280' };
   };
 
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
@@ -86,31 +92,48 @@ const Notifications = () => {
             <p>You're all caught up!</p>
           </div>
         ) : (
-          notifications.map(n => (
-            <div
-              key={n._id}
-              className={`notification-item ${!n.read ? 'unread' : ''}`}
-              onClick={() => handleClick(n)}
-            >
-              <div className="notification-icon" style={{ background: !n.read ? '#ede9fe' : '#f3f4f6' }}>
-                {getIcon(n.type)}
-              </div>
-              <div className="notification-content" style={{ flex: 1 }}>
-                <h4>{n.title}</h4>
-                <p>{n.message}</p>
-                <span className="notification-time">
-                  {new Date(n.createdAt).toLocaleString()}
-                </span>
-              </div>
-              <button
-                className="btn btn-sm"
-                onClick={(e) => { e.stopPropagation(); handleDelete(n._id); }}
-                style={{ background: 'none', color: '#9ca3af' }}
+          notifications.map(n => {
+            const cfg = getIconConfig(n.type);
+            return (
+              <div
+                key={n._id}
+                className={`notification-item ${!n.read ? 'unread' : ''}`}
+                onClick={() => handleClick(n)}
+                style={{ cursor: 'pointer' }}
               >
-                <FiTrash2 />
-              </button>
-            </div>
-          ))
+                <div
+                  style={{
+                    width: 12, height: 12, borderRadius: '50%',
+                    background: cfg.border,
+                    alignSelf: 'center', flexShrink: 0,
+                    marginRight: 4, marginLeft: 4,
+                    boxShadow: `0 0 6px ${cfg.border}80`
+                  }}
+                />
+                <div className="notification-content" style={{ flex: 1 }}>
+                  <h4>{n.title}</h4>
+                  <p>{n.message}</p>
+                  <span className="notification-time">
+                    {new Date(n.createdAt).toLocaleString()}
+                  </span>
+                </div>
+                {!n.read && (
+                  <div style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: 'var(--primary-deeper)',
+                    alignSelf: 'center', flexShrink: 0, marginRight: 8
+                  }} />
+                )}
+                <button
+                  className="btn btn-sm"
+                  onClick={(e) => { e.stopPropagation(); handleDelete(n._id); }}
+                  style={{ background: 'none', boxShadow: 'none', color: '#9ca3af' }}
+                >
+                  <FiTrash2 />
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
     </div>

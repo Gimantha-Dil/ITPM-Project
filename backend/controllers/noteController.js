@@ -29,6 +29,7 @@ exports.createNote = async (req, res) => {
       return res.status(400).json({ message: 'File is required' });
     }
 
+    // Save file to MongoDB
     const savedFile = await saveFileToDb(req.file, req.userId, 'note');
 
     const note = new Note({
@@ -85,6 +86,7 @@ exports.getNotes = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
+    // Filter out notes where seller account was deleted
     const notes = notesRaw.filter(n => n.seller !== null);
 
     res.json({
@@ -110,6 +112,7 @@ exports.getNoteById = async (req, res) => {
       return res.status(404).json({ message: 'Note not found' });
     }
 
+    // Increment views
     note.views += 1;
     await note.save();
 
@@ -142,6 +145,7 @@ exports.purchaseNote = async (req, res) => {
       return res.status(400).json({ message: 'You cannot purchase your own note' });
     }
 
+    // Save payment slip to MongoDB
     const savedSlip = await saveFileToDb(req.file, req.userId, 'payment-slip');
 
     note.purchases.push({
@@ -152,6 +156,7 @@ exports.purchaseNote = async (req, res) => {
 
     await note.save();
 
+    // Notify seller
     await Notification.create({
       recipient: note.seller._id,
       type: 'payment_received',
@@ -202,6 +207,7 @@ exports.verifyPayment = async (req, res) => {
 
     const buyer = await User.findById(purchase.buyer);
     try {
+      // Generate PDF receipt as buffer and save to DB
       const { buffer, filename } = await generateReceiptBuffer({
         buyerName: buyer.fullName,
         buyerEmail: buyer.email,
@@ -226,6 +232,7 @@ exports.verifyPayment = async (req, res) => {
 
       purchase.receiptUrl = `/api/files/${receiptFile._id}`;
 
+      // Send email with buffer attachment
       await sendPaymentVerifiedEmail(
         buyer.email,
         buyer.fullName,
@@ -251,6 +258,45 @@ exports.verifyPayment = async (req, res) => {
     res.json({ message: 'Payment verified successfully!' });
   } catch (error) {
     res.status(500).json({ message: 'Verification failed', error: error.message });
+  }
+};
+
+// Unverify payment (seller action) — asks buyer to re-upload slip
+exports.unverifyPayment = async (req, res) => {
+  try {
+    const { noteId, purchaseId } = req.params;
+
+    const note = await Note.findById(noteId).populate('seller', 'fullName email');
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+
+    if (note.seller._id.toString() !== req.userId.toString())
+      return res.status(403).json({ message: 'Only the seller can unverify payments' });
+
+    const purchase = note.purchases.id(purchaseId);
+    if (!purchase) return res.status(404).json({ message: 'Purchase not found' });
+
+    // Reset verification / reject slip
+    purchase.verified = false;
+    purchase.rejected = true;
+    purchase.rejectedAt = new Date();
+    purchase.verifiedAt = undefined;
+    purchase.receiptUrl = undefined;
+
+    await note.save();
+
+    // Notify buyer to re-upload slip
+    await Notification.create({
+      recipient: purchase.buyer,
+      type: 'payment_unverified',
+      title: 'Payment Rejected ❌',
+      message: `Your payment slip for "${note.title}" was rejected by the seller. Please re-upload a valid payment slip.`,
+      relatedNote: note._id,
+      link: `/notes/${note._id}`
+    });
+
+    res.json({ message: 'Payment unverified. Buyer notified to re-upload slip.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Unverify failed', error: error.message });
   }
 };
 
@@ -339,6 +385,7 @@ exports.downloadNote = async (req, res) => {
       note.downloads += 1;
       await note.save();
 
+      // Extract file ID from URL: /api/files/<id>
       const fileId = note.fileUrl.split('/').pop();
       const file = await File.findById(fileId);
 
@@ -361,7 +408,7 @@ exports.downloadNote = async (req, res) => {
   }
 };
 
-// Get my notes (seller) — FIX: isActive:true filter added
+// Get my notes (seller)
 exports.getMyNotes = async (req, res) => {
   try {
     const notes = await Note.find({ seller: req.userId, isActive: true })
@@ -496,7 +543,7 @@ exports.getBookmarks = async (req, res) => {
   }
 };
 
-// Update note — FIX: findByIdAndUpdate used to avoid Mongoose full validation on save()
+// Update note
 exports.updateNote = async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -507,13 +554,13 @@ exports.updateNote = async (req, res) => {
     const { title, description, category, subject, price, tags } = req.body;
 
     const updateFields = {};
-    if (title)               updateFields.title       = title;
-    if (description)         updateFields.description = description;
-    if (category)            updateFields.category    = category;
-    if (subject)             updateFields.subject     = subject;
-    if (price !== undefined) updateFields.price       = parseFloat(price);
+    if (title)                updateFields.title       = title;
+    if (description)          updateFields.description = description;
+    if (category)             updateFields.category    = category;
+    if (subject)              updateFields.subject     = subject;
+    if (price !== undefined)  updateFields.price       = parseFloat(price);
 
-    // tags can arrive as array (new EditNote) or comma string (legacy)
+    // tags can arrive as an array (from new EditNote) or a comma string (legacy)
     if (tags !== undefined) {
       updateFields.tags = Array.isArray(tags)
         ? tags.map(t => t.trim()).filter(Boolean)
@@ -523,12 +570,52 @@ exports.updateNote = async (req, res) => {
     const updated = await Note.findByIdAndUpdate(
       req.params.id,
       { $set: updateFields },
-      { new: true, runValidators: false }
+      { new: true, runValidators: false }   // runValidators:false → skip file-related required checks
     );
 
     res.json({ message: 'Note updated', note: updated });
   } catch (error) {
     res.status(500).json({ message: 'Update failed', error: error.message });
+  }
+};
+
+
+// Re-upload payment slip (buyer action after rejection)
+exports.reuploadPaymentSlip = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'Payment slip is required' });
+
+    const note = await Note.findById(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+
+    const purchase = note.purchases.find(
+      p => p.buyer.toString() === req.userId.toString()
+    );
+
+    if (!purchase) return res.status(404).json({ message: 'No purchase found' });
+    if (purchase.verified) return res.status(400).json({ message: 'Already verified' });
+
+    // Save new payment slip
+    const savedSlip = await saveFileToDb(req.file, req.userId, 'payment-slip');
+    purchase.paymentSlip = `/api/files/${savedSlip._id}`;
+    purchase.rejected = false;
+    purchase.rejectedAt = undefined;
+
+    await note.save();
+
+    // Notify seller
+    await Notification.create({
+      recipient: note.seller,
+      type: 'payment_received',
+      title: 'Payment Slip Re-submitted',
+      message: `${req.user.fullName} has re-uploaded a payment slip for "${note.title}". Please verify.`,
+      relatedNote: note._id,
+      link: '/my-notes'
+    });
+
+    res.json({ message: 'Payment slip re-submitted successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Re-upload failed', error: error.message });
   }
 };
 

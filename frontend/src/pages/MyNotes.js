@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiCheck, FiEye, FiTrash2, FiEdit2 } from 'react-icons/fi';
+import { FiCheck, FiEye, FiTrash2, FiEdit2, FiXCircle } from 'react-icons/fi';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -13,9 +13,7 @@ const MyNotes = () => {
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState(null);
 
-  useEffect(() => {
-    fetchMyNotes();
-  }, []);
+  useEffect(() => { fetchMyNotes(); }, []);
 
   const fetchMyNotes = async () => {
     try {
@@ -37,6 +35,17 @@ const MyNotes = () => {
     }
   };
 
+  const unverifyPayment = async (noteId, purchaseId) => {
+    if (!window.confirm('Unverify this payment? Buyer will be notified to re-upload the payment slip.')) return;
+    try {
+      await api.put(`/notes/${noteId}/unverify/${purchaseId}`);
+      toast.success('Payment unverified. Buyer notified to re-upload slip.');
+      fetchMyNotes();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Unverify failed');
+    }
+  };
+
   const bulkVerify = async (noteId, purchaseIds) => {
     try {
       await api.post('/notes/bulk-verify', { noteId, purchaseIds });
@@ -52,7 +61,6 @@ const MyNotes = () => {
     try {
       await api.delete(`/notes/${noteId}`);
       toast.success('Note deleted');
-      // ── Remove from state immediately ──
       setNotes(prev => prev.filter(n => n._id !== noteId));
     } catch (err) {
       toast.error('Delete failed');
@@ -93,7 +101,6 @@ const MyNotes = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {/* ── Edit Button ── */}
                   <button
                     className="btn btn-secondary btn-sm"
                     onClick={() => navigate(`/edit-note/${note._id}`)}
@@ -101,14 +108,12 @@ const MyNotes = () => {
                   >
                     <FiEdit2 /> Edit
                   </button>
-
                   <button
                     className="btn btn-secondary btn-sm"
                     onClick={() => setSelectedNote(selectedNote === note._id ? null : note._id)}
                   >
                     <FiEye /> {selectedNote === note._id ? 'Hide' : 'View'} Purchases
                   </button>
-
                   <button
                     className="btn btn-danger btn-sm"
                     onClick={() => deleteNote(note._id)}
@@ -161,19 +166,32 @@ const MyNotes = () => {
                                 <td>
                                   {purchase.verified ? (
                                     <span className="badge badge-verified">✅ Verified</span>
+                                  ) : purchase.rejected ? (
+                                    <span className="badge" style={{ background: '#fee2e2', color: '#dc2626' }}>❌ Rejected</span>
                                   ) : (
                                     <span className="badge badge-pending">⏳ Pending</span>
                                   )}
                                 </td>
                                 <td>
-                                  {!purchase.verified && (
-                                    <button
-                                      className="btn btn-success btn-sm"
-                                      onClick={() => verifyPayment(note._id, purchase._id)}
-                                    >
-                                      <FiCheck /> Verify
-                                    </button>
-                                  )}
+                                  <div className="flex gap-2">
+                                    {!purchase.verified && !purchase.rejected && (
+                                      <>
+                                        <button
+                                          className="btn btn-success btn-sm"
+                                          onClick={() => verifyPayment(note._id, purchase._id)}
+                                        >
+                                          <FiCheck /> Verify
+                                        </button>
+                                        <button
+                                          className="btn btn-danger btn-sm"
+                                          onClick={() => unverifyPayment(note._id, purchase._id)}
+                                          title="Reject slip — ask buyer to re-upload"
+                                        >
+                                          <FiXCircle /> Reject
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
                                 </td>
                               </tr>
                             ))}

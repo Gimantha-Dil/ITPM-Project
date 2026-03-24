@@ -27,6 +27,12 @@ router.post('/:id/enroll', auth, uploadPaymentSlip.single('paymentSlip'), kuppiC
 // Verify
 router.put('/:sessionId/verify/:enrollmentId', auth, kuppiController.verifyEnrollment);
 
+// Reject
+router.put('/:sessionId/reject/:enrollmentId', auth, kuppiController.rejectEnrollment);
+
+// Re-upload slip
+router.post('/:id/reupload-slip', auth, uploadPaymentSlip.single('paymentSlip'), kuppiController.reuploadEnrollmentSlip);
+
 // Feedback
 router.post('/:id/feedback', auth, kuppiController.addFeedback);
 
