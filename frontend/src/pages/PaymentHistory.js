@@ -59,7 +59,7 @@ const PaymentHistory = () => {
                   <tr key={idx}>
                     <td>
                       <span className="badge badge-type">
-                        {item.type === 'note' ? '📝 Note' : '📅 Session'}
+                        {item.type === 'note' ? 'Note' : 'Session'}
                       </span>
                     </td>
                     <td style={{ fontWeight: 500 }}>{item.itemTitle}</td>
