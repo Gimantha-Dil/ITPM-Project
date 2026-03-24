@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { FiSearch, FiStar, FiBookmark, FiEye } from 'react-icons/fi';
 
 const fileIcons = {
-  'application/pdf': '📄',
-  'application/msword': '📝',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '📝',
-  'application/vnd.ms-powerpoint': '📊',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation': '📊',
-  default: '📋'
+  'application/pdf': '',
+  'application/msword': '',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '',
+  'application/vnd.ms-powerpoint': '',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': '',
+  default: ''
 };
 
 const Notes = () => {
@@ -95,7 +95,7 @@ const Notes = () => {
         <div className="loading-screen"><div className="spinner"></div></div>
       ) : notes.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📚</div>
+          <div className="empty-icon"></div>
           <h3>No notes found</h3>
           <p>Try adjusting your search or filters</p>
         </div>
