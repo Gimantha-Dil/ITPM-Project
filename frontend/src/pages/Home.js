@@ -429,12 +429,14 @@ const Home = () => {
                   display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '18px 12px',
                   background: isActive ? cat.color : '#fff',
                   borderRadius: 12, border: `2px solid ${isActive ? cat.color : '#f3f4f6'}`,
-                  cursor: 'pointer', color: isActive ? '#fff' : '#1f2937', transition: 'all 0.2s',
+                  cursor: 'pointer', color: isActive ? '#fff' : '#1f2937', transition: 'all 0.18s ease',
                   transform: isActive ? 'translateY(-2px)' : 'none',
-                  boxShadow: isActive ? `0 6px 20px ${cat.color}40` : 'none'
+                  boxShadow: isActive
+                    ? `0 8px 28px ${cat.color}60, -4px -4px 10px rgba(255,255,255,0.85)`
+                    : '6px 6px 14px rgba(0,0,0,0.18), -4px -4px 10px rgba(255,255,255,0.9)'
                 }}
-                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = cat.color; e.currentTarget.style.transform = 'translateY(-2px)'; } }}
-                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = '#f3f4f6'; e.currentTarget.style.transform = 'none'; } }}
+                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = cat.color; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '8px 10px 22px rgba(0,0,0,0.20), -4px -4px 12px rgba(255,255,255,0.95)'; } }}
+                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = '#f3f4f6'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '6px 6px 14px rgba(0,0,0,0.18), -4px -4px 10px rgba(255,255,255,0.9)'; } }}
               >
                 <span style={{ fontWeight: 600, fontSize: 13 }}>{cat.name}</span>
                 {isActive && <span style={{ fontSize: 10, marginTop: 3, opacity: 0.8 }}>▲ close</span>}
