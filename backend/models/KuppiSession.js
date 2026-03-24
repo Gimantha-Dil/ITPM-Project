@@ -14,6 +14,11 @@ const enrollmentSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  rejected: {
+    type: Boolean,
+    default: false
+  },
+  rejectedAt: Date,
   verifiedAt: Date,
   enrolledAt: {
     type: Date,

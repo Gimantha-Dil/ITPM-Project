@@ -12,7 +12,7 @@ const notificationSchema = new mongoose.Schema({
     enum: [
       'purchase', 'payment_verified', 'new_feedback',
       'new_message', 'session_reminder', 'system',
-      'payment_received', 'enrollment'
+      'payment_received', 'enrollment', 'payment_unverified'
     ]
   },
   title: {

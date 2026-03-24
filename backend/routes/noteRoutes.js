@@ -26,12 +26,15 @@ router.get('/:id', noteController.getNoteById);
 router.put('/:id', auth, noteController.updateNote);
 router.delete('/:id', auth, noteController.deleteNote);
 
+router.post('/:id/reupload-slip', auth, uploadPaymentSlip.single('paymentSlip'), noteController.reuploadPaymentSlip);
+
 // Purchase & Download
 router.post('/:id/purchase', auth, uploadPaymentSlip.single('paymentSlip'), noteController.purchaseNote);
 router.get('/:id/download', auth, noteController.downloadNote);
 
 // Verify
 router.put('/:noteId/verify/:purchaseId', auth, noteController.verifyPayment);
+router.put('/:noteId/unverify/:purchaseId', auth, noteController.unverifyPayment);
 
 // Feedback
 router.post('/:id/feedback', auth, noteController.addFeedback);

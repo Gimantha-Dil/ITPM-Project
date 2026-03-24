@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiCheckCircle, FiClock, FiUsers, FiTrash2, FiEye, FiEdit2 } from 'react-icons/fi';
+import { FiCheckCircle, FiClock, FiUsers, FiTrash2, FiEye, FiEdit2, FiXCircle } from 'react-icons/fi';
 
 const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -35,6 +35,17 @@ const MySessions = () => {
       fetchSessions();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Verification failed');
+    }
+  };
+
+  const handleReject = async (sessionId, enrollmentId) => {
+    if (!window.confirm('Reject this payment slip? Student will be notified to re-upload.')) return;
+    try {
+      await api.put(`/kuppi/${sessionId}/reject/${enrollmentId}`);
+      toast.success('Enrollment rejected. Student notified.');
+      fetchSessions();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Reject failed');
     }
   };
 
@@ -150,19 +161,29 @@ const MySessions = () => {
                               </td>
                               <td>
                                 {enrollment.verified ? (
-                                  <span className="badge badge-verified">Verified </span>
+                                  <span className="badge badge-verified">✅ Verified</span>
+                                ) : enrollment.rejected ? (
+                                  <span className="badge" style={{ background: '#fee2e2', color: '#dc2626' }}>❌ Rejected</span>
                                 ) : (
-                                  <span className="badge badge-pending">Pending</span>
+                                  <span className="badge badge-pending">⏳ Pending</span>
                                 )}
                               </td>
                               <td>
-                                {!enrollment.verified && (
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => handleVerify(session._id, enrollment._id)}
-                                  >
-                                    Verify
-                                  </button>
+                                {!enrollment.verified && !enrollment.rejected && (
+                                  <div className="flex gap-2">
+                                    <button
+                                      className="btn btn-success btn-sm"
+                                      onClick={() => handleVerify(session._id, enrollment._id)}
+                                    >
+                                      <FiCheckCircle /> Verify
+                                    </button>
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() => handleReject(session._id, enrollment._id)}
+                                    >
+                                      <FiXCircle /> Reject
+                                    </button>
+                                  </div>
                                 )}
                               </td>
                             </tr>

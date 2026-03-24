@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FiCalendar, FiClock, FiUsers, FiExternalLink, } from 'react-icons/fi';
- 
+
 const KuppiSessionDetail = () => {
   const { id } = useParams();
   const { api, user } = useAuth();
@@ -14,11 +14,11 @@ const KuppiSessionDetail = () => {
   const [submitting, setSubmitting] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
- 
+
   useEffect(() => {
     fetchSession();
   }, [id]);
- 
+
   const fetchSession = async () => {
     try {
       const res = await api.get(`/kuppi/${id}`);
@@ -29,15 +29,15 @@ const KuppiSessionDetail = () => {
       setLoading(false);
     }
   };
- 
+
   const userId = user?._id || user?.id;
- 
+
   const getMyEnrollment = () => {
     return session?.enrollments?.find(
       e => { const sid = e.student?._id || e.student?.id || e.student; return sid && userId && String(sid) === String(userId); }
     );
   };
- 
+
   const handleEnroll = async (e) => {
     e.preventDefault();
     if (session.price > 0 && !paymentSlip) {
@@ -58,7 +58,7 @@ const KuppiSessionDetail = () => {
       setSubmitting(false);
     }
   };
- 
+
   const handleFeedback = async (e) => {
     e.preventDefault();
     try {
@@ -71,17 +71,32 @@ const KuppiSessionDetail = () => {
       toast.error(err.response?.data?.message || 'Failed to submit feedback');
     }
   };
- 
+
+  const handleReupload = async (file) => {
+    if (!file) { toast.error('Please select a payment slip'); return; }
+    try {
+      const formData = new FormData();
+      formData.append('paymentSlip', file);
+      await api.post(`/kuppi/${id}/reupload-slip`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('Payment slip re-submitted! Waiting for host verification.');
+      fetchSession();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Re-upload failed');
+    }
+  };
+
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
   if (!session) return <div className="empty-state"><h3>Session not found</h3></div>;
- 
+
   const myEnrollment = getMyEnrollment();
   const hostId = session.host?._id || session.host?.id;
   const isHost = !!(userId && hostId && String(userId) === String(hostId));
   const avgRating = session.feedback?.length > 0
     ? (session.feedback.reduce((a, b) => a + b.rating, 0) / session.feedback.length).toFixed(1)
     : 'N/A';
- 
+
   return (
     <div className="detail-page">
       <div className="detail-section">
@@ -103,7 +118,7 @@ const KuppiSessionDetail = () => {
           </div>
         </div>
       </div>
- 
+
       <div className="detail-section">
         <h2>Session Details</h2>
         <p style={{ marginBottom: 16 }}>{session.description}</p>
@@ -114,7 +129,7 @@ const KuppiSessionDetail = () => {
           <div><FiUsers /> <strong>Enrolled:</strong> {session.enrollments?.length || 0}/{session.maxParticipants}</div>
         </div>
       </div>
- 
+
       {/* MS Teams Link - only for verified enrollments or host */}
       {(isHost || myEnrollment?.verified) && session.msTeamsLink && (
         <div className="detail-section" style={{ background: '#f0fdf4', border: '2px solid #10b981' }}>
@@ -124,7 +139,7 @@ const KuppiSessionDetail = () => {
           </a>
         </div>
       )}
- 
+
       {/* Bank Details - for paid sessions */}
       {!isHost && !myEnrollment && session.price > 0 && session.host?.bankName && (
         <div className="bank-details-box">
@@ -147,7 +162,7 @@ const KuppiSessionDetail = () => {
           </div>
         </div>
       )}
- 
+
       {/* Enrollment Section */}
       {!isHost && !myEnrollment && (
         <div className="detail-section">
@@ -170,19 +185,38 @@ const KuppiSessionDetail = () => {
           </form>
         </div>
       )}
- 
-      {myEnrollment && (
+
+      {myEnrollment && !myEnrollment.rejected && (
         <div className="detail-section" style={{
           background: myEnrollment.verified ? '#f0fdf4' : '#fffbeb',
           border: `2px solid ${myEnrollment.verified ? '#10b981' : '#f59e0b'}`
         }}>
           <h2 style={{ color: myEnrollment.verified ? '#059669' : '#d97706' }}>
-            {myEnrollment.verified ? ' Enrolled & Verified' : ' Enrollment Pending Verification'}
+            {myEnrollment.verified ? '✅ Enrolled & Verified' : '⏳ Enrollment Pending Verification'}
           </h2>
           <p>{myEnrollment.verified ? 'You have access to this session.' : 'The host will verify your payment soon.'}</p>
         </div>
       )}
- 
+
+      {/* Rejected — Re-upload Section */}
+      {myEnrollment?.rejected && !myEnrollment?.verified && (
+        <div className="detail-section" style={{ background: '#fff5f5', border: '2px solid #ef4444' }}>
+          <h2 style={{ color: '#dc2626' }}>❌ Payment Slip Rejected</h2>
+          <p style={{ marginBottom: 16 }}>
+            Your payment slip was rejected by the host. Please re-upload a valid payment slip.
+          </p>
+          <div className="form-group">
+            <label>Re-upload Payment Slip</label>
+            <input
+              type="file"
+              className="form-input"
+              accept="image/*"
+              onChange={e => handleReupload(e.target.files[0])}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Feedback Section */}
       <div className="detail-section">
         <h2>Feedback ({session.feedback?.length || 0})</h2>
@@ -219,5 +253,5 @@ const KuppiSessionDetail = () => {
     </div>
   );
 };
- 
+
 export default KuppiSessionDetail;
