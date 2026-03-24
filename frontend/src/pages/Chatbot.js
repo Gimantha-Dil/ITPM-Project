@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { FiSend, FiMic, FiMicOff, FiVolume2, FiVolumeX } from 'react-icons/fi';
-
+ 
 // Browser Speech APIs
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const synth = window.speechSynthesis;
-
+ 
 const Chatbot = () => {
   const { api } = useAuth();
   const [messages, setMessages] = useState([
@@ -22,53 +22,53 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const inputRef = useRef('');
-
+ 
   // Keep ref in sync with state
   useEffect(() => { inputRef.current = input; }, [input]);
-
+ 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
+ 
   // Initialize Speech Recognition
   useEffect(() => {
     if (!SpeechRecognition) return;
-
+ 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = voiceLang;
-
+ 
     recognition.onresult = (event) => {
       let transcript = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript;
       }
       setInput(transcript);
-
+ 
       if (event.results[event.results.length - 1].isFinal) {
         setPendingVoiceSend(true);
       }
     };
-
+ 
     recognition.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
       setIsListening(false);
     };
-
+ 
     recognition.onend = () => {
       setIsListening(false);
     };
-
+ 
     recognitionRef.current = recognition;
-
+ 
     return () => {
       if (recognitionRef.current) {
         try { recognitionRef.current.abort(); } catch (e) {}
       }
     };
   }, [voiceLang]);
-
+ 
   // Clean text for speech (remove emojis, formatting)
   const cleanTextForSpeech = (text) => {
     return text
@@ -82,19 +82,19 @@ const Chatbot = () => {
       .replace(/\.\s*\./g, '.')
       .trim();
   };
-
+ 
   // Speak text
   const speakText = useCallback((text) => {
     if (!synth) return;
     synth.cancel();
-
+ 
     const cleanText = cleanTextForSpeech(text);
     if (!cleanText) return;
-
+ 
     const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 2);
     const chunks = [];
     let current = '';
-
+ 
     sentences.forEach(s => {
       if ((current + s).length > 180) {
         if (current) chunks.push(current.trim());
@@ -104,34 +104,34 @@ const Chatbot = () => {
       }
     });
     if (current) chunks.push(current.trim());
-
+ 
     if (chunks.length === 0) return;
     setIsSpeaking(true);
-
+ 
     const speakChunk = (i) => {
       if (i >= chunks.length) { setIsSpeaking(false); return; }
-
+ 
       const utt = new SpeechSynthesisUtterance(chunks[i]);
       utt.lang = 'en-US';
       utt.rate = 1.0;
       utt.pitch = 1.0;
-
+ 
       const voices = synth.getVoices();
       const voice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en'))
         || voices.find(v => v.lang.startsWith('en') && v.localService)
         || voices.find(v => v.lang.startsWith('en'));
       if (voice) utt.voice = voice;
-
+ 
       utt.onend = () => speakChunk(i + 1);
       utt.onerror = () => setIsSpeaking(false);
       synth.speak(utt);
     };
-
+ 
     speakChunk(0);
   }, []);
-
+ 
   const stopSpeaking = () => { if (synth) synth.cancel(); setIsSpeaking(false); };
-
+ 
   // Toggle mic
   const toggleListening = () => {
     if (!SpeechRecognition) {
@@ -150,7 +150,7 @@ const Chatbot = () => {
       } catch (err) { console.error('Mic start error:', err); }
     }
   };
-
+ 
   // Send message
   const sendMessage = useCallback(async (msg) => {
     if (!msg.trim()) return;
@@ -166,12 +166,12 @@ const Chatbot = () => {
       setMessages(prev => [...prev, { type: 'bot', text: 'Sorry, I encountered an error. Please try again!' }]);
     } finally { setLoading(false); }
   }, [api, autoSpeak, speakText]);
-
+ 
   const handleSend = (e) => {
     if (e) e.preventDefault();
     sendMessage(input);
   };
-
+ 
   // Auto-send after voice recognition final result
   useEffect(() => {
     if (pendingVoiceSend && inputRef.current.trim()) {
@@ -182,10 +182,10 @@ const Chatbot = () => {
       return () => clearTimeout(timer);
     }
   }, [pendingVoiceSend, sendMessage]);
-
+ 
   // Quick send
   const handleQuickSend = (q) => { sendMessage(q); };
-
+ 
   const categories = [
     { key: 'notes', emoji: '', label: 'Notes', questions: [
       'How do I upload notes?', 'How to set price for my notes?', 'What file types can I upload?',
@@ -209,7 +209,7 @@ const Chatbot = () => {
       'How to update my profile?', 'How to add bank details?', 'How to change password?', 'How to register?'
     ]}
   ];
-
+ 
   return (
     <div className="chatbot-container">
       {/* Header */}
@@ -232,7 +232,7 @@ const Chatbot = () => {
           </button>
         </div>
       </div>
-
+ 
       {/* Messages */}
       <div className="chatbot-messages">
         {/* Floating Stop Speaking Button */}
@@ -253,7 +253,7 @@ const Chatbot = () => {
               <button onClick={() => isSpeaking ? stopSpeaking() : speakText(msg.text)}
                 title={isSpeaking ? 'Stop' : 'Read aloud'}
                 style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none',
-                  cursor: 'pointer', color: '#7c3aed', fontSize: 16, padding: 4, opacity: 0.6 }}
+                  cursor: 'pointer', color: 'var(--primary-deeper)', fontSize: 16, padding: 4, opacity: 0.6 }}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = 0.6}>
                 {isSpeaking ? <FiVolumeX /> : <FiVolume2 />}
@@ -280,7 +280,7 @@ const Chatbot = () => {
         )}
         <div ref={messagesEndRef} />
       </div>
-
+ 
       {/* Category Tabs */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
         {categories.map(cat => (
@@ -296,7 +296,7 @@ const Chatbot = () => {
            Help
         </button>
       </div>
-
+ 
       {activeCategory && (
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10, padding: '8px 12px',
           background: '#f3f4f6', borderRadius: 10 }}>
@@ -310,7 +310,7 @@ const Chatbot = () => {
           ))}
         </div>
       )}
-
+ 
       {/* Input Bar */}
       <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <button type="button" onClick={toggleListening}
@@ -329,7 +329,7 @@ const Chatbot = () => {
           <FiSend />
         </button>
       </form>
-
+ 
       <style>{`
         @keyframes pulse {
           0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
@@ -348,5 +348,6 @@ const Chatbot = () => {
     </div>
   );
 };
-
+ 
 export default Chatbot;
+ 
