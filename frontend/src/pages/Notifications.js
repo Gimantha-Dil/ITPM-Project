@@ -56,13 +56,13 @@ const Notifications = () => {
 
   const getIcon = (type) => {
     const icons = {
-      payment_received: '💰',
-      payment_verified: '✅',
-      new_feedback: '⭐',
-      enrollment: '📅',
-      new_message: '💬'
+      payment_received: '',
+      payment_verified: '',
+      new_feedback: '',
+      enrollment: '',
+      new_message: ''
     };
-    return icons[type] || '🔔';
+    return icons[type] || '';
   };
 
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
@@ -81,7 +81,7 @@ const Notifications = () => {
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {notifications.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🔔</div>
+            <div className="empty-icon"></div>
             <h3>No notifications</h3>
             <p>You're all caught up!</p>
           </div>
