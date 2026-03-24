@@ -38,42 +38,34 @@ const Home = () => {
       {/* Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
-         
           <div className="stat-value">{sellerStats?.totalNotes || 0}</div>
           <div className="stat-label">Notes Listed</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{sellerStats?.totalSessions || 0}</div>
           <div className="stat-label">Sessions Created</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">LKR {sellerStats?.totalRevenue?.toLocaleString() || 0}</div>
           <div className="stat-label">Total Revenue</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{buyerStats?.totalPurchasedNotes || 0}</div>
           <div className="stat-label">Notes Purchased</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{buyerStats?.totalEnrolledSessions || 0}</div>
           <div className="stat-label">Sessions Enrolled</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{sellerStats?.pendingPayments || 0}</div>
           <div className="stat-label">Pending Payments</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{sellerStats?.averageRating || 0}</div>
           <div className="stat-label">Average Rating</div>
         </div>
         <div className="stat-card">
-          
           <div className="stat-value">{sellerStats?.totalViews || 0}</div>
           <div className="stat-label">Total Views</div>
         </div>
@@ -84,13 +76,13 @@ const Home = () => {
         <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>Quick Actions</h2>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Link to="/notes" className="btn btn-primary"><FiBook /> Browse Notes</Link>
-          <Link to="/kuppi-sessions" className="btn btn-outline"><FiCalendar /> Kuppi Sessions</Link>
-          <Link to="/my-purchases" className="btn btn-secondary"><FiShoppingCart /> My Purchases</Link>
-          <Link to="/bookmarks" className="btn btn-secondary"><FiBookmark /> Bookmarks</Link>
+          <Link to="/kuppi-sessions" className="btn btn-primary"><FiCalendar /> Kuppi Sessions</Link>
+          <Link to="/my-purchases" className="btn btn-primary"><FiShoppingCart /> My Purchases</Link>
+          <Link to="/bookmarks" className="btn btn-primary"><FiBookmark /> Bookmarks</Link>
           {user?.bankName && (
             <>
-              <Link to="/create-note" className="btn btn-success"><FiTrendingUp /> Upload Note</Link>
-              <Link to="/analytics" className="btn btn-outline"><FiDollarSign /> Analytics</Link>
+              <Link to="/create-note" className="btn btn-primary"><FiTrendingUp /> Upload Note</Link>
+              <Link to="/analytics" className="btn btn-primary"><FiDollarSign /> Analytics</Link>
             </>
           )}
         </div>
