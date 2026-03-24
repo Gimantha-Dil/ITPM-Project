@@ -91,7 +91,7 @@ const BankDetailsModal = ({ onClose, onSaved, onSuccess, currentDetails }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
-        <h2>🏦 Bank Details</h2>
+        <h2>Bank Details</h2>
         <p className="text-muted mb-4" style={{ fontSize: '14px' }}>
           Bank details are required to receive payments from buyers.
         </p>
