@@ -40,7 +40,16 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        
+        <img
+          src="/logo.png"
+          alt="SLIIT LP Logo"
+          style={{
+            height: '55px',
+            width: '55px',
+            borderRadius: '8px',
+            objectFit: 'cover',
+          }}
+        />
         SLIIT Learning Platform
       </Link>
 
