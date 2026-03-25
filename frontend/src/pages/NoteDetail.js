@@ -84,6 +84,17 @@ const NoteDetail = () => {
     setPurchasing(false);
   };
 
+  const handleDeleteFeedback = async (feedbackId) => {
+    if (!window.confirm('Delete this review?')) return;
+    try {
+      await api.delete(`/notes/${id}/feedback/${feedbackId}`);
+      toast.success('Review deleted');
+      fetchNote();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Delete failed');
+    }
+  };
+
   const handleDownload = async () => {
     try {
       const res = await api.get(`/notes/${id}/download`, { responseType: 'blob' });
@@ -316,7 +327,17 @@ const NoteDetail = () => {
             <div key={i} className="feedback-item">
               <div className="flex-between">
                 <strong>{fb.user?.fullName || 'Student'}</strong>
-                <span className="feedback-stars">{'★'.repeat(fb.rating)}{'☆'.repeat(5 - fb.rating)}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="feedback-stars">{'★'.repeat(fb.rating)}{'☆'.repeat(5 - fb.rating)}</span>
+                  {(fb.user?._id === userId || fb.user?.id === userId || user?.role === 'admin') && (
+                    <button
+                      onClick={() => handleDeleteFeedback(fb._id)}
+                      style={{ background: '#dc2626', border: 'none', cursor: 'pointer', color: '#fff', fontSize: 12, padding: '4px 10px', borderRadius: 8, fontWeight: 700 }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
               {fb.comment && <p className="text-muted mt-2">{fb.comment}</p>}
               <span className="text-small text-muted">{new Date(fb.createdAt).toLocaleDateString()}</span>
