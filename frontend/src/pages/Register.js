@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
- 
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -13,18 +14,20 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const emailInputRef = useRef(null);
   const { register } = useAuth();
   const navigate = useNavigate();
- 
+
   const DOMAIN = '@my.sliit.lk';
   const emailRegex = /^(it|eng|bus)\d+@my\.sliit\.lk$/i;
- 
+
   const handleNameChange = (e) => {
     const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, '');
     setFormData(prev => ({ ...prev, fullName: cleaned }));
   };
- 
+
   const handleEmailChange = (e) => {
     let val = e.target.value;
     if (val.endsWith(DOMAIN)) val = val.slice(0, val.length - DOMAIN.length);
@@ -38,7 +41,7 @@ const Register = () => {
         emailInputRef.current.setSelectionRange(cleaned.length, cleaned.length);
     }, 0);
   };
- 
+
   const handleEmailKeyDown = (e) => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -52,7 +55,7 @@ const Register = () => {
       }
     }
   };
- 
+
   const handleEmailClick = () => {
     const input = emailInputRef.current;
     if (!input) return;
@@ -61,17 +64,17 @@ const Register = () => {
     if (input.selectionStart > safeLength)
       input.setSelectionRange(safeLength, safeLength);
   };
- 
+
   const handlePhoneChange = (e) => {
     const cleaned = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
     setFormData(prev => ({ ...prev, phoneNumber: cleaned }));
   };
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
- 
+
   const getPasswordStrength = (pass) => {
     if (!pass) return null;
     if (pass.length < 6) return { label: 'Too short', color: '#E24B4A', width: '15%' };
@@ -84,7 +87,7 @@ const Register = () => {
     if (score <= 2) return { label: 'Medium — try adding symbols', color: '#EF9F27', width: '66%' };
     return { label: 'Strong', color: '#1D9E75', width: '100%' };
   };
- 
+
   const validate = () => {
     const newErrors = {};
     if (!formData.fullName.trim()) {
@@ -115,7 +118,7 @@ const Register = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -135,10 +138,10 @@ const Register = () => {
       setLoading(false);
     }
   };
- 
+
   const strength = getPasswordStrength(formData.password);
   const emailPrefix = formData.email.replace(DOMAIN, '');
- 
+
   return (
     <div
       style={{
@@ -158,12 +161,12 @@ const Register = () => {
       }}
     >
       <div className="auth-container" style={{ margin: '20px 0' }}>
-        <div className="logo-emoji"></div>
+        <div className="logo-emoji">🎓</div>
         <h1>Create Account</h1>
         <p className="subtitle">Join SLIIT Learning Platform</p>
- 
+
         <form onSubmit={handleSubmit} noValidate>
- 
+
           <div className="form-group">
             <label>Full Name</label>
             <input
@@ -181,7 +184,7 @@ const Register = () => {
             />
             {errors.fullName && <p className="error-text">{errors.fullName}</p>}
           </div>
- 
+
           <div className="form-group">
             <label>SLIIT Email</label>
             <input
@@ -207,7 +210,7 @@ const Register = () => {
             )}
             {errors.email && <p className="error-text">{errors.email}</p>}
           </div>
- 
+
           <div className="form-group">
             <label>Phone Number</label>
             <input
@@ -231,23 +234,33 @@ const Register = () => {
               <p className="hint-text">{formData.phoneNumber.length}/10 digits</p>
             ) : null}
           </div>
- 
+
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              className={`form-input ${
-                errors.password
-                  ? 'input-error'
-                  : formData.password && formData.password.length >= 6
-                  ? 'input-success'
-                  : ''
-              }`}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Min 6 characters"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className={`form-input ${
+                  errors.password
+                    ? 'input-error'
+                    : formData.password && formData.password.length >= 6
+                    ? 'input-success'
+                    : ''
+                }`}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Min 6 characters"
+                style={{ paddingRight: 40 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
             {formData.password && strength && (
               <>
                 <div style={{
@@ -272,28 +285,38 @@ const Register = () => {
             )}
             {errors.password && <p className="error-text">{errors.password}</p>}
           </div>
- 
+
           <div className="form-group">
             <label>Confirm Password</label>
-            <input
-              type="password"
-              className={`form-input ${
-                errors.confirmPassword
-                  ? 'input-error'
-                  : formData.confirmPassword && formData.password === formData.confirmPassword
-                  ? 'input-success'
-                  : ''
-              }`}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Repeat password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showConfirm ? 'text' : 'password'}
+                className={`form-input ${
+                  errors.confirmPassword
+                    ? 'input-error'
+                    : formData.confirmPassword && formData.password === formData.confirmPassword
+                    ? 'input-success'
+                    : ''
+                }`}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Repeat password"
+                style={{ paddingRight: 40 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
+              >
+                {showConfirm ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <p className="error-text">{errors.confirmPassword}</p>
             )}
           </div>
- 
+
           <button
             type="submit"
             className="btn btn-primary btn-block"
@@ -302,7 +325,7 @@ const Register = () => {
             {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
- 
+
         <p className="text-center mt-4" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>
           Bank details are not required now — add them later when you want to sell.
         </p>
@@ -314,6 +337,5 @@ const Register = () => {
     </div>
   );
 };
- 
+
 export default Register;
- 
