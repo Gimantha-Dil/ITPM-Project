@@ -92,6 +92,10 @@ const noteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  previewUrl: {
+    type: String,
+    default: null
+  },
   fileSize: Number,
   fileType: String,
   thumbnail: String,
