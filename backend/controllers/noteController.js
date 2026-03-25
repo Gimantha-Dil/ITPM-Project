@@ -515,6 +515,27 @@ exports.addFeedback = async (req, res) => {
   }
 };
 
+// Delete feedback
+exports.deleteFeedback = async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+
+    const fbIndex = note.feedback.findIndex(
+      f => f._id.toString() === req.params.feedbackId &&
+        (f.user.toString() === req.userId.toString() || req.user.role === 'admin')
+    );
+
+    if (fbIndex === -1) return res.status(403).json({ message: 'Not authorized to delete this review' });
+
+    note.feedback.splice(fbIndex, 1);
+    await note.save();
+    res.json({ message: 'Review deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Delete failed', error: error.message });
+  }
+};
+
 // Toggle bookmark
 exports.toggleBookmark = async (req, res) => {
   try {
@@ -595,6 +616,11 @@ exports.updateNote = async (req, res) => {
       } catch (fileErr) {
         console.error('File replace error:', fileErr);
       }
+    }
+
+    // Handle preview removal
+    if (req.body.removePreview === 'true') {
+      updateFields.previewUrl = null;
     }
 
     // Handle preview file update

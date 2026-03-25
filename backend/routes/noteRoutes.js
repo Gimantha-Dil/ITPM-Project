@@ -44,6 +44,7 @@ router.put('/:noteId/unverify/:purchaseId', auth, noteController.unverifyPayment
 
 // Feedback
 router.post('/:id/feedback', auth, noteController.addFeedback);
+router.delete('/:id/feedback/:feedbackId', auth, noteController.deleteFeedback);
 
 // Bookmarks toggle
 router.post('/:id/bookmark', auth, noteController.toggleBookmark);
