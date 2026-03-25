@@ -103,7 +103,10 @@ const Profile = () => {
           <div className="form-group">
             <label>Full Name</label>
             <input type="text" className="form-input" value={form.fullName}
-              onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+                setForm({ ...form, fullName: val });
+              }} />
           </div>
           <div className="form-group">
             <label>Email</label>
@@ -113,7 +116,12 @@ const Profile = () => {
           <div className="form-group">
             <label>Phone Number</label>
             <input type="text" className="form-input" value={form.phoneNumber}
-              onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
+              inputMode="numeric"
+              maxLength={10}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                setForm({ ...form, phoneNumber: val });
+              }} />
           </div>
           <button type="submit" className="btn btn-primary" disabled={saving}>
             {saving ? 'Saving...' : 'Update Profile'}
