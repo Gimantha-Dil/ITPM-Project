@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const noteController = require('../controllers/noteController');
 const { auth, requireBankDetails } = require('../middleware/auth');
-const { uploadNote, uploadPaymentSlip } = require('../middleware/upload');
+const { uploadNote, uploadNoteWithPreview, uploadPaymentSlip } = require('../middleware/upload');
 
 // IMPORTANT: /user/* and /bulk-* routes MUST come BEFORE /:id routes
 // Otherwise Express treats "user" as an :id parameter
@@ -19,11 +19,17 @@ router.post('/bulk-verify', auth, noteController.bulkVerifyPayments);
 router.get('/', noteController.getNotes);
 
 // Create note
-router.post('/', auth, requireBankDetails, uploadNote.single('file'), noteController.createNote);
+router.post('/', auth, requireBankDetails, uploadNoteWithPreview.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'previewFile', maxCount: 1 }
+]), noteController.createNote);
 
 // Single note routes (/:id MUST come AFTER /user/*)
 router.get('/:id', noteController.getNoteById);
-router.put('/:id', auth, noteController.updateNote);
+router.put('/:id', auth, uploadNoteWithPreview.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'previewFile', maxCount: 1 }
+]), noteController.updateNote);
 router.delete('/:id', auth, noteController.deleteNote);
 
 router.post('/:id/reupload-slip', auth, uploadPaymentSlip.single('paymentSlip'), noteController.reuploadPaymentSlip);

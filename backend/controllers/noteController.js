@@ -24,25 +24,41 @@ const saveFileToDb = async (reqFile, userId, category) => {
 exports.createNote = async (req, res) => {
   try {
     const { title, description, category, subject, price, tags } = req.body;
-    
-    if (!req.file) {
+
+    // Support both .fields() and .single() upload middleware
+    const mainFile = (req.files && req.files['file'] && req.files['file'][0]) || req.file;
+
+    if (!mainFile) {
       return res.status(400).json({ message: 'File is required' });
     }
 
-    // Save file to MongoDB
-    const savedFile = await saveFileToDb(req.file, req.userId, 'note');
+    // Save main file to MongoDB
+    const savedFile = await saveFileToDb(mainFile, req.userId, 'note');
+
+    // Save preview file if provided
+    let previewUrl = null;
+    const previewFileObj = req.files && req.files['previewFile'] && req.files['previewFile'][0];
+    if (previewFileObj) {
+      try {
+        const savedPreview = await saveFileToDb(previewFileObj, req.userId, 'preview');
+        previewUrl = `/api/files/${savedPreview._id}`;
+      } catch (previewErr) {
+        console.error('Preview save error:', previewErr);
+      }
+    }
 
     const note = new Note({
       title,
       description,
       category,
       subject,
-      price: parseFloat(price),
+      price: parseFloat(price) || 0,
       seller: req.userId,
       fileUrl: `/api/files/${savedFile._id}`,
-      fileName: req.file.originalname,
-      fileSize: req.file.size,
-      fileType: req.file.mimetype,
+      fileName: mainFile.originalname,
+      fileSize: mainFile.size,
+      fileType: mainFile.mimetype,
+      previewUrl,
       tags: tags ? tags.split(',').map(t => t.trim()) : []
     });
 
@@ -51,6 +67,7 @@ exports.createNote = async (req, res) => {
 
     res.status(201).json({ message: 'Note uploaded successfully!', note });
   } catch (error) {
+    console.error('Create note error:', error);
     res.status(500).json({ message: 'Failed to create note', error: error.message });
   }
 };
@@ -560,17 +577,41 @@ exports.updateNote = async (req, res) => {
     if (subject)              updateFields.subject     = subject;
     if (price !== undefined)  updateFields.price       = parseFloat(price);
 
-    // tags can arrive as an array (from new EditNote) or a comma string (legacy)
     if (tags !== undefined) {
       updateFields.tags = Array.isArray(tags)
         ? tags.map(t => t.trim()).filter(Boolean)
         : tags.split(',').map(t => t.trim()).filter(Boolean);
     }
 
+    // Handle main file replacement
+    const newFileObj = req.files && req.files['file'] && req.files['file'][0];
+    if (newFileObj) {
+      try {
+        const savedFile = await saveFileToDb(newFileObj, req.userId, 'note');
+        updateFields.fileUrl = `/api/files/${savedFile._id}`;
+        updateFields.fileName = newFileObj.originalname;
+        updateFields.fileSize = newFileObj.size;
+        updateFields.fileType = newFileObj.mimetype;
+      } catch (fileErr) {
+        console.error('File replace error:', fileErr);
+      }
+    }
+
+    // Handle preview file update
+    const previewFileObj = req.files && req.files['previewFile'] && req.files['previewFile'][0];
+    if (previewFileObj) {
+      try {
+        const savedPreview = await saveFileToDb(previewFileObj, req.userId, 'preview');
+        updateFields.previewUrl = `/api/files/${savedPreview._id}`;
+      } catch (previewErr) {
+        console.error('Preview update error:', previewErr);
+      }
+    }
+
     const updated = await Note.findByIdAndUpdate(
       req.params.id,
       { $set: updateFields },
-      { new: true, runValidators: false }   // runValidators:false → skip file-related required checks
+      { new: true, runValidators: false }
     );
 
     res.json({ message: 'Note updated', note: updated });
