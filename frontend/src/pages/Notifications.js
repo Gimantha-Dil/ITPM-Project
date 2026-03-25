@@ -49,7 +49,23 @@ const Notifications = () => {
 
   const handleClick = (notification) => {
     handleMarkRead(notification._id);
-    if (notification.relatedSession) {
+    if (notification.type === 'payment_received' || notification.type === 'new_feedback') {
+      // Seller — note purchases → my-notes, session enrollments → my-sessions
+      if (notification.relatedSession) {
+        navigate('/my-sessions');
+      } else if (notification.relatedNote) {
+        navigate('/my-notes');
+      } else if (notification.link) {
+        navigate(notification.link);
+      }
+    } else if (notification.type === 'enrollment') {
+      // New enrollment → session detail page
+      if (notification.relatedSession) {
+        navigate(`/kuppi-sessions/${notification.relatedSession}`);
+      } else {
+        navigate('/my-sessions');
+      }
+    } else if (notification.relatedSession) {
       navigate(`/kuppi-sessions/${notification.relatedSession}`);
     } else if (notification.relatedNote) {
       navigate(`/notes/${notification.relatedNote}`);
@@ -87,7 +103,7 @@ const Notifications = () => {
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {notifications.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon"></div>
+            <div className="empty-icon">🔔</div>
             <h3>No notifications</h3>
             <p>You're all caught up!</p>
           </div>

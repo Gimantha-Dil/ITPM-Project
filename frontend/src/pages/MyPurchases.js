@@ -148,14 +148,34 @@ const MyPurchases = () => {
                               accept="image/*"
                               style={{ display: 'none' }}
                               ref={el => fileInputRefs.current[item.note._id] = el}
-                              onChange={e => handleReupload(item.note._id, e.target.files[0])}
+                              onChange={e => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  fileInputRefs.current[`selected_${item.note._id}`] = file;
+                                  // Show filename
+                                  const label = document.getElementById(`label_${item.note._id}`);
+                                  if (label) label.textContent = file.name;
+                                  // Show upload button
+                                  const btn = document.getElementById(`uploadbtn_${item.note._id}`);
+                                  if (btn) btn.style.display = 'block';
+                                }
+                              }}
                             />
                             <button
-                              className="btn btn-danger btn-sm"
-                              disabled={reuploadingId === item.note._id}
+                              className="btn btn-secondary btn-sm"
                               onClick={() => fileInputRefs.current[item.note._id]?.click()}
                             >
-                              <FiUpload /> {reuploadingId === item.note._id ? 'Uploading...' : 'Re-upload Slip'}
+                              📎 Choose Slip
+                            </button>
+                            <span id={`label_${item.note._id}`} className="text-small text-muted">No file chosen</span>
+                            <button
+                              id={`uploadbtn_${item.note._id}`}
+                              className="btn btn-primary btn-sm"
+                              style={{ display: 'none' }}
+                              disabled={reuploadingId === item.note._id}
+                              onClick={() => handleReupload(item.note._id, fileInputRefs.current[`selected_${item.note._id}`])}
+                            >
+                              <FiUpload /> {reuploadingId === item.note._id ? 'Uploading...' : 'Upload Slip'}
                             </button>
                           </div>
                         ) : (
