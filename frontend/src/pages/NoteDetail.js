@@ -186,6 +186,29 @@ const NoteDetail = () => {
         </div>
       </div>
 
+      {/* Preview Section — show to non-owners who haven't purchased */}
+      {!isOwner && note.price > 0 && !myPurchase && note.previewUrl && (
+        <div className="detail-section">
+          <h2 style={{ color: 'var(--primary-deeper)', marginBottom: 12 }}>👁️ Preview</h2>
+          <p className="text-small text-muted" style={{ marginBottom: 12 }}>
+            This is a preview of the note. Purchase to get full access.
+          </p>
+          {note.previewUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+            <img
+              src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${note.previewUrl}`}
+              alt="Note Preview"
+              style={{ maxWidth: '100%', borderRadius: 12, border: '2px solid var(--primary-light)' }}
+            />
+          ) : (
+            <iframe
+              src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${note.previewUrl}`}
+              title="Note Preview"
+              style={{ width: '100%', height: '500px', borderRadius: 12, border: '2px solid var(--primary-light)' }}
+            />
+          )}
+        </div>
+      )}
+
       {/* Bank Details (show to buyers) */}
       {!isOwner && note.price > 0 && !myPurchase && note.seller?.bankName && (
         <div className="bank-details-box">

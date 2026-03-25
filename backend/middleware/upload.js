@@ -41,6 +41,13 @@ const uploadNote = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
+// For note + preview upload together
+const uploadNoteWithPreview = multer({
+  storage: memStorage,
+  fileFilter: noteFileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
+
 const uploadPaymentSlip = multer({
   storage: memStorage,
   fileFilter: imageFileFilter,
@@ -53,4 +60,4 @@ const uploadThumbnail = multer({
   limits: { fileSize: 2 * 1024 * 1024 } // 2MB
 });
 
-module.exports = { uploadNote, uploadPaymentSlip, uploadThumbnail };
+module.exports = { uploadNote, uploadNoteWithPreview, uploadPaymentSlip, uploadThumbnail };

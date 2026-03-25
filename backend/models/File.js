@@ -7,7 +7,7 @@ const fileSchema = new mongoose.Schema({
   data: { type: Buffer, required: true },
   size: { type: Number, required: true },
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  category: { type: String, enum: ['note', 'payment-slip', 'thumbnail', 'receipt', 'report'], default: 'note' }
+  category: { type: String, enum: ['note', 'payment-slip', 'thumbnail', 'receipt', 'report', 'preview'], default: 'note' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('File', fileSchema);
