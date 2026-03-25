@@ -9,9 +9,15 @@ const EditNote = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [errors, setErrors] = useState({});
+  const [isFree, setIsFree] = useState(false);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [newFile, setNewFile] = useState(null);
+  const [currentFileName, setCurrentFileName] = useState('');
+  const [currentFileUrl, setCurrentFileUrl] = useState('');
+  const [currentPreviewUrl, setCurrentPreviewUrl] = useState(null);
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
   const [form, setForm] = useState({
-    title: '', description: '', category: 'IT', subject: '', price: '0.00', tags: ''
+    title: '', description: '', category: 'IT', subject: '', price: 0, tags: ''
   });
 
   useEffect(() => {
@@ -19,12 +25,17 @@ const EditNote = () => {
       try {
         const res = await api.get(`/notes/${id}`);
         const n = res.data;
+        const free = n.price === 0;
+        setIsFree(free);
+        setCurrentPreviewUrl(n.previewUrl || null);
+        setCurrentFileName(n.fileName || '');
+        setCurrentFileUrl(n.fileUrl || '');
         setForm({
           title: n.title || '',
           description: n.description || '',
           category: n.category || 'IT',
           subject: n.subject || '',
-          price: n.price != null ? parseFloat(n.price).toFixed(2) : '0.00',
+          price: n.price || 0,
           tags: n.tags?.join(', ') || ''
         });
       } catch (err) {
@@ -37,108 +48,35 @@ const EditNote = () => {
     fetchNote();
   }, [id]);
 
-  const handleTitleChange = (e) => {
-    const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s.,\-()']/g, '');
-    setForm(prev => ({ ...prev, title: cleaned }));
-  };
-
-  const handleSubjectChange = (e) => {
-    const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
-    setForm(prev => ({ ...prev, subject: cleaned }));
-  };
-
-  const handleTagsChange = (e) => {
-    const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s,]/g, '');
-    setForm(prev => ({ ...prev, tags: cleaned }));
-  };
-
-  const handlePriceKeyDown = (e) => {
-    if (
-      !/[0-9.]/.test(e.key) &&
-      !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
-    ) {
-      e.preventDefault();
-    }
-    if (e.key === '.' && String(form.price).includes('.')) {
-      e.preventDefault();
-    }
-  };
-
-  const handlePriceChange = (e) => {
-    let cleaned = e.target.value.replace(/[^0-9.]/g, '');
-    const parts = cleaned.split('.');
-    if (parts.length > 2) cleaned = parts[0] + '.' + parts[1];
-    if (parts.length === 2 && parts[1].length > 2) {
-      cleaned = parts[0] + '.' + parts[1].slice(0, 2);
-    }
-    setForm(prev => ({ ...prev, price: cleaned }));
-  };
-
-  const handlePriceBlur = () => {
-    const val = parseFloat(form.price) || 0;
-    setForm(prev => ({ ...prev, price: val.toFixed(2) }));
-  };
-
-  const handlePriceFocus = (e) => e.target.select();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const validate = () => {
-    const newErrors = {};
-
-    if (!form.title.trim()) {
-      newErrors.title = 'Note title is required';
-    } else if (form.title.trim().length < 3) {
-      newErrors.title = 'Title must be at least 3 characters';
-    }
-
-    if (!form.description.trim()) {
-      newErrors.description = 'Description is required';
-    } else if (form.description.trim().length < 10) {
-      newErrors.description = 'Description must be at least 10 characters';
-    }
-
-    if (!form.subject.trim()) {
-      newErrors.subject = 'Subject is required';
-    }
-
-    if (form.price === '' || isNaN(parseFloat(form.price))) {
-      newErrors.price = 'Enter a valid price';
-    } else if (parseFloat(form.price) < 0) {
-      newErrors.price = 'Price cannot be negative';
-    }
-
-    if (form.tags.trim()) {
-      const tagList = form.tags.split(',').map(t => t.trim()).filter(Boolean);
-      if (tagList.length === 0) {
-        newErrors.tags = 'Enter at least one valid tag';
-      } else if (tagList.some(t => t.length < 2)) {
-        newErrors.tags = 'Each tag must be at least 2 characters';
-      } else if (tagList.length > 10) {
-        newErrors.tags = 'Maximum 10 tags allowed';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handlePriceTypeChange = (free) => {
+    setIsFree(free);
+    setForm(prev => ({ ...prev, price: free ? 0 : '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!isFree && (!form.price || parseFloat(form.price) <= 0)) {
+      toast.error('Please enter a valid price for paid note');
+      return;
+    }
     setLoading(true);
     try {
-      await api.put(`/notes/${id}`, {
-        ...form,
-        price: parseFloat(form.price) || 0,
-        tags: form.tags
-          ? form.tags.split(',').map(t => t.trim()).filter(Boolean)
-          : []
-      });
-      toast.success('Note updated successfully!');
+      if (previewFile || newFile) {
+        const data = new FormData();
+        Object.keys(form).forEach(key => data.append(key, form[key]));
+        data.append('price', isFree ? 0 : parseFloat(form.price));
+        if (previewFile) data.append('previewFile', previewFile);
+        if (newFile) data.append('file', newFile);
+        await api.put(`/notes/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } else {
+        await api.put(`/notes/${id}`, { ...form, price: isFree ? 0 : parseFloat(form.price) });
+      }
+      toast.success('Note updated');
       navigate('/my-notes');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Update failed');
@@ -152,47 +90,31 @@ const EditNote = () => {
   return (
     <div style={{ maxWidth: 700 }}>
       <div className="page-header">
-        <h1 className="page-title">Edit Note</h1>
+        <h1 className="page-title">✏️ Edit Note</h1>
       </div>
 
       <div className="card">
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit}>
 
           <div className="form-group">
             <label>Title *</label>
-            <input
-              type="text"
-              name="title"
-              className={`form-input ${errors.title ? 'input-error' : ''}`}
-              value={form.title}
-              onChange={handleTitleChange}
-              placeholder="Note title"
-            />
-            {errors.title && <p className="error-text">{errors.title}</p>}
+            <input type="text" name="title" className="form-input"
+              value={form.title} onChange={handleChange} required
+              placeholder="Note title" />
           </div>
 
           <div className="form-group">
             <label>Description *</label>
-            <textarea
-              name="description"
-              className={`form-textarea ${errors.description ? 'input-error' : ''}`}
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Note description"
-            />
-            {errors.description && <p className="error-text">{errors.description}</p>}
+            <textarea name="description" className="form-textarea"
+              value={form.description} onChange={handleChange} required
+              placeholder="Note description" />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-
             <div className="form-group">
               <label>Category *</label>
-              <select
-                name="category"
-                className="form-select"
-                value={form.category}
-                onChange={handleChange}
-              >
+              <select name="category" className="form-select"
+                value={form.category} onChange={handleChange}>
                 <option value="IT">IT</option>
                 <option value="SE">SE</option>
                 <option value="CS">CS</option>
@@ -205,58 +127,157 @@ const EditNote = () => {
 
             <div className="form-group">
               <label>Subject *</label>
-              <input
-                type="text"
-                name="subject"
-                className={`form-input ${errors.subject ? 'input-error' : ''}`}
-                value={form.subject}
-                onChange={handleSubjectChange}
-                placeholder="Subject name"
-              />
-              {errors.subject && <p className="error-text">{errors.subject}</p>}
+              <input type="text" name="subject" className="form-input"
+                value={form.subject} onChange={handleChange} required
+                placeholder="Subject name" />
             </div>
+          </div>
 
-            <div className="form-group">
-              <label>Price (LKR) — 0 = Free</label>
-              <input
-                type="text"
-                inputMode="decimal"
-                name="price"
-                className={`form-input ${errors.price ? 'input-error' : ''}`}
-                value={form.price}
-                onChange={handlePriceChange}
-                onKeyDown={handlePriceKeyDown}
-                onBlur={handlePriceBlur}
-                onFocus={handlePriceFocus}
-                placeholder="0.00"
-              />
-              {errors.price && <p className="error-text">{errors.price}</p>}
+          {/* ── Free / Paid Toggle ── */}
+          <div className="form-group">
+            <label>Price Type *</label>
+            <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <button
+                type="button"
+                onClick={() => handlePriceTypeChange(true)}
+                style={{
+                  flex: 1, padding: '12px', borderRadius: 12, border: 'none', cursor: 'pointer',
+                  fontWeight: 700, fontSize: 15, transition: 'all 0.15s',
+                  background: isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : '#f3f4f6',
+                  color: isFree ? '#0a4a57' : '#6b7280',
+                  boxShadow: isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
+                }}
+              >
+                🆓 Free
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePriceTypeChange(false)}
+                style={{
+                  flex: 1, padding: '12px', borderRadius: 12, border: 'none', cursor: 'pointer',
+                  fontWeight: 700, fontSize: 15, transition: 'all 0.15s',
+                  background: !isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : '#f3f4f6',
+                  color: !isFree ? '#0a4a57' : '#6b7280',
+                  boxShadow: !isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
+                }}
+              >
+                💰 Paid
+              </button>
             </div>
+          </div>
 
+          {/* Price + Tags */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            {!isFree && (
+              <div className="form-group">
+                <label>Price (LKR) *</label>
+                <input
+                  type="text"
+                  name="price"
+                  className="form-input"
+                  value={form.price}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*\.?\d{0,2}$/.test(value))
+                      setForm(prev => ({ ...prev, price: value }));
+                  }}
+                  onBlur={() => {
+                    if (form.price)
+                      setForm(prev => ({ ...prev, price: parseFloat(form.price).toFixed(2) }));
+                  }}
+                  required
+                  placeholder="0.00"
+                />
+              </div>
+            )}
             <div className="form-group">
               <label>Tags (comma separated)</label>
-              <input
-                type="text"
-                name="tags"
-                className={`form-input ${errors.tags ? 'input-error' : ''}`}
-                value={form.tags}
-                onChange={handleTagsChange}
-                placeholder="SQL, MongoDB, Oracle"
-              />
-              {errors.tags && <p className="error-text">{errors.tags}</p>}
+              <input type="text" name="tags" className="form-input"
+                value={form.tags} onChange={handleChange}
+                placeholder="SQL, MongoDB, Oracle" />
             </div>
-
           </div>
+
+          {/* Replace Main File */}
+          <div className="form-group">
+            <label>Replace Note File <span className="text-muted text-small">(optional — leave empty to keep current)</span></label>
+            {currentFileName && !newFile && (
+              <div style={{ marginBottom: 8, padding: '8px 12px', background: '#f0fdff', borderRadius: 8, border: '1px solid #63e5ff', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+                📄 Current file: <strong>{currentFileName}</strong>
+                {' — '}
+                <a href={`${API_BASE}${currentFileUrl}`} target="_blank" rel="noreferrer" className="link">View</a>
+                {' | '}
+                <span style={{ color: '#dc2626', cursor: 'pointer' }} onClick={() => setCurrentFileName('')}>Remove</span>
+              </div>
+            )}
+            <div
+              className={`file-upload-area ${newFile ? 'has-file' : ''}`}
+              onClick={() => document.getElementById('editNoteFile').click()}
+            >
+              <input id="editNoteFile" type="file" style={{ display: 'none' }}
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.png,.gif"
+                onChange={e => setNewFile(e.target.files[0])} />
+              {newFile ? (
+                <div>
+                  <p style={{ fontSize: '24px' }}>📄</p>
+                  <p><strong>{newFile.name}</strong></p>
+                  <p className="text-small text-muted">{(newFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  <span style={{ color: '#dc2626', cursor: 'pointer', fontSize: 12 }}
+                    onClick={e => { e.stopPropagation(); setNewFile(null); }}>✕ Remove</span>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ fontSize: '28px' }}>📁</p>
+                  <p>Click to replace file</p>
+                  <p className="text-small text-muted">PDF, DOC, PPT, XLS, TXT, Images</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Preview File */}
+          {!isFree && (
+            <div className="form-group">
+              <label>Preview File <span className="text-muted text-small">(optional — buyers see before purchase)</span></label>
+              {currentPreviewUrl && !previewFile && (
+                <div style={{ marginBottom: 8, padding: '8px 12px', background: '#f0fdff', borderRadius: 8, border: '1px solid #63e5ff', fontSize: 13 }}>
+                  ✅ Current preview set —{' '}
+                  <a href={`${API_BASE}${currentPreviewUrl}`} target="_blank" rel="noreferrer" className="link">View</a>
+                  {' | '}
+                  <span style={{ color: '#dc2626', cursor: 'pointer' }} onClick={() => setCurrentPreviewUrl(null)}>Remove</span>
+                </div>
+              )}
+              <div
+                className={`file-upload-area ${previewFile ? 'has-file' : ''}`}
+                style={{ borderColor: '#63e5ff', background: '#f0fdff' }}
+                onClick={() => document.getElementById('editPreviewFile').click()}
+              >
+                <input id="editPreviewFile" type="file" style={{ display: 'none' }}
+                  accept=".pdf,.jpg,.png"
+                  onChange={e => setPreviewFile(e.target.files[0])} />
+                {previewFile ? (
+                  <div>
+                    <p style={{ fontSize: '24px' }}>👁️</p>
+                    <p><strong>{previewFile.name}</strong></p>
+                    <p className="text-small text-muted">{(previewFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                ) : (
+                  <div>
+                    <p style={{ fontSize: '28px' }}>👁️</p>
+                    <p>Click to {currentPreviewUrl ? 'change' : 'upload'} preview</p>
+                    <p className="text-small text-muted">PDF or Image</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Saving...' : 'Update Note'}
+              {loading ? 'Saving...' : '✅ Update Note'}
             </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => navigate('/my-notes')}
-            >
+            <button type="button" className="btn btn-secondary"
+              onClick={() => navigate('/my-notes')}>
               Cancel
             </button>
           </div>
