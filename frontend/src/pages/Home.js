@@ -351,7 +351,7 @@ const Home = () => {
         <div style={{ position: 'absolute', bottom: -40, right: 80, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
 
         <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
-          Welcome, {user?.fullName?.split(' ')[0]}! 👋
+          Welcome, {user?.fullName?.split(' ')[0]}! 
         </h1>
         <p style={{ opacity: 0.85, fontSize: 15, marginBottom: 20 }}>
           Discover top-rated notes &amp; kuppi sessions from SLIIT students
