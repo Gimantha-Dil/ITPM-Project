@@ -2,7 +2,7 @@ const Note = require('../models/Note');
 const User = require('../models/User');
 const File = require('../models/File');
 const Notification = require('../models/Notification');
-const { sendPurchaseNotificationEmail, sendPaymentVerifiedEmail } = require('../utils/email');
+const { sendPurchaseNotificationEmail, sendPaymentVerifiedEmail, sendPaymentRejectedEmail } = require('../utils/email');
 const { generateReceiptBuffer } = require('../utils/pdfGenerator');
 
 // Helper: Save uploaded file to MongoDB
@@ -300,6 +300,22 @@ exports.unverifyPayment = async (req, res) => {
     purchase.receiptUrl = undefined;
 
     await note.save();
+
+    // Send rejection email to buyer
+    try {
+      const buyer = await User.findById(purchase.buyer);
+      if (buyer) {
+        await sendPaymentRejectedEmail(
+          buyer.email,
+          buyer.fullName,
+          note.title,
+          'note',
+          note._id
+        );
+      }
+    } catch (emailErr) {
+      console.error('Rejection email error:', emailErr);
+    }
 
     // Notify buyer to re-upload slip
     await Notification.create({
