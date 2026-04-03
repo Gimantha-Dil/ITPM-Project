@@ -1,10 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiDownload, FiEye, FiUsers, FiSearch, FiArrowRight, FiX, FiCalendar } from 'react-icons/fi';
+import LiveClock from '../components/LiveClock';
 
 // Read CSS variables from :root at runtime
 const cv = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+/* ─────────────────────────────────────────────
+   Time-based Greeting Helper
+───────────────────────────────────────────── */
+const getGreeting = (firstName) => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12)  return `Good morning, ${firstName}!`;
+  if (hour >= 12 && hour < 17) return `Good afternoon, ${firstName}!`;
+  if (hour >= 17 && hour < 21) return `Good evening, ${firstName}!`;
+  return `Good night, ${firstName}!`;
+};
 
 const Stars = ({ rating }) => {
   const r = Math.round(parseFloat(rating) || 0);
@@ -271,6 +283,7 @@ const Home = () => {
   const [topSessions, setTopSessions]   = useState([]);
   const [recentNotes, setRecentNotes]   = useState([]);
   const [loading, setLoading]           = useState(true);
+  const [greeting, setGreeting]         = useState('');
 
   const [search, setSearch]             = useState('');
   const [searchType, setSearchType]     = useState('notes');
@@ -279,7 +292,17 @@ const Home = () => {
   const [sortBy, setSortBy]             = useState('newest');
   const [browseCategory, setBrowseCategory] = useState(null);
 
-  useEffect(() => { fetchContent(); }, []);
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  // Update greeting immediately and every minute
+  useEffect(() => {
+    const firstName = user?.fullName?.split(' ')[0] || '';
+    setGreeting(getGreeting(firstName));
+    const timer = setInterval(() => setGreeting(getGreeting(firstName)), 60000);
+    return () => clearInterval(timer);
+  }, [user]);
 
   const fetchContent = async () => {
     try {
@@ -350,12 +373,17 @@ const Home = () => {
         <div style={{ position: 'absolute', top: -30, right: -30, width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
         <div style={{ position: 'absolute', bottom: -40, right: 80, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
 
-        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
-          Welcome, {user?.fullName?.split(' ')[0]}! 
-        </h1>
-        <p style={{ opacity: 0.85, fontSize: 15, marginBottom: 20 }}>
-          Discover top-rated notes &amp; kuppi sessions from SLIIT students
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+          <div>
+            <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>
+              {greeting}
+            </h1>
+            <p style={{ opacity: 0.85, fontSize: 15 }}>
+              Discover top-rated notes &amp; kuppi sessions from SLIIT students
+            </p>
+          </div>
+          <LiveClock />
+        </div>
 
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', maxWidth: 720 }}>
           <div style={{ flex: '2 1 220px', position: 'relative', minWidth: 180 }}>
