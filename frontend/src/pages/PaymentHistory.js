@@ -35,7 +35,7 @@ const PaymentHistory = () => {
 
       {history.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">💳</div>
+          <div className="empty-icon"></div>
           <h3>No payment history</h3>
           <p>Your transaction history will appear here after you make purchases.</p>
         </div>
