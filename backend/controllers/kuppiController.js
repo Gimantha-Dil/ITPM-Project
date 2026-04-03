@@ -2,7 +2,7 @@ const KuppiSession = require('../models/KuppiSession');
 const User = require('../models/User');
 const File = require('../models/File');
 const Notification = require('../models/Notification');
-const { sendPurchaseNotificationEmail, sendPaymentVerifiedEmail } = require('../utils/email');
+const { sendPurchaseNotificationEmail, sendPaymentVerifiedEmail, sendPaymentRejectedEmail } = require('../utils/email');
 const { generateReceiptBuffer } = require('../utils/pdfGenerator');
 
 // Helper: Save uploaded file to MongoDB
@@ -269,6 +269,22 @@ exports.rejectEnrollment = async (req, res) => {
     enrollment.receiptUrl = undefined;
 
     await session.save();
+
+    // Send rejection email to student
+    try {
+      const student = await User.findById(enrollment.student);
+      if (student) {
+        await sendPaymentRejectedEmail(
+          student.email,
+          student.fullName,
+          session.title,
+          'session',
+          session._id
+        );
+      }
+    } catch (emailErr) {
+      console.error('Rejection email error:', emailErr);
+    }
 
     await Notification.create({
       recipient: enrollment.student,
