@@ -5,6 +5,10 @@ const { auth } = require('../middleware/auth');
 const User = require('../models/User');
 
 router.post('/register', authController.register);
+router.post('/verify-otp', authController.verifyOtp);
+router.post('/resend-otp', authController.resendOtp);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
 router.post('/login', authController.login);
 router.get('/profile', auth, authController.getProfile);
 router.put('/profile', auth, authController.updateProfile);
@@ -12,7 +16,10 @@ router.put('/change-password', auth, authController.changePassword);
 router.get('/banks', authController.getBanks);
 router.get('/check-bank-details', auth, authController.checkBankDetails);
 
-// Delete user
+router.post('/send-delete-otp', auth, authController.sendDeleteOtp);
+router.delete('/delete-account', auth, authController.deleteAccount);
+
+// Delete user (admin)
 router.delete('/users/:id', auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

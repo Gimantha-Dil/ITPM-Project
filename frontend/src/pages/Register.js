@@ -77,7 +77,7 @@ const Register = () => {
 
   const getPasswordStrength = (pass) => {
     if (!pass) return null;
-    if (pass.length < 6) return { label: 'Too short', color: '#E24B4A', width: '15%' };
+    if (pass.length < 8) return { label: 'Too short — min 8 chars', color: '#E24B4A', width: '15%' };
     let score = 0;
     if (pass.length >= 8) score++;
     if (/[A-Z]/.test(pass)) score++;
@@ -107,8 +107,14 @@ const Register = () => {
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Minimum 6 characters required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Minimum 8 characters required';
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = 'Must contain at least one uppercase letter (A-Z)';
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = 'Must contain at least one number (0-9)';
+    } else if (!/[^a-zA-Z0-9]/.test(formData.password)) {
+      newErrors.password = 'Must contain at least one special character (!@#$...)';
     }
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
@@ -130,8 +136,8 @@ const Register = () => {
         phoneNumber: formData.phoneNumber,
         password: formData.password,
       });
-      toast.success('Registration successful! Welcome!');
-      navigate('/');
+      toast.success('OTP sent to your email! Please verify.');
+      navigate('/verify-otp', { state: { email: formData.email.trim() } });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed');
     } finally {
@@ -250,7 +256,7 @@ const Register = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Min 6 characters"
+                placeholder="Min 8 chars, uppercase, number, special char"
                 style={{ paddingRight: 40 }}
               />
               <button

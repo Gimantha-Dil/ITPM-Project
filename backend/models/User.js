@@ -60,6 +60,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['student', 'admin'],
     default: 'student'
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailOtp: {
+    code: String,
+    expiresAt: Date
+  },
+  resetPasswordOtp: {
+    code: String,
+    expiresAt: Date
   }
 }, {
   timestamps: true

@@ -15,6 +15,14 @@ const Login = () => {
   const navigate = useNavigate();
  
   const DOMAIN = '@my.sliit.lk';
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning! 🌅';
+    if (hour < 17) return 'Good Afternoon! ☀️';
+    if (hour < 21) return 'Good Evening! 🌆';
+    return 'Good Night! 🌙';
+  };
   const emailRegex = /^(it|eng|bus)\d+@my\.sliit\.lk$/i;
  
   const handleEmailChange = (e) => {
@@ -105,7 +113,7 @@ const Login = () => {
       }}
     >
       <div className="auth-container">
-        <h1>Welcome Back</h1>
+        <h1>{getGreeting()}</h1>
         <p className="subtitle">Login to SLIIT Learning Platform</p>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -173,7 +181,10 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="text-center mt-4" style={{ fontSize: '14px' }}>
+        <p className="text-center mt-2" style={{ fontSize: '14px' }}>
+          <Link to="/forgot-password" className="link">Forgot Password?</Link>
+        </p>
+        <p className="text-center mt-2" style={{ fontSize: '14px' }}>
           Don't have an account?{' '}
           <Link to="/register" className="link">Register</Link>
         </p>
