@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import BankDetailsModal from '../components/BankDetailsModal';
 
 const Profile = () => {
@@ -10,6 +11,10 @@ const Profile = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ fullName: '', phoneNumber: '' });
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [showPass, setShowPass] = useState({ current: false, newp: false, confirm: false });
+  const [deleteStep, setDeleteStep] = useState(0); // 0=btn, 1=otp sent, 2=enter otp
+  const [deleteOtp, setDeleteOtp] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -70,13 +75,28 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!window.confirm(' Account delete\n action undo ! All data delete')) return;
-    if (!window.confirm('Are you want delete data?Second confirmation.')) return;
+  const handleSendDeleteOtp = async () => {
+    if (!window.confirm('Are you sure you want to delete your account? This cannot be undone!')) return;
+    setSendingOtp(true);
+    try {
+      await api.post('/auth/send-delete-otp');
+      toast.success('OTP sent to your email!');
+      setDeleteStep(1);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to send OTP');
+    } finally {
+      setSendingOtp(false);
+    }
+  };
 
+  const handleDeleteAccount = async () => {
+    if (!deleteOtp || deleteOtp.length !== 6) {
+      toast.error('Enter 6-digit OTP');
+      return;
+    }
     setDeleting(true);
     try {
-      await api.delete(`/auth/users/${profile._id}`);
+      await api.delete('/auth/delete-account', { data: { otp: deleteOtp } });
       toast.success('Account deleted successfully');
       logout();
       navigate('/login');
@@ -174,21 +194,42 @@ const Profile = () => {
         <form onSubmit={handleChangePassword}>
           <div className="form-group">
             <label>Current Password</label>
-            <input type="password" className="form-input"
-              value={passwords.currentPassword}
-              onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} required />
+            <div style={{ position: 'relative' }}>
+              <input type={showPass.current ? 'text' : 'password'} className="form-input"
+                value={passwords.currentPassword}
+                onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
+                style={{ paddingRight: 40 }} required />
+              <button type="button" onClick={() => setShowPass(p => ({ ...p, current: !p.current }))}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                {showPass.current ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
           <div className="form-group">
             <label>New Password</label>
-            <input type="password" className="form-input"
-              value={passwords.newPassword}
-              onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} required />
+            <div style={{ position: 'relative' }}>
+              <input type={showPass.newp ? 'text' : 'password'} className="form-input"
+                value={passwords.newPassword}
+                onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                style={{ paddingRight: 40 }} required />
+              <button type="button" onClick={() => setShowPass(p => ({ ...p, newp: !p.newp }))}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                {showPass.newp ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
           <div className="form-group">
             <label>Confirm New Password</label>
-            <input type="password" className="form-input"
-              value={passwords.confirmPassword}
-              onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} required />
+            <div style={{ position: 'relative' }}>
+              <input type={showPass.confirm ? 'text' : 'password'} className="form-input"
+                value={passwords.confirmPassword}
+                onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
+                style={{ paddingRight: 40 }} required />
+              <button type="button" onClick={() => setShowPass(p => ({ ...p, confirm: !p.confirm }))}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                {showPass.confirm ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
           <button type="submit" className="btn btn-primary">Change Password</button>
         </form>
@@ -196,22 +237,60 @@ const Profile = () => {
 
       {/* ── Delete Account ── */}
       <div className="profile-section" style={{ borderTop: '2px solid #fee2e2', paddingTop: 20 }}>
-        <h2 style={{ color: '#dc2626' }}> Danger Zone</h2>
+        <h2 style={{ color: '#dc2626' }}>⚠️ Danger Zone</h2>
         <p className="text-muted" style={{ marginBottom: 16, fontSize: 14 }}>
-          Account delete data, notes, sessions. Undo !
+          Deleting your account will remove all your data, notes, and sessions. This cannot be undone!
         </p>
-        <button
-          className="btn"
-          onClick={handleDeleteAccount}
-          disabled={deleting}
-          style={{
-            background: '#dc2626', color: '#fff', border: 'none',
-            padding: '10px 24px', borderRadius: 10, fontWeight: 700,
-            cursor: deleting ? 'not-allowed' : 'pointer', opacity: deleting ? 0.6 : 1
-          }}
-        >
-          {deleting ? 'Deleting...' : ' Delete My Account'}
-        </button>
+
+        {deleteStep === 0 && (
+          <button
+            className="btn btn-danger"
+            onClick={handleSendDeleteOtp}
+            disabled={sendingOtp}
+          >
+            {sendingOtp ? 'Sending OTP...' : '🗑️ Delete My Account'}
+          </button>
+        )}
+
+        {deleteStep === 1 && (
+          <div>
+            <p style={{ color: '#dc2626', fontWeight: 600, marginBottom: 8 }}>
+              📧 OTP sent to your email. Enter it below to confirm deletion:
+            </p>
+            <div style={{ background: 'rgba(255,193,7,0.15)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
+              <p style={{ color: '#d97706', fontSize: 13, margin: 0 }}>
+                ⚠️ If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+              </p>
+            </div>
+            <div className="form-group">
+              <label>Enter OTP</label>
+              <input
+                type="text"
+                className="form-input"
+                maxLength={6}
+                value={deleteOtp}
+                onChange={e => setDeleteOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                placeholder="6-digit OTP"
+                style={{ letterSpacing: 8, fontSize: 20, textAlign: 'center' }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                className="btn btn-danger"
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : '🗑️ Confirm Delete'}
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => { setDeleteStep(0); setDeleteOtp(''); }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showBankModal && (

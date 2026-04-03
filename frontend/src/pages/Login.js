@@ -2,17 +2,27 @@ import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
  
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const emailInputRef = useRef(null);
   const { login } = useAuth();
   const navigate = useNavigate();
  
   const DOMAIN = '@my.sliit.lk';
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning! 🌅';
+    if (hour < 17) return 'Good Afternoon! ☀️';
+    if (hour < 21) return 'Good Evening! 🌆';
+    return 'Good Night! 🌙';
+  };
   const emailRegex = /^(it|eng|bus)\d+@my\.sliit\.lk$/i;
  
   const handleEmailChange = (e) => {
@@ -103,11 +113,11 @@ const Login = () => {
       }}
     >
       <div className="auth-container">
-        <h1>Hey! Student</h1>
+        <h1>{getGreeting()}</h1>
         <p className="subtitle">Login to SLIIT Learning Platform</p>
- 
+
         <form onSubmit={handleSubmit} noValidate>
- 
+
           <div className="form-group">
             <label>SLIIT Email</label>
             <input
@@ -133,25 +143,35 @@ const Login = () => {
             )}
             {errors.email && <p className="error-text">{errors.email}</p>}
           </div>
- 
+
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              className={`form-input ${
-                errors.password
-                  ? 'input-error'
-                  : password && password.length >= 6
-                  ? 'input-success'
-                  : ''
-              }`}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className={`form-input ${
+                  errors.password
+                    ? 'input-error'
+                    : password && password.length >= 6
+                    ? 'input-success'
+                    : ''
+                }`}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Enter password"
+                style={{ paddingRight: 40 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
             {errors.password && <p className="error-text">{errors.password}</p>}
           </div>
- 
+
           <button
             type="submit"
             className="btn btn-primary btn-block"
@@ -160,8 +180,11 @@ const Login = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
- 
-        <p className="text-center mt-4" style={{ fontSize: '14px' }}>
+
+        <p className="text-center mt-2" style={{ fontSize: '14px' }}>
+          <Link to="/forgot-password" className="link">Forgot Password?</Link>
+        </p>
+        <p className="text-center mt-2" style={{ fontSize: '14px' }}>
           Don't have an account?{' '}
           <Link to="/register" className="link">Register</Link>
         </p>
@@ -171,4 +194,3 @@ const Login = () => {
 };
  
 export default Login;
- 
