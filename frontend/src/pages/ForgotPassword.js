@@ -115,7 +115,7 @@ const ForgotPassword = () => {
         {step === 1 && (
           <>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ fontSize: 48 }}>🔐</div>
+              <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>Forgot Password</h1>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Enter your SLIIT email to receive an OTP</p>
             </div>
@@ -139,7 +139,7 @@ const ForgotPassword = () => {
                 />
               </div>
               <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Sending...' : '📨 Send OTP'}
+                {loading ? 'Sending...' : ' Send OTP'}
               </button>
             </form>
             <p className="text-center mt-4" style={{ fontSize: 14 }}>
@@ -159,7 +159,7 @@ const ForgotPassword = () => {
               </p>
               <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginTop: 8 }}>
                 <p style={{ color: '#fbbf24', fontSize: 13, margin: 0, textAlign: 'center' }}>
-                  ⚠️ If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+                   If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
                 </p>
               </div>
             </div>
@@ -182,7 +182,7 @@ const ForgotPassword = () => {
                 ))}
               </div>
               <button type="submit" className="btn btn-primary btn-block">
-                ✅ Verify OTP
+                 Verify OTP
               </button>
             </form>
             <div style={{ textAlign: 'center', marginTop: 12, fontSize: 14 }}>
@@ -191,7 +191,7 @@ const ForgotPassword = () => {
               ) : (
                 <button onClick={handleResend} disabled={loading}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>
-                  🔄 Resend OTP
+                   Resend OTP
                 </button>
               )}
             </div>
@@ -202,7 +202,7 @@ const ForgotPassword = () => {
         {step === 3 && (
           <>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ fontSize: 48 }}>🔑</div>
+              <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>New Password</h1>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Set your new password</p>
             </div>
@@ -255,7 +255,7 @@ const ForgotPassword = () => {
                 />
               </div>
               <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Resetting...' : '🔐 Reset Password'}
+                {loading ? 'Resetting...' : 'Reset Password'}
               </button>
             </form>
           </>
