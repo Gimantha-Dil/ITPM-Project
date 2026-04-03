@@ -72,13 +72,13 @@ const MyNotes = () => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">📝 My Notes</h1>
+        <h1 className="page-title"> My Notes</h1>
         <span className="text-muted">{notes.length} notes</span>
       </div>
 
       {notes.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📝</div>
+          <div className="empty-icon"></div>
           <h3>No notes yet</h3>
           <p>Upload your first note to start selling!</p>
         </div>
@@ -165,7 +165,7 @@ const MyNotes = () => {
                                 </td>
                                 <td>
                                   {purchase.verified ? (
-                                    <span className="badge badge-verified">✅ Verified</span>
+                                    <span className="badge badge-verified"> Verified</span>
                                   ) : purchase.rejected ? (
                                     <span className="badge" style={{ background: '#fee2e2', color: '#dc2626' }}>❌ Rejected</span>
                                   ) : (

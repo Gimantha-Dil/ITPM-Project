@@ -90,14 +90,14 @@ const VerifyOtp = () => {
     }}>
       <div className="auth-container" style={{ maxWidth: 420 }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{ fontSize: 48 }}>📧</div>
+          <div style={{ fontSize: 48 }}></div>
           <h1 style={{ color: 'var(--primary)', marginBottom: 8 }}>Verify Email</h1>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, textAlign: 'center' }}>
             OTP sent to <strong style={{ color: '#000', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: 6 }}>{email}</strong>
           </p>
           <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginTop: 8, textAlign: 'center' }}>
             <p style={{ color: '#fbbf24', fontSize: 13, margin: 0 }}>
-              ⚠️ If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+               If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
             </p>
           </div>
         </div>
@@ -136,7 +136,7 @@ const VerifyOtp = () => {
                   color: '#0a4a57',
                   outline: 'none',
                   transition: 'border 0.2s',
-                  // ✅ Fix: digit box middle එකට center කරනවා
+                  //  Fix: digit box middle එකට center කරනවා
                   lineHeight: '56px',
                   padding: 0,
                   boxSizing: 'border-box',
@@ -147,7 +147,7 @@ const VerifyOtp = () => {
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? 'Verifying...' : '✅ Verify OTP'}
+            {loading ? 'Verifying...' : ' Verify OTP'}
           </button>
         </form>
 
@@ -160,7 +160,7 @@ const VerifyOtp = () => {
               disabled={resending}
               style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}
             >
-              {resending ? 'Sending...' : '🔄 Resend OTP'}
+              {resending ? 'Sending...' : ' Resend OTP'}
             </button>
           )}
         </div>

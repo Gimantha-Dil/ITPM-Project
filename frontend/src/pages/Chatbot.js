@@ -266,7 +266,7 @@ const Chatbot = () => {
           <div style={{ padding: '12px 16px', background: '#fef3c7', border: '2px solid #fbbf24',
             borderRadius: 12, marginBottom: 8, animation: 'pulse-bg 2s infinite' }}>
             <div style={{ fontWeight: 600, color: '#92400e' }}>
-              🎤 Listening... Speak now! ({voiceLang === 'si-LK' ? 'සිංහල' : 'English'})
+               Listening... Speak now! ({voiceLang === 'si-LK' ? 'සිංහල' : 'English'})
             </div>
             {input && <div style={{ marginTop: 6, fontStyle: 'italic', color: '#78350f' }}>"{input}"</div>}
             <div className="voice-bars" style={{ marginTop: 8, display: 'flex', gap: 3, alignItems: 'flex-end', height: 20 }}>
@@ -322,7 +322,7 @@ const Chatbot = () => {
           {isListening ? <FiMicOff /> : <FiMic />}
         </button>
         <input type="text" className="chat-input"
-          placeholder={isListening ? '🎤 Listening...' : 'ඕනෑම දෙයක් අහන්න / Ask anything...'}
+          placeholder={isListening ? ' Listening...' : 'ඕනෑම දෙයක් අහන්න / Ask anything...'}
           value={input} onChange={(e) => setInput(e.target.value)}
           disabled={loading || isListening} style={{ flex: 1 }} />
         <button type="submit" className="btn btn-primary" disabled={loading || !input.trim()} style={{ borderRadius: 24 }}>

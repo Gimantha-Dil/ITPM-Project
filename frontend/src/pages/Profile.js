@@ -237,7 +237,7 @@ const Profile = () => {
 
       {/* ── Delete Account ── */}
       <div className="profile-section" style={{ borderTop: '2px solid #fee2e2', paddingTop: 20 }}>
-        <h2 style={{ color: '#dc2626' }}>⚠️ Danger Zone</h2>
+        <h2 style={{ color: '#dc2626' }}> Danger Zone</h2>
         <p className="text-muted" style={{ marginBottom: 16, fontSize: 14 }}>
           Deleting your account will remove all your data, notes, and sessions. This cannot be undone!
         </p>
@@ -248,18 +248,18 @@ const Profile = () => {
             onClick={handleSendDeleteOtp}
             disabled={sendingOtp}
           >
-            {sendingOtp ? 'Sending OTP...' : '🗑️ Delete My Account'}
+            {sendingOtp ? 'Sending OTP...' : ' Delete My Account'}
           </button>
         )}
 
         {deleteStep === 1 && (
           <div>
             <p style={{ color: '#dc2626', fontWeight: 600, marginBottom: 8 }}>
-              📧 OTP sent to your email. Enter it below to confirm deletion:
+               OTP sent to your email. Enter it below to confirm deletion:
             </p>
             <div style={{ background: 'rgba(255,193,7,0.15)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
               <p style={{ color: '#d97706', fontSize: 13, margin: 0 }}>
-                ⚠️ If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+                 If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
               </p>
             </div>
             <div className="form-group">
@@ -280,7 +280,7 @@ const Profile = () => {
                 onClick={handleDeleteAccount}
                 disabled={deleting}
               >
-                {deleting ? 'Deleting...' : '🗑️ Confirm Delete'}
+                {deleting ? 'Deleting...' : 'Confirm Delete'}
               </button>
               <button
                 className="btn btn-secondary"
