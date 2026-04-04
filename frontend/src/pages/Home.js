@@ -1,4 +1,4 @@
- import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiDownload, FiEye, FiUsers, FiSearch, FiArrowRight, FiX, FiCalendar } from 'react-icons/fi';
@@ -23,7 +23,7 @@ const Stars = ({ rating }) => {
   return (
     <span style={{ color: '#f59e0b', fontSize: 13 }}>
       {'\u2605'.repeat(r)}{'\u2606'.repeat(5 - r)}
-      <span style={{ color: '#6b7280', marginLeft: 4, fontSize: 12 }}>
+      <span style={{ color: 'var(--text-secondary)', marginLeft: 4, fontSize: 12 }}>
         {parseFloat(rating) > 0 ? parseFloat(rating).toFixed(1) : 'New'}
       </span>
     </span>
@@ -106,21 +106,21 @@ const CategoryBrowse = ({ category, api, onClose }) => {
 
   return (
     <div ref={sectionRef} style={{
-      marginBottom: 28, background: '#fff', borderRadius: 16,
+      marginBottom: 28, background: 'var(--bg-card)', borderRadius: 16,
       border: `2px solid ${accent}25`, overflow: 'hidden',
       boxShadow: `0 4px 24px ${accent}15`
     }}>
       {/* Panel header */}
       <div style={{
         background: `linear-gradient(135deg, ${accent}18 0%, ${accent}06 100%)`,
-        padding: '18px 24px', borderBottom: '1px solid #f3f4f6',
+        padding: '18px 24px', borderBottom: '1px solid var(--border-color)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center'
       }}>
         <div>
-          <h2 style={{ fontSize: 19, fontWeight: 700, color: '#1f2937', marginBottom: 2 }}>
+          <h2 style={{ fontSize: 19, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
             <span style={{ color: accent }}>{category}</span> — Notes &amp; Sessions
           </h2>
-          <p style={{ fontSize: 12, color: '#6b7280' }}>
+          <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
             {notes.length} note{notes.length !== 1 ? 's' : ''} &nbsp;·&nbsp; {sessions.length} session{sessions.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -134,7 +134,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
 
       <div style={{ padding: '20px 24px' }}>
         {/* Tab toggle */}
-        <div style={{ display: 'flex', gap: 4, background: '#f3f4f6', borderRadius: 10, padding: 4, width: 'fit-content', marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', borderRadius: 10, padding: 4, width: 'fit-content', marginBottom: 16 }}>
           {[
             { key: 'notes',    label: `Notes (${notes.length})` },
             { key: 'sessions', label: `Sessions (${sessions.length})` }
@@ -143,7 +143,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
               style={{
                 padding: '8px 18px', borderRadius: 7, border: 'none', cursor: 'pointer',
                 fontWeight: 600, fontSize: 13, transition: 'all 0.15s',
-                background: tab === t.key ? '#fff' : 'transparent',
+                background: tab === t.key ? 'var(--bg-card)' : 'transparent',
                 color: tab === t.key ? accent : '#6b7280',
                 boxShadow: tab === t.key ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'
               }}
@@ -154,7 +154,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
         {/* Search + filters */}
         <form className="search-filters" style={{ marginBottom: 20 }} onSubmit={e => e.preventDefault()}>
           <div style={{ flex: 1, position: 'relative', minWidth: 200 }}>
-            <FiSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+            <FiSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
               className="search-input"
@@ -209,7 +209,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
                   <div className="note-card-header" style={{
                     background: `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`,
                     fontSize: 36, minHeight: 90
-                  }}></div>
+                  }}>📄</div>
                   <div className="note-card-body">
                     <div className="note-card-title">{note.title}</div>
                     <p className="text-muted text-small" style={{ marginTop: 4 }}>
@@ -257,7 +257,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
                         : <span className="note-card-price" style={{ fontSize: 13 }}>LKR {session.price}</span>
                       }
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, fontSize: 12, color: '#6b7280' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, fontSize: 12, color: 'var(--text-secondary)' }}>
                       <span><FiCalendar size={11} style={{ marginRight: 3 }} />{new Date(session.date).toLocaleDateString()}</span>
                       <span><FiUsers size={11} style={{ marginRight: 3 }} />{session.enrollments?.length || 0}/{session.maxParticipants}</span>
                     </div>
@@ -356,7 +356,7 @@ const Home = () => {
     { name: 'DS',          color: '#059669' },
     { name: 'Business',    color: '#d97706' },
     { name: 'Engineering', color: '#dc2626' },
-    { name: 'Other',       color: '#6b7280' },
+    { name: 'Other',       color: 'var(--text-secondary)' },
   ];
 
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
@@ -387,25 +387,25 @@ const Home = () => {
 
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', maxWidth: 720 }}>
           <div style={{ flex: '2 1 220px', position: 'relative', minWidth: 180 }}>
-            <FiSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+            <FiSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
               placeholder={searchType === 'notes' ? 'Search notes, subjects, topics...' : 'Search sessions...'}
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '11px 12px 11px 40px', borderRadius: 10, border: 'none', fontSize: 14, outline: 'none', color: '#1f2937', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '11px 12px 11px 40px', borderRadius: 10, border: 'none', fontSize: 14, outline: 'none', color: 'var(--text-primary)', boxSizing: 'border-box' }}
             />
           </div>
 
           <select value={heroCategory} onChange={e => setHeroCategory(e.target.value)}
-            style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: '#374151', outline: 'none', cursor: 'pointer', minWidth: 120 }}>
+            style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: 'var(--text-primary)', outline: 'none', cursor: 'pointer', minWidth: 120, background: 'var(--bg-input)' }}>
             <option value="">All Categories</option>
             {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
           </select>
 
           {searchType === 'sessions' ? (
             <select value={sessionType} onChange={e => setSessionType(e.target.value)}
-              style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: '#374151', outline: 'none', cursor: 'pointer', minWidth: 120 }}>
+              style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: 'var(--text-primary)', outline: 'none', cursor: 'pointer', minWidth: 120, background: 'var(--bg-input)' }}>
               <option value="">All Types</option>
               <option value="A">Type A (Free)</option>
               <option value="B">Type B (Paid)</option>
@@ -414,7 +414,7 @@ const Home = () => {
             </select>
           ) : (
             <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-              style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: '#374151', outline: 'none', cursor: 'pointer', minWidth: 120 }}>
+              style={{ flex: '1 1 130px', padding: '11px 12px', borderRadius: 10, border: 'none', fontSize: 13, color: 'var(--text-primary)', outline: 'none', cursor: 'pointer', minWidth: 120, background: 'var(--bg-input)' }}>
               <option value="newest">Newest</option>
               <option value="rating">Top Rated</option>
               <option value="price_low">Price: Low → High</option>
@@ -431,7 +431,7 @@ const Home = () => {
                   style={{
                     padding: '7px 13px', borderRadius: 6, border: 'none', cursor: 'pointer',
                     fontSize: 12, fontWeight: 600, transition: 'all 0.15s', textTransform: 'capitalize',
-                    background: searchType === t ? '#fff' : 'transparent',
+                    background: searchType === t ? 'var(--bg-card)' : 'transparent',
                     color: searchType === t ? 'var(--primary-deeper)' : 'rgba(10,74,87,0.75)'
                   }}
                 >{t}</button>
@@ -455,16 +455,16 @@ const Home = () => {
               <button key={cat.name} onClick={() => handleCategoryClick(cat.name)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '18px 12px',
-                  background: isActive ? cat.color : '#fff',
-                  borderRadius: 12, border: `2px solid ${isActive ? cat.color : '#f3f4f6'}`,
-                  cursor: 'pointer', color: isActive ? '#fff' : '#1f2937', transition: 'all 0.18s ease',
+                  background: isActive ? cat.color : 'var(--bg-card)',
+                  borderRadius: 12, border: `2px solid ${isActive ? cat.color : 'var(--border-color)'}`,
+                  cursor: 'pointer', color: isActive ? '#fff' : 'var(--text-primary)', transition: 'all 0.18s ease',
                   transform: isActive ? 'translateY(-2px)' : 'none',
                   boxShadow: isActive
                     ? `0 8px 28px ${cat.color}60, -4px -4px 10px rgba(255,255,255,0.85)`
                     : '6px 6px 14px rgba(0,0,0,0.18), -4px -4px 10px rgba(255,255,255,0.9)'
                 }}
                 onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = cat.color; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '8px 10px 22px rgba(0,0,0,0.20), -4px -4px 12px rgba(255,255,255,0.95)'; } }}
-                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = '#f3f4f6'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '6px 6px 14px rgba(0,0,0,0.18), -4px -4px 10px rgba(255,255,255,0.9)'; } }}
+                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '6px 6px 14px rgba(0,0,0,0.18), -4px -4px 10px rgba(255,255,255,0.9)'; } }}
               >
                 <span style={{ fontWeight: 600, fontSize: 13 }}>{cat.name}</span>
                 {isActive && <span style={{ fontSize: 10, marginTop: 3, opacity: 0.8 }}>▲ close</span>}
@@ -493,7 +493,7 @@ const Home = () => {
           </Link>
         </div>
         {topNotes.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: 40, color: '#9ca3af' }}>
+          <div className="card" style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
             <p>No notes available yet. Be the first to upload!</p>
             <Link to="/create-note" className="btn btn-primary" style={{ marginTop: 12 }}>Upload Note</Link>
           </div>
@@ -501,7 +501,7 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
             {topNotes.map(note => (
               <Link key={note._id} to={'/notes/' + note._id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ background: '#fff', borderRadius: 12, padding: 18, border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer', height: '100%', display: 'flex', flexDirection: 'column' }}
+                <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: 18, border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'pointer', height: '100%', display: 'flex', flexDirection: 'column' }}
                   onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
                 >
@@ -513,12 +513,12 @@ const Home = () => {
                     }
                   </div>
                   <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, lineHeight: 1.3 }}>{note.title}</h3>
-                  <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>by {note.seller?.fullName || 'Unknown'} - {note.subject}</p>
-                  <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 10, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis',
+                  <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>by {note.seller?.fullName || 'Unknown'} - {note.subject}</p>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis',
                     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{note.description}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f3f4f6', paddingTop: 10, marginTop: 'auto' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: 10, marginTop: 'auto' }}>
                     <Stars rating={note.averageRating} />
-                    <div style={{ display: 'flex', gap: 10, fontSize: 11, color: '#9ca3af' }}>
+                    <div style={{ display: 'flex', gap: 10, fontSize: 11, color: 'var(--text-muted)' }}>
                       <span><FiEye size={12} /> {note.views || 0}</span>
                       <span><FiDownload size={12} /> {note.downloads || 0}</span>
                     </div>
@@ -539,7 +539,7 @@ const Home = () => {
           </Link>
         </div>
         {topSessions.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: 40, color: '#9ca3af' }}>
+          <div className="card" style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
             <p>No sessions yet. Create one!</p>
             <Link to="/create-session" className="btn btn-primary" style={{ marginTop: 12 }}>Create Session</Link>
           </div>
@@ -547,7 +547,7 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
             {topSessions.map(session => (
               <Link key={session._id} to={'/kuppi-sessions/' + session._id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ background: '#fff', borderRadius: 12, padding: 18, border: '1px solid #e5e7eb', transition: 'all 0.2s', cursor: 'pointer' }}
+                <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: 18, border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'pointer' }}
                   onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
                 >
@@ -566,15 +566,15 @@ const Home = () => {
                     }
                   </div>
                   <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{session.title}</h3>
-                  <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>by {session.host?.fullName || 'Unknown'} - {session.subject}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f3f4f6', paddingTop: 10 }}>
-                    <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#6b7280' }}>
+                  <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>by {session.host?.fullName || 'Unknown'} - {session.subject}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: 10 }}>
+                    <div style={{ display: 'flex', gap: 12, fontSize: 12, color: 'var(--text-secondary)' }}>
                       <span>{new Date(session.date).toLocaleDateString()}</span>
                       <span>{session.startTime}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <FiUsers size={12} color="#9ca3af" />
-                      <span style={{ fontSize: 11, color: '#9ca3af' }}>{session.enrollments?.length || 0}/{session.maxParticipants}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{session.enrollments?.length || 0}/{session.maxParticipants}</span>
                     </div>
                   </div>
                 </div>
@@ -591,14 +591,14 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
             {recentNotes.map(note => (
               <Link key={note._id} to={'/notes/' + note._id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ background: '#fff', borderRadius: 12, padding: 16, border: '1px solid #e5e7eb', transition: 'all 0.2s', display: 'flex', gap: 12, alignItems: 'center' }}
+                <div style={{ background: 'var(--bg-card)', borderRadius: 12, padding: 16, border: '1px solid var(--border-color)', transition: 'all 0.2s', display: 'flex', gap: 12, alignItems: 'center' }}
                   onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)'}
                   onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}></div>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>📄</div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <h4 style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{note.title}</h4>
-                    <p style={{ fontSize: 11, color: '#9ca3af' }}>{note.seller?.fullName} - {note.category} - {note.price === 0 ? 'Free' : 'LKR ' + note.price}</p>
+                    <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{note.seller?.fullName} - {note.category} - {note.price === 0 ? 'Free' : 'LKR ' + note.price}</p>
                   </div>
                 </div>
               </Link>

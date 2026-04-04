@@ -90,7 +90,7 @@ const EditNote = () => {
   return (
     <div style={{ maxWidth: 700 }}>
       <div className="page-header">
-        <h1 className="page-title">✏️ Edit Note</h1>
+        <h1 className="page-title">Edit Note</h1>
       </div>
 
       <div className="card">

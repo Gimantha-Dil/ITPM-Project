@@ -92,21 +92,19 @@ const VerifyOtp = () => {
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{ fontSize: 48 }}></div>
           <h1 style={{ color: 'var(--primary)', marginBottom: 8 }}>Verify Email</h1>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, textAlign: 'center' }}>
-            OTP sent to <strong style={{ color: '#000', background: 'rgba(255,255,255,0.9)', padding: '2px 8px', borderRadius: 6 }}>{email}</strong>
+          <p className="otp-sent-line">
+            <span className="otp-sent-text">Sent to </span>
+            <span className="otp-email-badge">{email}</span>
           </p>
-          <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '12px 16px', marginTop: 8, textAlign: 'center' }}>
-            <p style={{ color: '#fbbf24', fontSize: 13, margin: '0 0 6px 0' }}>
-               If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
-            </p>
+          <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginTop: 8, textAlign: 'center' }}>
             <p style={{ color: '#fbbf24', fontSize: 13, margin: 0 }}>
-              To make sure future emails reach your inbox, long press on the email and select <strong>"Mark as Not Spam"</strong> or <strong>"Move to Inbox"</strong>.
+               If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* FIX: OTP boxes - digits vertically & horizontally centered */}
+          {/*  FIX: OTP boxes - digits vertically & horizontally centered */}
           <div
             style={{
               display: 'flex',
@@ -134,12 +132,12 @@ const VerifyOtp = () => {
                   fontSize: 24,
                   fontWeight: 700,
                   borderRadius: 12,
-                  border: `2px solid ${digit ? '#0ab5d6' : '#b1f2ff'}`,
-                  background: '#fff',
-                  color: '#0a4a57',
+                  border: `2px solid ${digit ? '#0ab5d6' : 'var(--border-color)'}`,
+                  background: 'var(--bg-input)',
+                  color: 'var(--text-primary)',
                   outline: 'none',
                   transition: 'border 0.2s',
-                  // Fix: digit box middle center
+                  //  Fix: digit box middle එකට center කරනවා
                   lineHeight: '56px',
                   padding: 0,
                   boxSizing: 'border-box',
@@ -150,20 +148,20 @@ const VerifyOtp = () => {
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? 'Verifying...' : 'Verify OTP'}
+            {loading ? 'Verifying...' : ' Verify OTP'}
           </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: 16, fontSize: 14 }}>
           {countdown > 0 ? (
-            <p style={{ color: 'rgba(255,255,255,0.6)' }}>Resend OTP in <strong style={{ color: 'var(--primary)' }}>{countdown}s</strong></p>
+            <p style={{ color: 'var(--text-secondary)' }}>Resend OTP in <strong style={{ color: 'var(--primary)' }}>{countdown}s</strong></p>
           ) : (
             <button
               onClick={handleResend}
               disabled={resending}
               style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}
             >
-              {resending ? 'Sending...' : 'Resend OTP'}
+              {resending ? 'Sending...' : ' Resend OTP'}
             </button>
           )}
         </div>

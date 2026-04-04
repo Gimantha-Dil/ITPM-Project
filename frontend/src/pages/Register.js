@@ -167,7 +167,7 @@ const Register = () => {
       }}
     >
       <div className="auth-container" style={{ margin: '20px 0' }}>
-        <div className="logo-emoji"></div>
+        <div className="logo-emoji">🎓</div>
         <h1>Create Account</h1>
         <p className="subtitle">Join SLIIT Learning Platform</p>
 
@@ -315,7 +315,7 @@ const Register = () => {
                 onClick={() => setShowConfirm(!showConfirm)}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
               >
-                {showConfirm ? <FiEyeOff /> : <FiEye />}
+                {showConfirm ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
             {errors.confirmPassword && (
@@ -332,10 +332,10 @@ const Register = () => {
           </button>
         </form>
 
-        <p className="text-center mt-4" style={{ fontSize: '13px', color: 'rgb(0, 0, 0)' }}>
+        <p className="text-center mt-4" style={{ fontSize: '13px', color: 'var(--text-secondary, rgba(255,255,255,0.75))' }}>
           Bank details are not required now — add them later when you want to sell.
         </p>
-        <p className="text-center mt-2" style={{ fontSize: '14px' }}>
+        <p className="text-center mt-2" style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
           Already have an account?{' '}
           <Link to="/login" className="link">Login</Link>
         </p>

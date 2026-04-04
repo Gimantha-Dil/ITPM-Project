@@ -131,7 +131,7 @@ const Profile = () => {
           <div className="form-group">
             <label>Email</label>
             <input type="email" className="form-input" value={profile?.email || ''}
-              disabled style={{ background: '#f3f4f6' }} />
+              disabled style={{ background: 'var(--bg-input)', color: 'var(--text-secondary)' }} />
           </div>
           <div className="form-group">
             <label>Phone Number</label>
@@ -200,7 +200,7 @@ const Profile = () => {
                 onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, current: !p.current }))}
-                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
                 {showPass.current ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
@@ -213,7 +213,7 @@ const Profile = () => {
                 onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, newp: !p.newp }))}
-                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
                 {showPass.newp ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
@@ -226,7 +226,7 @@ const Profile = () => {
                 onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, confirm: !p.confirm }))}
-                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
                 {showPass.confirm ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
@@ -255,17 +255,11 @@ const Profile = () => {
         {deleteStep === 1 && (
           <div>
             <p style={{ color: '#dc2626', fontWeight: 600, marginBottom: 8 }}>
-              OTP sent to your email. Enter it below to confirm deletion:
+               OTP sent to your email. Enter it below to confirm deletion:
             </p>
-            <div style={{ background: 'rgba(255,193,7,0.12)', border: '1px solid #fbbf24', borderRadius: 10, padding: '12px 16px', marginBottom: 12 }}>
-              <p style={{ color: '#92400e', fontSize: 13, fontWeight: 600, margin: '0 0 8px 0' }}>
-                Didn't receive the email?
-              </p>
-              <p style={{ color: '#d97706', fontSize: 13, margin: '0 0 6px 0' }}>
-                 If you don't see it in your inbox, please check your <strong>Junk / Spam</strong> folder — our emails sometimes get filtered automatically.
-              </p>
+            <div style={{ background: 'rgba(255,193,7,0.15)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
               <p style={{ color: '#d97706', fontSize: 13, margin: 0 }}>
-                To make sure future emails reach your inbox, long press on the email and select <strong>"Mark as Not Spam"</strong> or <strong>"Move to Inbox"</strong>.
+                 If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
               </p>
             </div>
             <div className="form-group">

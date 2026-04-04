@@ -166,7 +166,7 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
               >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
+                {showPassword ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
             {errors.password && <p className="error-text">{errors.password}</p>}
