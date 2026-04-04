@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import {
   FiHome, FiBook, FiShoppingCart, FiBookmark,
   FiUpload, FiList, FiBarChart2, FiUsers,
-  FiCalendar, FiMessageCircle, FiLock, FiPlus
+  FiCalendar, FiMessageCircle, FiLock, FiPlus,
+  FiChevronRight
 } from 'react-icons/fi';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen }) => {
   const { user, api } = useAuth();
   const navigate = useNavigate();
   const [hasBankDetails, setHasBankDetails] = useState(false);
@@ -27,7 +28,42 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="sidebar">
+    <aside
+      className="sidebar"
+      style={{
+        position: 'fixed',
+        top: 60,
+        left: 0,
+        height: 'calc(100vh - 60px)',
+        width: '240px',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        transform: isOpen ? 'translateX(0)' : 'translateX(-234px)',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        boxShadow: isOpen ? '4px 0 24px rgba(0,0,0,0.12)' : 'none',
+        zIndex: 199,
+      }}
+    >
+      {/* Collapsed indicator strip */}
+      {!isOpen && (
+        <div style={{
+          position: 'absolute',
+          right: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '6px',
+          height: '60px',
+          background: 'var(--primary-color, #0ea5e9)',
+          borderRadius: '0 6px 6px 0',
+          opacity: 0.7,
+        }}>
+          <FiChevronRight size={12} color="#fff" />
+        </div>
+      )}
+
       {/* Browse Section */}
       <div className="sidebar-section">
         <div className="sidebar-section-title">Browse</div>
