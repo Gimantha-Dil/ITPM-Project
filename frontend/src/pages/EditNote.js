@@ -161,7 +161,7 @@ const EditNote = () => {
                   boxShadow: !isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
               >
-                💰 Paid
+                 Paid
               </button>
             </div>
           </div>
@@ -203,7 +203,7 @@ const EditNote = () => {
             <label>Replace Note File <span className="text-muted text-small">(optional — leave empty to keep current)</span></label>
             {currentFileName && !newFile && (
               <div style={{ marginBottom: 8, padding: '8px 12px', background: '#f0fdff', borderRadius: 8, border: '1px solid #63e5ff', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
-                📄 Current file: <strong>{currentFileName}</strong>
+                 Current file: <strong>{currentFileName}</strong>
                 {' — '}
                 <a href={`${API_BASE}${currentFileUrl}`} target="_blank" rel="noreferrer" className="link">View</a>
                 {' | '}
@@ -219,7 +219,7 @@ const EditNote = () => {
                 onChange={e => setNewFile(e.target.files[0])} />
               {newFile ? (
                 <div>
-                  <p style={{ fontSize: '24px' }}>📄</p>
+                  <p style={{ fontSize: '24px' }}></p>
                   <p><strong>{newFile.name}</strong></p>
                   <p className="text-small text-muted">{(newFile.size / 1024 / 1024).toFixed(2)} MB</p>
                   <span style={{ color: '#dc2626', cursor: 'pointer', fontSize: 12 }}
@@ -227,7 +227,7 @@ const EditNote = () => {
                 </div>
               ) : (
                 <div>
-                  <p style={{ fontSize: '28px' }}>📁</p>
+                  <p style={{ fontSize: '28px' }}></p>
                   <p>Click to replace file</p>
                   <p className="text-small text-muted">PDF, DOC, PPT, XLS, TXT, Images</p>
                 </div>
@@ -241,7 +241,7 @@ const EditNote = () => {
               <label>Preview File <span className="text-muted text-small">(optional — buyers see before purchase)</span></label>
               {currentPreviewUrl && !previewFile && (
                 <div style={{ marginBottom: 8, padding: '8px 12px', background: '#f0fdff', borderRadius: 8, border: '1px solid #63e5ff', fontSize: 13 }}>
-                  ✅ Current preview set —{' '}
+                   Current preview set —{' '}
                   <a href={`${API_BASE}${currentPreviewUrl}`} target="_blank" rel="noreferrer" className="link">View</a>
                   {' | '}
                   <span style={{ color: '#dc2626', cursor: 'pointer' }} onClick={() => setCurrentPreviewUrl(null)}>Remove</span>
@@ -257,13 +257,13 @@ const EditNote = () => {
                   onChange={e => setPreviewFile(e.target.files[0])} />
                 {previewFile ? (
                   <div>
-                    <p style={{ fontSize: '24px' }}>👁️</p>
+                    <p style={{ fontSize: '24px' }}></p>
                     <p><strong>{previewFile.name}</strong></p>
                     <p className="text-small text-muted">{(previewFile.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
                 ) : (
                   <div>
-                    <p style={{ fontSize: '28px' }}>👁️</p>
+                    <p style={{ fontSize: '28px' }}></p>
                     <p>Click to {currentPreviewUrl ? 'change' : 'upload'} preview</p>
                     <p className="text-small text-muted">PDF or Image</p>
                   </div>
@@ -274,7 +274,7 @@ const EditNote = () => {
 
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Saving...' : '✅ Update Note'}
+              {loading ? 'Saving...' : ' Update Note'}
             </button>
             <button type="button" className="btn btn-secondary"
               onClick={() => navigate('/my-notes')}>
