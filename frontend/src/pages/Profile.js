@@ -255,11 +255,17 @@ const Profile = () => {
         {deleteStep === 1 && (
           <div>
             <p style={{ color: '#dc2626', fontWeight: 600, marginBottom: 8 }}>
-               OTP sent to your email. Enter it below to confirm deletion:
+              OTP sent to your email. Enter it below to confirm deletion:
             </p>
-            <div style={{ background: 'rgba(255,193,7,0.15)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
+            <div style={{ background: 'rgba(255,193,7,0.12)', border: '1px solid #fbbf24', borderRadius: 10, padding: '12px 16px', marginBottom: 12 }}>
+              <p style={{ color: '#92400e', fontSize: 13, fontWeight: 600, margin: '0 0 8px 0' }}>
+                Didn't receive the email?
+              </p>
+              <p style={{ color: '#d97706', fontSize: 13, margin: '0 0 6px 0' }}>
+                 If you don't see it in your inbox, please check your <strong>Junk / Spam</strong> folder — our emails sometimes get filtered automatically.
+              </p>
               <p style={{ color: '#d97706', fontSize: 13, margin: 0 }}>
-                 If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+                To make sure future emails reach your inbox, long press on the email and select <strong>"Mark as Not Spam"</strong> or <strong>"Move to Inbox"</strong>.
               </p>
             </div>
             <div className="form-group">
@@ -280,7 +286,7 @@ const Profile = () => {
                 onClick={handleDeleteAccount}
                 disabled={deleting}
               >
-                {deleting ? 'Deleting...' : 'Confirm Delete'}
+                {deleting ? 'Deleting...' : ' Confirm Delete'}
               </button>
               <button
                 className="btn btn-secondary"

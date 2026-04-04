@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -37,6 +37,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   const { user, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) return <div className="loading-screen">Loading...</div>;
 
@@ -55,9 +56,34 @@ function App() {
   return (
     <div className="app-layout">
       <Navbar />
-      <div className="main-container">
-        <Sidebar />
-        <main className="content">
+      <div className="main-container" style={{ position: 'relative' }}>
+
+        {/* Sidebar hover zone — thin strip always present */}
+        <div
+          style={{
+            position: 'fixed',
+            top: 60,
+            left: 0,
+            width: sidebarOpen ? '240px' : '6px',
+            height: '100vh',
+            zIndex: 200,
+            transition: 'width 0.3s ease',
+          }}
+          onMouseEnter={() => setSidebarOpen(true)}
+          onMouseLeave={() => setSidebarOpen(false)}
+        >
+          <Sidebar isOpen={sidebarOpen} />
+        </div>
+
+        {/* Content shifts right only when sidebar is open */}
+        <main
+          className="content"
+          style={{
+            marginLeft: sidebarOpen ? '240px' : '6px',
+            transition: 'margin-left 0.3s ease',
+            width: '100%',
+          }}
+        >
           <Routes>
             <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
