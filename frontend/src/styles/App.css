@@ -63,7 +63,7 @@ body {
 }
 
 .auth-container {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 1.00);
   border-radius: 16px;
   padding: 40px;
   width: 100%;

@@ -332,7 +332,7 @@ const Register = () => {
           </button>
         </form>
 
-        <p className="text-center mt-4" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>
+        <p className="text-center mt-4" style={{ fontSize: '13px', color: 'rgb(0, 0, 0)' }}>
           Bank details are not required now — add them later when you want to sell.
         </p>
         <p className="text-center mt-2" style={{ fontSize: '14px' }}>
