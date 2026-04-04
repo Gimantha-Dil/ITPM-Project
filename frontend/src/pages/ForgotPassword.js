@@ -152,7 +152,7 @@ const ForgotPassword = () => {
         {step === 2 && (
           <>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ fontSize: 48 }}>📧</div>
+              <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>Enter OTP</h1>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>
                 Sent to <strong style={{ color: 'var(--primary-light)' }}>{email}</strong>

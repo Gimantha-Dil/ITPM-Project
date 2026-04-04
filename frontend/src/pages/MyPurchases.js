@@ -72,7 +72,7 @@ const MyPurchases = () => {
 
       {purchases.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🛒</div>
+          <div className="empty-icon"></div>
           <h3>No purchases yet</h3>
           <p>Browse the marketplace to find notes!</p>
           <Link to="/notes" className="btn btn-primary" style={{ marginTop: '16px' }}>
@@ -165,7 +165,7 @@ const MyPurchases = () => {
                               className="btn btn-secondary btn-sm"
                               onClick={() => fileInputRefs.current[item.note._id]?.click()}
                             >
-                              📎 Choose Slip
+                               Choose Slip
                             </button>
                             <span id={`label_${item.note._id}`} className="text-small text-muted">No file chosen</span>
                             <button

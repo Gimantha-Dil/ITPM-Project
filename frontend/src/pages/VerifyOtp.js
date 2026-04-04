@@ -97,7 +97,7 @@ const VerifyOtp = () => {
           </p>
           <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '12px 16px', marginTop: 8, textAlign: 'center' }}>
             <p style={{ color: '#fbbf24', fontSize: 13, margin: '0 0 6px 0' }}>
-              ⚠️ If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
+               If you don't see the email in your inbox, please check your <strong>Junk / Spam</strong> folder.
             </p>
             <p style={{ color: '#fbbf24', fontSize: 13, margin: 0 }}>
               To make sure future emails reach your inbox, long press on the email and select <strong>"Mark as Not Spam"</strong> or <strong>"Move to Inbox"</strong>.

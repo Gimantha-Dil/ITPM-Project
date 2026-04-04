@@ -148,7 +148,7 @@ const EditNote = () => {
                   boxShadow: isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
               >
-                🆓 Free
+                 Free
               </button>
               <button
                 type="button"

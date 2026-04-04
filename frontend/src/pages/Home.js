@@ -209,7 +209,7 @@ const CategoryBrowse = ({ category, api, onClose }) => {
                   <div className="note-card-header" style={{
                     background: `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`,
                     fontSize: 36, minHeight: 90
-                  }}>📄</div>
+                  }}></div>
                   <div className="note-card-body">
                     <div className="note-card-title">{note.title}</div>
                     <p className="text-muted text-small" style={{ marginTop: 4 }}>
@@ -595,7 +595,7 @@ const Home = () => {
                   onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)'}
                   onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>📄</div>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}></div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <h4 style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{note.title}</h4>
                     <p style={{ fontSize: 11, color: '#9ca3af' }}>{note.seller?.fullName} - {note.category} - {note.price === 0 ? 'Free' : 'LKR ' + note.price}</p>

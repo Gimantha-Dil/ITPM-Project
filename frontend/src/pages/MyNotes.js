@@ -167,9 +167,9 @@ const MyNotes = () => {
                                   {purchase.verified ? (
                                     <span className="badge badge-verified"> Verified</span>
                                   ) : purchase.rejected ? (
-                                    <span className="badge" style={{ background: '#fee2e2', color: '#dc2626' }}>❌ Rejected</span>
+                                    <span className="badge" style={{ background: '#fee2e2', color: '#dc2626' }}> Rejected</span>
                                   ) : (
-                                    <span className="badge badge-pending">⏳ Pending</span>
+                                    <span className="badge badge-pending"> Pending</span>
                                   )}
                                 </td>
                                 <td>
