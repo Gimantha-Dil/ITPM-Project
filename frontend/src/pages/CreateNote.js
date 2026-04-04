@@ -55,7 +55,7 @@ const CreateNote = () => {
 
   return (
     <div style={{ maxWidth: '700px' }}>
-      <h1 className="page-title mb-4">📝 Upload New Note</h1>
+      <h1 className="page-title mb-4"> Upload New Note</h1>
 
       <div className="card">
         <form onSubmit={handleSubmit}>
@@ -125,12 +125,12 @@ const CreateNote = () => {
                 style={{
                   flex: 1, padding: '12px', borderRadius: 12, border: 'none', cursor: 'pointer',
                   fontWeight: 700, fontSize: 15, transition: 'all 0.15s',
-                  background: isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : '#f3f4f6',
+                  background: isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : 'var(--gray-200)',
                   color: isFree ? '#0a4a57' : '#6b7280',
                   boxShadow: isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
               >
-                 Free
+                Free
               </button>
               <button
                 type="button"
@@ -138,7 +138,7 @@ const CreateNote = () => {
                 style={{
                   flex: 1, padding: '12px', borderRadius: 12, border: 'none', cursor: 'pointer',
                   fontWeight: 700, fontSize: 15, transition: 'all 0.15s',
-                  background: !isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : '#f3f4f6',
+                  background: !isFree ? 'linear-gradient(135deg, #63e5ff, #b1f2ff)' : 'var(--gray-200)',
                   color: !isFree ? '#0a4a57' : '#6b7280',
                   boxShadow: !isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
@@ -222,7 +222,7 @@ const CreateNote = () => {
               <label>Preview File <span className="text-muted text-small">(optional — buyers can see this before purchasing)</span></label>
               <div
                 className={`file-upload-area ${previewFile ? 'has-file' : ''}`}
-                style={{ borderColor: '#63e5ff', background: '#f0fdff' }}
+                style={{ borderColor: '#63e5ff', background: 'var(--bg-hover)' }}
                 onClick={() => document.getElementById('previewFile').click()}
               >
                 <input id="previewFile" type="file" style={{ display: 'none' }}

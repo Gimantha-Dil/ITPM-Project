@@ -17,6 +17,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const inputRefs = useRef([]);
+  const emailRef = useRef(null);
 
   const DOMAIN = '@my.sliit.lk';
 
@@ -117,12 +118,13 @@ const ForgotPassword = () => {
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>Forgot Password</h1>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Enter your SLIIT email to receive an OTP</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Enter your SLIIT email to receive an OTP</p>
             </div>
             <form onSubmit={handleSendOtp}>
               <div className="form-group">
                 <label>SLIIT Email</label>
                 <input
+                  ref={emailRef}
                   type="text"
                   className="form-input"
                   value={email}
@@ -133,8 +135,34 @@ const ForgotPassword = () => {
                     if (atIdx !== -1) val = val.slice(0, atIdx);
                     const cleaned = val.replace(/[^a-zA-Z0-9]/g, '');
                     setEmail(cleaned ? cleaned + DOMAIN : '');
+                    setTimeout(() => {
+                      if (emailRef.current)
+                        emailRef.current.setSelectionRange(cleaned.length, cleaned.length);
+                    }, 0);
+                  }}
+                  onKeyDown={(e) => {
+                    const input = emailRef.current;
+                    if (!input) return;
+                    const atIndex = email.indexOf('@');
+                    const safeLen = atIndex === -1 ? email.length : atIndex;
+                    if (input.selectionStart > safeLen) {
+                      if (['Backspace','Delete','ArrowRight','End'].includes(e.key)) {
+                        e.preventDefault();
+                        input.setSelectionRange(safeLen, safeLen);
+                      }
+                    }
+                  }}
+                  onClick={(e) => {
+                    const input = emailRef.current;
+                    if (!input) return;
+                    const atIndex = email.indexOf('@');
+                    const safeLen = atIndex === -1 ? email.length : atIndex;
+                    if (input.selectionStart > safeLen)
+                      input.setSelectionRange(safeLen, safeLen);
                   }}
                   placeholder="IT23365478@my.sliit.lk"
+                  autoComplete="off"
+                  spellCheck={false}
                   required
                 />
               </div>
@@ -154,7 +182,7 @@ const ForgotPassword = () => {
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>Enter OTP</h1>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
                 Sent to <strong style={{ color: 'var(--primary-light)' }}>{email}</strong>
               </p>
               <div style={{ background: 'rgba(255,193,7,0.2)', border: '1px solid #fbbf24', borderRadius: 10, padding: '10px 14px', marginTop: 8 }}>
@@ -187,7 +215,7 @@ const ForgotPassword = () => {
             </form>
             <div style={{ textAlign: 'center', marginTop: 12, fontSize: 14 }}>
               {countdown > 0 ? (
-                <p style={{ color: 'rgba(255,255,255,0.6)' }}>Resend in <strong style={{ color: 'var(--primary)' }}>{countdown}s</strong></p>
+                <p style={{ color: 'var(--text-secondary)' }}>Resend in <strong style={{ color: 'var(--primary)' }}>{countdown}s</strong></p>
               ) : (
                 <button onClick={handleResend} disabled={loading}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>
@@ -204,7 +232,7 @@ const ForgotPassword = () => {
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 48 }}></div>
               <h1 style={{ color: 'var(--primary)' }}>New Password</h1>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Set your new password</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Set your new password</p>
             </div>
             <form onSubmit={handleResetPassword}>
               <div className="form-group">
@@ -255,7 +283,7 @@ const ForgotPassword = () => {
                 />
               </div>
               <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Resetting...' : 'Reset Password'}
+                {loading ? 'Resetting...' : ' Reset Password'}
               </button>
             </form>
           </>
