@@ -130,7 +130,7 @@ const CreateNote = () => {
                   boxShadow: isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
               >
-                🆓 Free
+                 Free
               </button>
               <button
                 type="button"
@@ -143,7 +143,7 @@ const CreateNote = () => {
                   boxShadow: !isFree ? '0 4px 12px rgba(99,229,255,0.4)' : 'none',
                 }}
               >
-                💰 Paid
+                 Paid
               </button>
             </div>
           </div>
@@ -202,13 +202,13 @@ const CreateNote = () => {
                 onChange={e => setFile(e.target.files[0])} />
               {file ? (
                 <div>
-                  <p style={{ fontSize: '24px' }}>📄</p>
+                  <p style={{ fontSize: '24px' }}></p>
                   <p><strong>{file.name}</strong></p>
                   <p className="text-small text-muted">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               ) : (
                 <div>
-                  <p style={{ fontSize: '36px' }}>📁</p>
+                  <p style={{ fontSize: '36px' }}></p>
                   <p>Click to select file</p>
                   <p className="text-small text-muted">PDF, DOC, PPT, XLS, TXT, Images</p>
                 </div>
@@ -230,13 +230,13 @@ const CreateNote = () => {
                   onChange={e => setPreviewFile(e.target.files[0])} />
                 {previewFile ? (
                   <div>
-                    <p style={{ fontSize: '24px' }}>👁️</p>
+                    <p style={{ fontSize: '24px' }}></p>
                     <p><strong>{previewFile.name}</strong></p>
                     <p className="text-small text-muted">{(previewFile.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
                 ) : (
                   <div>
-                    <p style={{ fontSize: '36px' }}>👁️</p>
+                    <p style={{ fontSize: '36px' }}></p>
                     <p>Click to upload preview</p>
                     <p className="text-small text-muted">PDF or Image — shown to buyers before purchase</p>
                   </div>

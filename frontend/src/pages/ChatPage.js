@@ -138,7 +138,7 @@ const ChatPage = () => {
           ) : (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 48, marginBottom: 8 }}>💬</div>
+                <div style={{ fontSize: 48, marginBottom: 8 }}></div>
                 <p>Select a conversation</p>
               </div>
             </div>

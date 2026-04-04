@@ -167,7 +167,7 @@ const Register = () => {
       }}
     >
       <div className="auth-container" style={{ margin: '20px 0' }}>
-        <div className="logo-emoji">🎓</div>
+        <div className="logo-emoji"></div>
         <h1>Create Account</h1>
         <p className="subtitle">Join SLIIT Learning Platform</p>
 

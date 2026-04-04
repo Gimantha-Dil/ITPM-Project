@@ -143,7 +143,8 @@ function match(msg, keywords) {
 
 exports.chatbot = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, language } = req.body;
+    const lang = language || 'en';
     const msg = message.toLowerCase();
 
     let reply = '';
@@ -167,7 +168,7 @@ I can help you with:
     //  NOTES
 
     // Upload notes
-    else if (match(msg, ['upload note', 'how to upload', 'how do i upload', 'sell note', 'create note', 'notes upload', 'notes දාන්නේ', 'notes දාන', 'upload කරන්නේ', 'අප්ලෝඩ්', 'notes sell', 'විකුණන'])) {
+    else if (match(msg, ['upload note', 'how to upload notes', 'how do i upload notes', 'sell note', 'create note', 'notes upload', 'notes දාන්නේ', 'notes දාන', 'note upload කරන්නේ', 'අප්ලෝේ්', 'notes sell', 'ළිකුණන', 'notes upload කරන්නේ', 'notes upload කරන්නේ කොහොමද']) && !match(msg, ['payment slip', 'slip', 'ස්ලිප්ි'])) {
       reply = ` How to Upload/Sell Notes:
 Notes upload කරන්නේ මෙහෙමයි:
 
@@ -177,25 +178,24 @@ Notes upload කරන්නේ මෙහෙමයි:
 2 Go to Sidebar → SELLER → Create Note
    Sidebar එකේ SELLER section → Create Note click කරන්න
 
-3 Fill in the form:
+3 Form එක පිරවන්න:
    • Title - Note එකේ නම
-   • Description - විස්තරයක්
+   • Description - විස්තරයක් දෙන්න
    • Category - IT / SE / CS / DS / Business / Engineering / Other
    • Subject - විෂය
    • Price - මිල (Free නම් 0 දාන්න)
-   • Tags - keywords
+   • Tags - සොයන්න keywords
 
-4 Upload your file (Max 10MB)
-   File එක upload කරන්න
+4 File එක upload කරන්න (Max 10MB)
 
-5 Click "Upload Note" 
+5 "Upload Note" click කරන්න
    දැන් marketplace එකේ පේනවා!
 
- Tip: Good title + description = more sales!`;
+ඉඟිය: හොඳ title + description = විකුණුම් වැඩිවේ!`;
     }
 
     // Set price
-    else if (match(msg, ['set price', 'price set', 'මිල', 'price කරන', 'pricing', 'how much charge', 'charge', 'free note'])) {
+    else if (match(msg, ['set price', 'price set', 'මිල', 'price කරන', 'pricing', 'how much charge', 'charge', 'free note', 'price set කරන්නේ', 'notes ට price', 'price set කරන්නේ කොහොමද'])) {
       reply = ` Setting Price for Notes:
 Notes වලට මිල දාන්නේ මෙහෙමයි:
 
@@ -211,7 +211,7 @@ Notes වලට මිල දාන්නේ මෙහෙමයි:
     }
 
     // File types
-    else if (match(msg, ['file type', 'what file', 'file format', 'format', 'allowed file', 'මොන file', 'කොයි type', 'what types can i upload'])) {
+    else if (match(msg, ['file type', 'what file', 'file format', 'format', 'allowed file', 'මොන file', 'කොයි type', 'what types can i upload', 'file types upload', 'කොන් file types', 'file types upload කරන්න'])) {
       reply = ` Allowed File Types:
 Upload කරන්න පුළුවන් file types:
 
@@ -233,7 +233,7 @@ Upload කරන්න පුළුවන් file types:
     }
 
     // Download notes
-    else if (match(msg, ['download note', 'how to download', 'download a purchased', 'download කරන', 'බාගන්න', 'ලබාගන්න', 'get note', 'access note'])) {
+    else if (match(msg, ['download note', 'how to download', 'download a purchased', 'download කරන', 'බාගන්න', 'ලබාගන්න', 'get note', 'access note', 'purchase කළ note download', 'purchase කළ note download කරන්නේ', 'note download කරන්නේ කොහොමද'])) {
       reply = ` How to Download Notes:
 Notes download කරන්නේ මෙහෙමයි:
 
@@ -252,7 +252,7 @@ Notes download කරන්නේ මෙහෙමයි:
     }
 
     // Bookmark
-    else if (match(msg, ['bookmark', 'save note', 'bookmark කරන', 'සේව්', 'save කරන', 'favorite', 'bookmarks බලන'])) {
+    else if (match(msg, ['bookmark', 'save note', 'bookmark කරන', 'සේව්', 'save කරන', 'favorite', 'bookmarks බලන', 'note bookmark කරන්නේ', 'note bookmark කරන්නේ කොහොමද'])) {
       reply = ` How to Bookmark Notes:
 Notes bookmark කරන්නේ මෙහෙමයි:
 
@@ -273,7 +273,7 @@ Notes bookmark කරන්නේ මෙහෙමයි:
     //  PAYMENTS 
 
     // How payment works
-    else if (match(msg, ['how payment', 'how does payment', 'payment work', 'payment system', 'payment ක්‍රමය', 'ගෙවීම', 'pay කරන්නේ', 'payment කරන්නේ'])) {
+    else if (match(msg, ['how payment', 'how does payment', 'payment work', 'payment system', 'payment ක්‍රමය', 'ගෙවීම', 'pay කරන්නේ', 'payment කරන්නේ', 'payment කරන්නේ කොහොමද'])) {
       reply = ` How Payment Works:
 Payment system එක මෙහෙම වැඩ කරන්නේ:
 
@@ -290,7 +290,7 @@ Payment system එක මෙහෙම වැඩ කරන්නේ:
     }
 
     // Upload payment slip
-    else if (match(msg, ['payment slip', 'slip upload', 'upload slip', 'slip එක', 'ස්ලිප්', 'slip දාන'])) {
+    else if (match(msg, ['payment slip', 'slip upload', 'upload slip', 'slip එක', 'ස්ලිප්', 'slip දාන', 'payment slip upload කරන්නේ', 'payment slip upload කරන්නේ කොහොමද'])) {
       reply = ` How to Upload Payment Slip:
 Payment slip upload කරන්නේ මෙහෙමයි:
 
@@ -308,7 +308,7 @@ Payment slip upload කරන්නේ මෙහෙමයි:
     }
 
     // Auto verification / verification time
-    else if (match(msg, ['auto verif', 'how long', 'verification take', 'pending', 'pending කොච්චර', 'කොච්චර වෙලාවක්'])) {
+    else if (match(msg, ['auto verif', 'how long', 'verification take', 'pending', 'pending කොච්චර', 'කොච්චර වෙලාවක්', 'verify වෙන්න කොච්චර', 'verify වෙන්න කොච්චර කාලයක්'])) {
       reply = ` Verification Time & Auto Verification:
 
  How long does verification take?
@@ -333,7 +333,7 @@ Payment slip upload කරන්නේ මෙහෙමයි:
     }
 
     // Verify payments (general)
-    else if (match(msg, ['how to verify', 'verify payment', 'verify කරන', 'verification', 'වෙරිෆයි', 'confirm payment'])) {
+    else if (match(msg, ['how to verify', 'verify payment', 'verify කරන', 'verification', 'වෙරිෆයි', 'confirm payment', 'payment verify කරන්නේ', 'payment verify කරන්නේ කොහොමද'])) {
       reply = ` Payment Verification:
 Payment verify කරන්නේ මෙහෙමයි:
 
@@ -356,7 +356,7 @@ Payment verify කරන්නේ මෙහෙමයි:
     }
 
     // Banks supported
-    else if (match(msg, ['bank support', 'which bank', 'what bank', 'බැංකු', 'bank list', 'supported bank', 'banks are'])) {
+    else if (match(msg, ['bank support', 'which bank', 'what bank', 'බැංකු', 'bank list', 'supported bank', 'banks are', 'banks support කරනවාද', 'මොනවා banks', 'banks supported'])) {
       reply = ` Supported Banks (30+):
 Support කරන බැංකු:
 
@@ -386,7 +386,7 @@ Support කරන බැංකු:
     }
 
     // Bank details (add/setup)
-    else if (match(msg, ['bank detail', 'bank add', 'add bank', 'bank දාන', 'bank setup', 'bank එක', 'how to add bank'])) {
+    else if (match(msg, ['bank detail', 'bank add', 'add bank', 'bank දාන', 'bank setup', 'bank එක', 'how to add bank', 'bank details add කරන්නේ', 'bank details add කරන්නේ කොහොමද'])) {
       reply = ` How to Add Bank Details:
 Bank details add කරන්නේ මෙහෙමයි:
 
@@ -412,7 +412,7 @@ Bank details add කරන්නේ මෙහෙමයි:
     //  KUPPI SESSIONS 
 
     // Create session
-    else if (match(msg, ['create session', 'create kuppi', 'host session', 'session හදන', 'session create', 'kuppi හදන', 'kuppi create', 'create a kuppi'])) {
+    else if (match(msg, ['create session', 'create kuppi', 'host session', 'session හදන', 'session create', 'kuppi හදන', 'kuppi create', 'create a kuppi', 'kuppi session create කරන්නේ', 'kuppi session create කරන්නේ කොහොමද'])) {
       reply = ` How to Create a Kuppi Session:
 Kuppi session හදන්නේ මෙහෙමයි:
 
@@ -438,7 +438,7 @@ Kuppi session හදන්නේ මෙහෙමයි:
     }
 
     // Enroll in session
-    else if (match(msg, ['enroll', 'join session', 'session join', 'session එකට', 'enroll කරන', 'register session', 'attend session', 'enroll in a'])) {
+    else if (match(msg, ['enroll', 'join session', 'session join', 'session එකට', 'enroll කරන', 'register session', 'attend session', 'enroll in a', 'session එකකට enroll', 'session එකකට enroll වෙන්නේ', 'session එකකට enroll වෙන්නේ කොහොමද'])) {
       reply = ` How to Enroll in a Kuppi Session:
 Session එකකට join වෙන්නේ මෙහෙමයි:
 
@@ -462,7 +462,7 @@ Session එකකට join වෙන්නේ මෙහෙමයි:
     }
 
     // MS Teams link
-    else if (match(msg, ['teams link', 'ms teams', 'team link', 'teams එක', 'zoom', 'meeting link', 'online class', 'get ms teams'])) {
+    else if (match(msg, ['teams link', 'ms teams', 'team link', 'teams එක', 'zoom', 'meeting link', 'online class', 'get ms teams', 'ms teams link ගන්නේ', 'ms teams link ගන්නේ කොහොමද'])) {
       reply = ` MS Teams Link:
 MS Teams link ගැන:
 
@@ -481,7 +481,7 @@ MS Teams link ගැන:
     }
 
     // Verify student payments (host)
-    else if (match(msg, ['verify student', 'student payment', 'verify enrollment', 'student verify'])) {
+    else if (match(msg, ['verify student', 'student payment', 'verify enrollment', 'student verify', 'student payments verify', 'student payments verify කරන්නේ', 'student payments verify කරන්නේ කොහොමද'])) {
       reply = ` How to Verify Student Payments (For Hosts):
 Student payments verify කරන්නේ මෙහෙමයි:
 
@@ -500,7 +500,7 @@ Student payments verify කරන්නේ මෙහෙමයි:
     }
 
     // Excel report / export
-    else if (match(msg, ['excel', 'report', 'export', 'generate report', 'generate excel', 'sales report', 'export කරන', 'රිපෝට්'])) {
+    else if (match(msg, ['excel', 'report', 'export', 'generate report', 'generate excel', 'sales report', 'export කරන', 'රිපෝට්', 'excel report හදන්නේ', 'excel report හදන්නේ කොහොමද'])) {
       reply = ` How to Generate Excel Report:
 Sales report generate කරන්නේ මෙහෙමයි:
 
@@ -524,7 +524,7 @@ Sales report generate කරන්නේ මෙහෙමයි:
     //  CHAT 
 
     // Chat with seller
-    else if (match(msg, ['chat seller', 'chat with', 'message seller', 'contact seller', 'seller ට message', 'seller එක්ක', 'ask seller'])) {
+    else if (match(msg, ['chat seller', 'chat with', 'message seller', 'contact seller', 'seller ට message', 'seller එක්ක', 'ask seller', 'seller ට message කරන්නේ', 'seller ට message කරන්නේ කොහොමද'])) {
       reply = ` How to Chat with a Seller:
 Seller කෙනෙක්ට message කරන්නේ මෙහෙමයි:
 
@@ -540,7 +540,7 @@ Seller කෙනෙක්ට message කරන්නේ මෙහෙමයි:
     }
 
     // Send message
-    else if (match(msg, ['send message', 'send a message', 'message කරන', 'message send', 'type message', 'reply'])) {
+    else if (match(msg, ['send message', 'send a message', 'message කරන', 'message send', 'type message', 'reply', 'message send කරන්නේ', 'message send කරන්නේ කොහොමද'])) {
       reply = ` How to Send Messages:
 Message send කරන්නේ මෙහෙමයි:
 
@@ -556,7 +556,7 @@ Message send කරන්නේ මෙහෙමයි:
     }
 
     // Unread messages
-    else if (match(msg, ['unread', 'new message', 'message check', 'check unread', 'message බලන', 'notification message'])) {
+    else if (match(msg, ['unread', 'new message', 'message check', 'check unread', 'message බලන', 'notification message', 'unread messages check', 'unread messages check කරන්නේ', 'unread messages check කරන්නේ කොහොමද'])) {
       reply = ` How to Check Unread Messages:
 Unread messages check කරන්නේ මෙහෙමයි:
 
@@ -574,7 +574,7 @@ Unread messages check කරන්නේ මෙහෙමයි:
     //  ANALYTICS 
 
     // View earnings
-    else if (match(msg, ['earning', 'revenue', 'income', 'money', 'ආදායම', 'earnings බලන', 'how much earned', 'total revenue', 'view my earning'])) {
+    else if (match(msg, ['earning', 'revenue', 'income', 'money', 'ආදායම', 'earnings බලන', 'how much earned', 'total revenue', 'view my earning', 'earnings check කරන්නේ', 'earnings check කරන්නේ කොහොමද'])) {
       reply = ` How to View Your Earnings:
 Earnings check කරන්නේ මෙහෙමයි:
 
@@ -594,7 +594,7 @@ Earnings check කරන්නේ මෙහෙමයි:
     }
 
     // Download statistics
-    else if (match(msg, ['download stat', 'download count', 'views', 'statistics', 'stats', 'බාගත', 'how many download', 'check download'])) {
+    else if (match(msg, ['download stat', 'download count', 'views', 'statistics', 'stats', 'බාගත', 'how many download', 'check download', 'download statistics check', 'download statistics check කරන්නේ', 'download statistics check කරන්නේ කොහොමද'])) {
       reply = ` Download & View Statistics:
 Statistics check කරන්නේ මෙහෙමයි:
 
@@ -610,7 +610,7 @@ Statistics check කරන්නේ මෙහෙමයි:
     }
 
     // Ratings
-    else if (match(msg, ['rating', 'review', 'feedback', 'star', 'stars', 'rate', 'ශ්‍රේණිගත', 'ratings බලන', 'my rating', 'see my rating'])) {
+    else if (match(msg, ['rating', 'review', 'feedback', 'star', 'stars', 'rate', 'ශ්‍රේණිගත', 'ratings බලන', 'my rating', 'see my rating', 'ratings check කරන්නේ', 'ratings check කරන්නේ කොහොමද'])) {
       reply = ` Ratings & Feedback:
 Ratings system ගැන:
 
@@ -631,7 +631,7 @@ Good ratings = more buyers trust you!`;
     //  ACCOUNT 
 
     // Update profile
-    else if (match(msg, ['update profile', 'update my profile', 'edit profile', 'change name', 'profile update', 'profile change', 'profile එක'])) {
+    else if (match(msg, ['update profile', 'update my profile', 'edit profile', 'change name', 'profile update', 'profile change', 'profile එක', 'profile update කරන්නේ', 'profile update කරන්නේ කොහොමද'])) {
       reply = ` How to Update Profile:
 Profile update කරන්නේ මෙහෙමයි:
 
@@ -647,7 +647,7 @@ Profile update කරන්නේ මෙහෙමයි:
     }
 
     // Change password
-    else if (match(msg, ['change password', 'password change', 'password update', 'new password', 'reset password', 'මුරපදය', 'password වෙනස්'])) {
+    else if (match(msg, ['change password', 'password change', 'password update', 'new password', 'reset password', 'මුරපදය', 'password වෙනස්', 'password change කරන්නේ', 'password change කරන්නේ කොහොමද'])) {
       reply = ` How to Change Password:
 Password change කරන්නේ මෙහෙමයි:
 
@@ -665,7 +665,7 @@ Password change කරන්නේ මෙහෙමයි:
     }
 
     // Register
-    else if (match(msg, ['register', 'sign up', 'create account', 'new account', 'registration', 'ලියාපදිංචි', 'account හදන', 'how to register'])) {
+    else if (match(msg, ['register', 'sign up', 'create account', 'new account', 'registration', 'ලියාපදිංචි', 'account හදන', 'how to register', 'register වෙන්නේ', 'register වෙන්නේ කොහොමද'])) {
       reply = ` How to Register:
 Account හදන්නේ මෙහෙමයි:
 
@@ -689,7 +689,7 @@ Important:
 
     //  GENERAL HELP
 
-    else if (match(msg, ['help', 'support', 'what can you do', 'උදව්', 'help me', 'how to use', 'guide', 'tutorial'])) {
+    else if (match(msg, ['help', 'support', 'what can you do', 'උදව්', 'help me', 'how to use', 'guide', 'tutorial', 'උදව් කරන්නේ', 'කොහොමද'])) {
       reply = ` AI Helper - මට උදව් කරන්න පුළුවන් දේවල්:
 
  Notes ගැන:
@@ -775,6 +775,42 @@ Try asking about these topics / මේ ගැන අහලා බලන්න:
 
 Or type "help" for full guide!
 "help" type කරන්න full guide එකට! `;
+    }
+
+    // Filter reply by selected language
+    const hasSinhala = (line) => /[\u0D80-\u0DFF]/.test(line);
+
+    if (lang === 'en') {
+      // English mode: remove lines that are primarily Sinhala
+      reply = reply
+        .split('\n')
+        .filter(line => {
+          const sinhalaChars = (line.match(/[\u0D80-\u0DFF]/g) || []).length;
+          const totalChars = line.replace(/\s/g, '').length;
+          // Keep line if less than 40% sinhala characters
+          return totalChars === 0 || (sinhalaChars / totalChars) < 0.4;
+        })
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+    } else if (lang === 'si') {
+      // Sinhala mode: remove lines that are purely English (no sinhala at all)
+      // But keep lines with numbers, bullets, symbols
+      reply = reply
+        .split('\n')
+        .filter(line => {
+          const trimmed = line.trim();
+          if (!trimmed) return true; // keep blank lines for spacing
+          // Keep if has any sinhala characters
+          if (hasSinhala(trimmed)) return true;
+          // Keep if it's a number/bullet/symbol line (like "1", "•", etc.)
+          if (/^[\d\s•\-\*→►▶]+$/.test(trimmed)) return true;
+          // Remove pure English lines
+          return false;
+        })
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
     }
 
     res.json({ reply });

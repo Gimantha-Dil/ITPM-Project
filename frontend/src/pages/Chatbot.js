@@ -84,17 +84,50 @@ const Chatbot = () => {
   };
  
   // Speak text
-  const speakText = useCallback((text) => {
+  // Google Translate TTS for Sinhala
+  const speakSinhala = useCallback((text) => {
+    if (!text.trim()) return;
+    synth?.cancel();
+    setIsSpeaking(true);
+
+    // Split into chunks max 200 chars (Google TTS limit)
+    const words = text.split(' ');
+    const chunks = [];
+    let current = '';
+    words.forEach(word => {
+      if ((current + ' ' + word).length > 180) {
+        if (current) chunks.push(current.trim());
+        current = word;
+      } else {
+        current += (current ? ' ' : '') + word;
+      }
+    });
+    if (current) chunks.push(current.trim());
+
+    let chunkIndex = 0;
+    const playChunk = () => {
+      if (chunkIndex >= chunks.length) { setIsSpeaking(false); return; }
+      const chunk = chunks[chunkIndex];
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=si&client=tw-ob`;
+      const audio = new Audio(url);
+      audio.onended = () => { chunkIndex++; playChunk(); };
+      audio.onerror = () => { chunkIndex++; playChunk(); };
+      audio.play().catch(() => { chunkIndex++; playChunk(); });
+    };
+    playChunk();
+  }, []);
+
+  // Browser TTS for English
+  const speakEnglish = useCallback((text) => {
     if (!synth) return;
     synth.cancel();
- 
+
     const cleanText = cleanTextForSpeech(text);
     if (!cleanText) return;
- 
+
     const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 2);
     const chunks = [];
     let current = '';
- 
     sentences.forEach(s => {
       if ((current + s).length > 180) {
         if (current) chunks.push(current.trim());
@@ -104,33 +137,41 @@ const Chatbot = () => {
       }
     });
     if (current) chunks.push(current.trim());
- 
     if (chunks.length === 0) return;
+
     setIsSpeaking(true);
- 
     const speakChunk = (i) => {
       if (i >= chunks.length) { setIsSpeaking(false); return; }
- 
       const utt = new SpeechSynthesisUtterance(chunks[i]);
       utt.lang = 'en-US';
       utt.rate = 1.0;
       utt.pitch = 1.0;
- 
       const voices = synth.getVoices();
       const voice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en'))
         || voices.find(v => v.lang.startsWith('en') && v.localService)
         || voices.find(v => v.lang.startsWith('en'));
       if (voice) utt.voice = voice;
- 
       utt.onend = () => speakChunk(i + 1);
       utt.onerror = () => setIsSpeaking(false);
       synth.speak(utt);
     };
- 
     speakChunk(0);
   }, []);
+
+  const speakText = useCallback((text) => {
+    if (voiceLang === 'si-LK') {
+      speakSinhala(text);
+    } else {
+      speakEnglish(text);
+    }
+  }, [voiceLang, speakSinhala, speakEnglish]);
  
-  const stopSpeaking = () => { if (synth) synth.cancel(); setIsSpeaking(false); };
+  const stopSpeaking = () => {
+    if (synth) synth.cancel();
+    // Stop all playing audio elements (Google TTS)
+    document.querySelectorAll('audio').forEach(a => { a.pause(); a.src = ''; });
+    setIsSpeaking(false);
+  };
  
   // Toggle mic
   const toggleListening = () => {
@@ -158,8 +199,47 @@ const Chatbot = () => {
     setInput('');
     setLoading(true);
     try {
-      const res = await api.post('/chat/bot', { message: msg });
-      const botReply = res.data.reply;
+      const res = await api.post('/chat/bot', { message: msg, language: voiceLang === 'si-LK' ? 'si' : 'en' });
+      const rawReply = res.data.reply;
+
+      // Filter reply lines based on selected language
+      const filterReply = (text, lang) => {
+        const hasSinhala = (s) => /[\u0D80-\u0DFF]/.test(s);
+        const lines = text.split('\n');
+
+        if (lang === 'en') {
+          // English mode: remove lines that are mostly Sinhala
+          return lines
+            .filter(line => {
+              const trimmed = line.trim();
+              if (!trimmed) return true;
+              const sinhalaChars = (trimmed.match(/[\u0D80-\u0DFF]/g) || []).length;
+              const totalLetters = (trimmed.match(/[\u0D80-\u0DFF\u0041-\u007A\u0041-\u005A]/g) || []).length;
+              if (totalLetters > 0 && sinhalaChars / totalLetters > 0.3) return false;
+              return true;
+            })
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+        } else {
+          // Sinhala mode: keep ONLY lines that contain Sinhala text
+          // Also keep blank lines for spacing
+          return lines
+            .filter(line => {
+              const trimmed = line.trim();
+              if (!trimmed) return true;
+              // Keep if has Sinhala characters
+              if (hasSinhala(trimmed)) return true;
+              return false;
+            })
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+        }
+      };
+
+      const currentLang = voiceLang === 'si-LK' ? 'si' : 'en';
+      const botReply = filterReply(rawReply, currentLang);
       setMessages(prev => [...prev, { type: 'bot', text: botReply }]);
       if (autoSpeak) setTimeout(() => speakText(botReply), 300);
     } catch (err) {
@@ -186,7 +266,31 @@ const Chatbot = () => {
   // Quick send
   const handleQuickSend = (q) => { sendMessage(q); };
  
-  const categories = [
+  const isSinhala = voiceLang === 'si-LK';
+
+  const categories = isSinhala ? [
+    { key: 'notes', emoji: '', label: 'Notes', questions: [
+      'Notes upload කරන්නේ කොහොමද?', 'Notes ට price set කරන්නේ කොහොමද?', 'කොන් file types upload කරන්න පුළුවන්ද?',
+      'Purchase කළ note download කරන්නේ කොහොමද?', 'Note bookmark කරන්නේ කොහොමද?'
+    ]},
+    { key: 'payment', emoji: '', label: 'Payment', questions: [
+      'Payment කරන්නේ කොහොමද?', 'Payment slip upload කරන්නේ කොහොමද?', 'Payment verify කරන්නේ කොහොමද?',
+      'Verify වෙන්න කොච්චර කාලයක් යනවාද?', 'මොනවා banks support කරනවාද?'
+    ]},
+    { key: 'kuppi', emoji: '', label: 'Kuppi', questions: [
+      'Kuppi session create කරන්නේ කොහොමද?', 'Session එකකට enroll වෙන්නේ කොහොමද?', 'MS Teams link ගන්නේ කොහොමද?',
+      'Student payments verify කරන්නේ කොහොමද?', 'Excel report හදන්නේ කොහොමද?'
+    ]},
+    { key: 'chat', emoji: '', label: 'Chat', questions: [
+      'Seller ට message කරන්නේ කොහොමද?', 'Message send කරන්නේ කොහොමද?', 'Unread messages check කරන්නේ කොහොමද?'
+    ]},
+    { key: 'analytics', emoji: '', label: 'Analytics', questions: [
+      'Earnings බලන්නේ කොහොමද?', 'Download statistics check කරන්නේ කොහොමද?', 'Ratings බලන්නේ කොහොමද?'
+    ]},
+    { key: 'account', emoji: '', label: 'Account', questions: [
+      'Profile update කරන්නේ කොහොමද?', 'Bank details add කරන්නේ කොහොමද?', 'Password change කරන්නේ කොහොමද?', 'Register වෙන්නේ කොහොමද?'
+    ]}
+  ] : [
     { key: 'notes', emoji: '', label: 'Notes', questions: [
       'How do I upload notes?', 'How to set price for my notes?', 'What file types can I upload?',
       'How to download a purchased note?', 'How to bookmark a note?'
@@ -266,7 +370,7 @@ const Chatbot = () => {
           <div style={{ padding: '12px 16px', background: '#fef3c7', border: '2px solid #fbbf24',
             borderRadius: 12, marginBottom: 8, animation: 'pulse-bg 2s infinite' }}>
             <div style={{ fontWeight: 600, color: '#92400e' }}>
-               Listening... Speak now! ({voiceLang === 'si-LK' ? 'සිංහල' : 'English'})
+              🎤 Listening... Speak now! ({voiceLang === 'si-LK' ? 'සිංහල' : 'English'})
             </div>
             {input && <div style={{ marginTop: 6, fontStyle: 'italic', color: '#78350f' }}>"{input}"</div>}
             <div className="voice-bars" style={{ marginTop: 8, display: 'flex', gap: 3, alignItems: 'flex-end', height: 20 }}>
@@ -293,7 +397,7 @@ const Chatbot = () => {
         ))}
         <button className="btn btn-sm btn-outline" onClick={() => handleQuickSend('help')}
           style={{ fontSize: 12, padding: '4px 10px', borderRadius: 20 }}>
-           Help
+          {isSinhala ? 'උදව්' : 'Help'}
         </button>
       </div>
  
@@ -322,7 +426,7 @@ const Chatbot = () => {
           {isListening ? <FiMicOff /> : <FiMic />}
         </button>
         <input type="text" className="chat-input"
-          placeholder={isListening ? ' Listening...' : 'ඕනෑම දෙයක් අහන්න / Ask anything...'}
+          placeholder={isListening ? (isSinhala ? '🎤 අහගෙන ඉන්නවා...' : '🎤 Listening...') : (isSinhala ? 'ඕනෑම දෙයක් අහන්න...' : 'ඕනෑම දෙයක් අහන්න / Ask anything...')}
           value={input} onChange={(e) => setInput(e.target.value)}
           disabled={loading || isListening} style={{ flex: 1 }} />
         <button type="submit" className="btn btn-primary" disabled={loading || !input.trim()} style={{ borderRadius: 24 }}>
@@ -350,4 +454,3 @@ const Chatbot = () => {
 };
  
 export default Chatbot;
- 

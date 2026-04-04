@@ -200,7 +200,7 @@ const NoteDetail = () => {
       {/* Preview Section — show to non-owners who haven't purchased */}
       {!isOwner && note.price > 0 && !myPurchase && note.previewUrl && (
         <div className="detail-section">
-          <h2 style={{ color: 'var(--primary-deeper)', marginBottom: 12 }}>👁️ Preview</h2>
+          <h2 style={{ color: 'var(--primary-deeper)', marginBottom: 12 }}> Preview</h2>
           <p className="text-small text-muted" style={{ marginBottom: 12 }}>
             This is a preview of the note. Purchase to get full access.
           </p>
@@ -246,7 +246,7 @@ const NoteDetail = () => {
       {/* Rejected — Re-upload Section */}
       {!isOwner && isRejected && (
         <div className="payment-upload-section" style={{ borderColor: '#ef4444', background: '#fff5f5' }}>
-          <h3 style={{ marginBottom: '12px', color: '#dc2626' }}>❌ Payment Slip Rejected</h3>
+          <h3 style={{ marginBottom: '12px', color: '#dc2626' }}> Payment Slip Rejected</h3>
           <p className="text-small text-muted mb-2">
             Your previous payment slip was rejected by the seller.<br/>
             Please re-upload a valid payment slip to complete your purchase.
@@ -303,7 +303,7 @@ const NoteDetail = () => {
                   key={star}
                   className={`star ${star <= feedback.rating ? 'active' : ''}`}
                   onClick={() => setFeedback({ ...feedback, rating: star })}
-                >★</span>
+                ></span>
               ))}
             </div>
             <textarea

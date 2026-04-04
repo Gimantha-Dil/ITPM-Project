@@ -103,7 +103,7 @@ const Notifications = () => {
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {notifications.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🔔</div>
+            <div className="empty-icon"></div>
             <h3>No notifications</h3>
             <p>You're all caught up!</p>
           </div>

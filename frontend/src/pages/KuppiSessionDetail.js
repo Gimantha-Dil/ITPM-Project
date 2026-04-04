@@ -143,7 +143,7 @@ const KuppiSessionDetail = () => {
       {/* Bank Details - for paid sessions */}
       {!isHost && !myEnrollment && session.price > 0 && session.host?.bankName && (
         <div className="bank-details-box">
-          <h3>💳 Seller Bank Details (Transfer here)</h3>
+          <h3> Seller Bank Details (Transfer here)</h3>
           <div className="bank-detail-row">
             <span className="bank-detail-label">Bank</span>
             <span className="bank-detail-value">{session.host.bankName}</span>
@@ -192,7 +192,7 @@ const KuppiSessionDetail = () => {
           border: `2px solid ${myEnrollment.verified ? '#10b981' : '#f59e0b'}`
         }}>
           <h2 style={{ color: myEnrollment.verified ? '#059669' : '#d97706' }}>
-            {myEnrollment.verified ? '✅ Enrolled & Verified' : '⏳ Enrollment Pending Verification'}
+            {myEnrollment.verified ? '✅ Enrolled & Verified' : ' Enrollment Pending Verification'}
           </h2>
           <p>{myEnrollment.verified ? 'You have access to this session.' : 'The host will verify your payment soon.'}</p>
         </div>
@@ -201,7 +201,7 @@ const KuppiSessionDetail = () => {
       {/* Rejected — Re-upload Section */}
       {myEnrollment?.rejected && !myEnrollment?.verified && (
         <div className="detail-section" style={{ background: '#fff5f5', border: '2px solid #ef4444' }}>
-          <h2 style={{ color: '#dc2626' }}>❌ Payment Slip Rejected</h2>
+          <h2 style={{ color: '#dc2626' }}>Payment Slip Rejected</h2>
           <p style={{ marginBottom: 16 }}>
             Your payment slip was rejected by the host. Please re-upload a valid payment slip.
           </p>
