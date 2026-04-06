@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
@@ -31,7 +32,7 @@ import PaymentHistory from './pages/PaymentHistory';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="loading-screen">Loading...</div>;
-  if (!user) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/" />;
   return children;
 };
 
@@ -44,11 +45,12 @@ function App() {
   if (!user) {
     return (
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     );
   }
@@ -58,7 +60,6 @@ function App() {
       <Navbar />
       <div className="main-container" style={{ position: 'relative' }}>
 
-        {/* Sidebar hover zone — thin strip always present */}
         <div
           style={{
             position: 'fixed',
@@ -75,7 +76,6 @@ function App() {
           <Sidebar isOpen={sidebarOpen} />
         </div>
 
-        {/* Content shifts right only when sidebar is open */}
         <main
           className="content"
           style={{
