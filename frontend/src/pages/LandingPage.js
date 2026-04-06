@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-// ══════════════════════════════════════════════
-// EDIT ZONE — Change texts here only
-// ══════════════════════════════════════════════
 const STATS = [
   { value: '500+', label: 'Notes Uploaded' },
   { value: '200+', label: 'Kuppi Sessions' },
@@ -12,12 +9,12 @@ const STATS = [
 ];
 
 const FEATURES = [
-  { icon: '📚', title: 'Notes Marketplace', desc: 'Buy and sell quality study notes from fellow SLIIT students. Filter by subject, category, and rating.' },
-  { icon: '🎓', title: 'Kuppi Sessions', desc: 'Join or host peer tutoring sessions. Free and paid options with MS Teams integration.' },
-  { icon: '💳', title: 'Secure Payments', desc: 'Upload payment slips, get seller-verified. Automated PDF receipts sent to your SLIIT email.' },
-  { icon: '⭐', title: 'Ratings & Reviews', desc: 'Rate notes and sessions after purchase. Find the best content through community feedback.' },
-  { icon: '🔖', title: 'Bookmarks', desc: 'Save notes and sessions to buy later. All your purchases managed in one place.' },
-  { icon: '🤖', title: 'AI Helper', desc: 'Get instant answers in Sinhala or English using the built-in AI chatbot.' },
+  { title: 'Notes Marketplace', desc: 'Buy and sell quality study notes from fellow SLIIT students. Filter by subject, category, and rating.' },
+  { title: 'Kuppi Sessions', desc: 'Join or host peer tutoring sessions. Free and paid options with MS Teams integration.' },
+  { title: 'Secure Payments', desc: 'Upload payment slips, get seller-verified. Automated PDF receipts sent to your SLIIT email.' },
+  { title: 'Ratings & Reviews', desc: 'Rate notes and sessions after purchase. Find the best content through community feedback.' },
+  { title: 'Bookmarks', desc: 'Save notes and sessions to buy later. All your purchases managed in one place.' },
+  { title: 'AI Helper', desc: 'Get instant answers in Sinhala or English using the built-in AI chatbot.' },
 ];
 
 const STEPS = [
@@ -28,9 +25,6 @@ const STEPS = [
 ];
 
 const CATEGORIES = ['IT', 'SE', 'CS', 'DS', 'Business', 'Engineering', 'Other'];
-// ══════════════════════════════════════════════
-// END EDIT ZONE
-// ══════════════════════════════════════════════
 
 const LandingPage = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -136,7 +130,7 @@ const LandingPage = () => {
           <div style={{ position: 'relative' }}>
             <div style={{ background: '#fff', borderRadius: 20, padding: 28, boxShadow: '0 24px 60px rgba(10,74,87,0.12)' }}>
               <div style={{ background: `linear-gradient(135deg,${C.light},${C.soft})`, borderRadius: 14, padding: 20, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ width: 50, height: 50, borderRadius: 12, background: C.deep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>📄</div>
+                <div style={{ width: 50, height: 50, borderRadius: 12, background: C.deep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, color: '#fff', fontWeight: 700 }}>N</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 15, color: C.dark }}>DSA Complete Notes</div>
                   <div style={{ fontSize: 12, color: '#2e7d8a', marginTop: 3 }}>by Gimantha D. — IT Category</div>
@@ -200,7 +194,7 @@ const LandingPage = () => {
       </section>
 
       {/* FEATURES */}
-      <section id="features" style={{ padding: '100px 64px', background: `linear-gradient(160deg,#f0fdff,#e8f9ff)` }}>
+      <section id="features" style={{ padding: '100px 64px', background: 'linear-gradient(160deg,#f0fdff,#e8f9ff)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 60 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: C.deep, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Platform Features</div>
@@ -208,13 +202,13 @@ const LandingPage = () => {
             <p style={{ fontSize: 16, color: '#2e7d8a', maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>Built specifically for SLIIT students — every feature designed around how you study.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
-            {FEATURES.map(f => (
+            {FEATURES.map((f, i) => (
               <div key={f.title}
                 style={{ background: '#fff', borderRadius: 20, padding: 32, border: '2px solid transparent', transition: 'all 0.3s', cursor: 'default' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(99,229,255,0.2)' }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(135deg,${C.primary},${C.deep})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, marginBottom: 18 }}>{f.icon}</div>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(135deg,${C.primary},${C.deep})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: C.dark, marginBottom: 18 }}>{i + 1}</div>
                 <h3 style={{ fontWeight: 700, fontSize: 17, color: C.dark, marginBottom: 10 }}>{f.title}</h3>
                 <p style={{ fontSize: 14, color: '#2e7d8a', lineHeight: 1.7 }}>{f.desc}</p>
               </div>
