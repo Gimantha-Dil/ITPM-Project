@@ -49,7 +49,7 @@ const Register = () => {
     const atIndex = formData.email.indexOf('@');
     const safeLength = atIndex === -1 ? formData.email.length : atIndex;
     if (cursorPos > safeLength) {
-      if (['Backspace','Delete','ArrowRight','End'].includes(e.key)) {
+      if (['Backspace', 'Delete', 'ArrowRight', 'End'].includes(e.key)) {
         e.preventDefault();
         input.setSelectionRange(safeLength, safeLength);
       }
@@ -155,18 +155,17 @@ const Register = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
         minHeight: '100vh',
-        width: '100vw',
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflowY: 'auto',
+        paddingTop: '20px',
+        paddingBottom: '20px',
       }}
     >
-      <div className="auth-container" style={{ margin: '20px 0' }}>
+      <div className="auth-container">
         <div className="logo-emoji"></div>
         <h1>Create Account</h1>
         <p className="subtitle">Join SLIIT Learning Platform</p>
@@ -264,7 +263,7 @@ const Register = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}
               >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
+                {showPassword ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
             {formData.password && strength && (
