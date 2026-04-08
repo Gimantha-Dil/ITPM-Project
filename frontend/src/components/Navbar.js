@@ -98,7 +98,7 @@ const Navbar = () => {
           >
             {isSystemMode
               ? <FiMonitor size={18} />
-              : darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+              : darkMode ? <FiMoon size={18} /> : <FiSun size={18} />}
           </button>
 
           {showThemeMenu && (
