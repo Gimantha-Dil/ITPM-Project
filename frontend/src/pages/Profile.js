@@ -201,7 +201,7 @@ const Profile = () => {
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, current: !p.current }))}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
-                {showPass.current ? <FiEyeOff /> : <FiEye />}
+                {showPass.current ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
           </div>
@@ -214,7 +214,7 @@ const Profile = () => {
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, newp: !p.newp }))}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
-                {showPass.newp ? <FiEyeOff /> : <FiEye />}
+                {showPass.newp ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
           </div>
@@ -227,7 +227,7 @@ const Profile = () => {
                 style={{ paddingRight: 40 }} required />
               <button type="button" onClick={() => setShowPass(p => ({ ...p, confirm: !p.confirm }))}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 18 }}>
-                {showPass.confirm ? <FiEyeOff /> : <FiEye />}
+                {showPass.confirm ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
           </div>
