@@ -55,17 +55,22 @@ function App() {
     );
   }
 
+  // Sidebar is always fixed overlay — 52px closed, 240px open
+  // Content paddingLeft = 52px always so icons strip never overlaps content
+  const SIDEBAR_CLOSED_WIDTH = 52;
+
   return (
     <div className="app-layout">
       <Navbar />
       <div className="main-container" style={{ position: 'relative' }}>
 
+        {/* Sidebar hover zone */}
         <div
           style={{
             position: 'fixed',
             top: 60,
             left: 0,
-            width: sidebarOpen ? '240px' : '6px',
+            width: sidebarOpen ? 240 : SIDEBAR_CLOSED_WIDTH,
             height: '100vh',
             zIndex: 200,
             transition: 'width 0.3s ease',
@@ -76,12 +81,13 @@ function App() {
           <Sidebar isOpen={sidebarOpen} />
         </div>
 
+        {/* Main content — paddingLeft = closed sidebar width so icons never overlap */}
         <main
           className="content"
           style={{
-            marginLeft: sidebarOpen ? '240px' : '6px',
+            marginLeft: SIDEBAR_CLOSED_WIDTH,
             transition: 'margin-left 0.3s ease',
-            width: '100%',
+            width: `calc(100% - ${SIDEBAR_CLOSED_WIDTH}px)`,
           }}
         >
           <Routes>

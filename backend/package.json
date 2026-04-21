@@ -2,9 +2,18 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "jest --verbose --forceExit --detectOpenHandles",
+    "test:silent": "jest --forceExit --detectOpenHandles"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "testMatch": ["**/tests/**/*.test.js"],
+    "globalSetup": "./jest.setup.js",
+    "globalTeardown": "./jest.teardown.js"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +33,10 @@
     "nodemailer": "^8.0.3",
     "pdfkit": "^0.18.0",
     "resend": "^6.9.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
+    "supertest": "^7.0.0"
   }
 }
