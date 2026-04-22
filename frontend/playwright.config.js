@@ -5,7 +5,10 @@ module.exports = defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,
   retries: 0,
-  reporter: 'list',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
