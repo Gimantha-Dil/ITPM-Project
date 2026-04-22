@@ -24,33 +24,35 @@ test.describe('Register Page (/register)', () => {
   });
 
   test('email auto-appends @my.sliit.lk', async ({ page }) => {
-    await page.locator('input[placeholder*="sliit" i]').fill('it21000001');
-    const value = await page.locator('input[placeholder*="sliit" i]').inputValue();
+    await page.locator('input[placeholder="IT23365478@my.sliit.lk"]').fill('it21000001');
+    const value = await page.locator('input[placeholder="IT23365478@my.sliit.lk"]').inputValue();
     expect(value).toContain('@my.sliit.lk');
   });
 
   test('full name strips numbers', async ({ page }) => {
-    const nameInput = page.locator('input[placeholder*="Full Name" i], input[placeholder*="name" i]').first();
+    const nameInput = page.locator('input[placeholder="John Doe"]');
+    await expect(nameInput).toBeVisible({ timeout: 5000 });
     await nameInput.fill('Gimantha123');
-    expect(await nameInput.inputValue()).not.toMatch(/[0-9]/);
+    const value = await nameInput.inputValue();
+    expect(value).not.toMatch(/[0-9]/);
   });
 
   test('full name strips special characters', async ({ page }) => {
-    const nameInput = page.locator('input[placeholder*="Full Name" i], input[placeholder*="name" i]').first();
+    const nameInput = page.locator('input[placeholder="John Doe"]');
+    await expect(nameInput).toBeVisible({ timeout: 5000 });
     await nameInput.fill('Gim@ntha!');
-    expect(await nameInput.inputValue()).not.toMatch(/[@!#$%]/);
+    const value = await nameInput.inputValue();
+    expect(value).not.toMatch(/[@!#$%]/);
   });
 
-  test('mismatched passwords shows error', async ({ page }) => {
-    const nameInput = page.locator('input[placeholder*="Full Name" i], input[placeholder*="name" i]').first();
-    await nameInput.fill('Gimantha Dilshan');
-    await page.locator('input[placeholder*="sliit" i]').fill('it21000001');
-    await page.locator('input[placeholder*="phone" i], input[placeholder*="07" i]').first().fill('0771234567');
-    const passInputs = page.locator('input[type="password"]');
-    await passInputs.nth(0).fill('password123');
-    await passInputs.nth(1).fill('different456');
+  test('mismatched passwords shows "Passwords do not match"', async ({ page }) => {
+    await page.locator('input[placeholder="John Doe"]').fill('Gimantha Dilshan');
+    await page.locator('input[placeholder="IT23365478@my.sliit.lk"]').fill('it21000001');
+    await page.locator('input[placeholder="07XXXXXXXX"]').fill('0771234567');
+    await page.locator('input[placeholder*="Min 8"]').fill('Password1!');
+    await page.locator('input[placeholder="Repeat password"]').fill('Different1!');
     await page.click('button[type="submit"]');
-    await expect(page.locator('text=/match/i')).toBeVisible();
+    await expect(page.locator('text=Passwords do not match')).toBeVisible();
   });
 
   test('password toggle buttons exist', async ({ page }) => {
