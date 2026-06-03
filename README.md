@@ -1,70 +1,254 @@
-# Getting Started with Create React App
+# SLIIT Learning Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web platform built exclusively for SLIIT students to buy & sell study notes, host or join Kuppi (study) sessions, chat with peers, and manage academic resources — all in one place.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Tech Stack
 
-### `npm start`
+| Layer | Technology |
+|---|---|
+| Frontend | React.js, React Router v6 |
+| Backend | Node.js, Express.js v5 |
+| Database | MongoDB Atlas (Mongoose ODM) |
+| Authentication | JWT + OTP Email Verification |
+| File Handling | Multer |
+| Email | Nodemailer, Resend |
+| PDF Generation | PDFKit |
+| Excel Export | ExcelJS |
+| Testing | Jest, Supertest, mongodb-memory-server |
+| E2E Testing | Playwright |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+### Auth & Users
+- Register with **SLIIT email only** (`@my.sliit.lk`)
+- OTP-based email verification
+- JWT login / logout
+- Forgot password with OTP reset
+- Profile management with profile picture upload
+- Bank details management (required to sell)
+- Account deletion with OTP confirmation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Notes Marketplace
+- Upload and sell study notes (with preview file)
+- Browse and purchase notes from other students
+- Download purchased notes
+- Payment slip upload & seller verification flow
+- Feedback & ratings system
+- Bookmarks for saving notes
 
-### `npm run build`
+### Kuppi Sessions
+- Create and host live study sessions (online/physical)
+- Enroll with payment slip
+- Host verifies / rejects enrollments
+- Feedback on sessions
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Chat
+- Peer-to-peer messaging between students
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Chatbot
+- AI-powered chatbot assistant
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Notifications
+- In-app notification system
 
-### `npm run eject`
+### Analytics
+- Dashboard with platform analytics (admin)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Payments
+- Manual bank transfer payment system
+- Payment history tracking
+- Payment slip re-upload support
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+ITPM-Project/
+├── backend/
+│   ├── controllers/       # Business logic
+│   ├── middleware/        # Auth, file upload
+│   ├── models/            # Mongoose schemas
+│   ├── routes/            # Express API routes
+│   ├── tests/             # Jest unit/integration tests
+│   ├── utils/             # Email, PDF, Excel helpers
+│   ├── server.js          # Entry point
+│   └── .env               # Environment variables
+└── frontend/
+    ├── public/
+    └── src/
+        ├── components/    # Reusable UI components
+        ├── context/       # React Context (Auth)
+        ├── pages/         # Page components
+        └── App.js
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Getting Started
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Prerequisites
 
-### Code Splitting
+- Node.js v18+
+- npm
+- MongoDB Atlas account (or local MongoDB)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+### 1. Clone the Repository
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+git clone https://github.com/your-username/ITPM-Project.git
+cd ITPM-Project
+```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 2. Backend Setup
 
-### Advanced Configuration
+```bash
+cd backend
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Create a `.env` file in the `backend/` folder:
 
-### Deployment
+```env
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_password
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Start the backend:
 
-### `npm run build` fails to minify
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Backend runs on `http://localhost:5000`
+
+---
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend runs on `http://localhost:3000`
+
+---
+
+## Running Tests
+
+From the `backend/` directory:
+
+```bash
+# Verbose output
+npm test
+
+# Silent mode
+npm run test:silent
+```
+
+Tests use an in-memory MongoDB instance — no real DB connection needed.
+
+---
+
+## API Endpoints
+
+### Auth — `/api/auth`
+| Method | Route | Description |
+|---|---|---|
+| POST | `/register` | Register new user |
+| POST | `/verify-otp` | Verify email OTP |
+| POST | `/login` | Login |
+| POST | `/forgot-password` | Send password reset OTP |
+| POST | `/reset-password` | Reset password |
+| GET | `/profile` | Get current user profile |
+| PUT | `/profile` | Update profile |
+| PUT | `/change-password` | Change password |
+| DELETE | `/delete-account` | Delete account |
+
+### Notes — `/api/notes`
+| Method | Route | Description |
+|---|---|---|
+| GET | `/` | List all notes |
+| POST | `/` | Create a note (requires bank details) |
+| GET | `/:id` | Get note by ID |
+| PUT | `/:id` | Update note |
+| DELETE | `/:id` | Delete note |
+| POST | `/:id/purchase` | Purchase a note |
+| GET | `/:id/download` | Download purchased note |
+| POST | `/:id/feedback` | Add feedback |
+| POST | `/:id/bookmark` | Toggle bookmark |
+
+### Kuppi Sessions — `/api/kuppi`
+| Method | Route | Description |
+|---|---|---|
+| GET | `/` | List all sessions |
+| POST | `/` | Create session (requires bank details) |
+| GET | `/:id` | Get session by ID |
+| PUT | `/:id` | Update session |
+| DELETE | `/:id` | Delete session |
+| POST | `/:id/enroll` | Enroll in session |
+| PUT | `/:sessionId/verify/:enrollmentId` | Verify enrollment |
+
+### Other Endpoints
+| Prefix | Description |
+|---|---|
+| `/api/chat` | Peer chat messages |
+| `/api/notifications` | User notifications |
+| `/api/analytics` | Platform analytics |
+| `/api/payments` | Payment history |
+| `/api/files` | File management |
+
+---
+
+## Frontend Pages
+
+| Route | Page |
+|---|---|
+| `/` | Home / Landing Page |
+| `/login` | Login |
+| `/register` | Register |
+| `/verify-otp` | OTP Verification |
+| `/forgot-password` | Password Reset |
+| `/notes` | Browse Notes |
+| `/create-note` | Upload Note |
+| `/my-notes` | My Uploaded Notes |
+| `/my-purchases` | Purchased Notes |
+| `/kuppi-sessions` | Browse Kuppi Sessions |
+| `/create-session` | Create Kuppi Session |
+| `/my-sessions` | My Sessions |
+| `/chat` | Chat |
+| `/chatbot` | AI Chatbot |
+| `/analytics` | Analytics Dashboard |
+| `/profile` | User Profile |
+| `/notifications` | Notifications |
+| `/bookmarks` | Bookmarked Notes |
+| `/payment-history` | Payment History |
+
+---
+
+## Access Control
+
+- Only **SLIIT email addresses** (`@my.sliit.lk`) can register
+- Sellers must add **bank details** before listing notes or sessions
+- Protected routes require a valid JWT token
+- Admin role available for platform management
+
+---
+
+## Team
+
+> SLIIT — IT Project Management (ITPM) Group Project (16), 2026
