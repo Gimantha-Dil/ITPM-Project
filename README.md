@@ -102,7 +102,7 @@ ITPM-Project/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ITPM-Project.git
+git clone https://github.com/Gimantha-Dil/ITPM-Project.git
 cd ITPM-Project
 ```
 
