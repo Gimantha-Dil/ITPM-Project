@@ -11,7 +11,9 @@
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 30000,
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
     "globalSetup": "./jest.setup.js",
     "globalTeardown": "./jest.teardown.js"
   },
@@ -27,7 +29,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mogoose": "^0.0.1-security",
-    "mongodb": "^7.1.0",
+    "mongodb": "^7.6.0",
     "mongoose": "^9.3.1",
     "multer": "^2.1.1",
     "nodemailer": "^8.0.3",
